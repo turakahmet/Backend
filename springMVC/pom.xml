@@ -1,0 +1,190 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+ http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.objectdb.tutorial.spring</groupId>
+    <artifactId>Guestbook</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-BUILD-SNAPSHOT</version>
+    <name>Guestbook</name>
+    <url>https://www.objectdb.com/tutorial/jpa/spring</url>
+    <properties>
+        <spring.version>5.2.4.RELEASE</spring.version>
+        <spring.security>5.3.0.RELEASE</spring.security>
+        <hibernate.version>5.4.10.Final</hibernate.version>
+        <mysql.version>8.0.18</mysql.version>
+        <servlet-api-version>4.0.1</servlet-api-version>
+        <jsp-version>2.3.3</jsp-version>
+        <jstl-version>1.2</jstl-version>
+        <java.version>1.8</java.version>
+        <lombok-version>1.18.10</lombok-version>
+        <sunfaces-version>2.2.20</sunfaces-version>
+    </properties>
+
+
+    <repositories>
+        <repository>
+            <id>objectdb</id>
+            <name>ObjectDB Repository</name>
+            <url>https://m2.objectdb.com</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.adminfaces</groupId>
+            <artifactId>admin-theme</artifactId>
+            <version>1.0.0-RC21</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${sunfaces-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${sunfaces-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.security}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <!--Oracle jar-->
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>1.0</version>
+            <systemPath>C:/Users/TURAK/.m2/repository/com/oracle/ojdbc8/12.2.0.1/ojdbc8-12.2.0.1.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>${jsp-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>2.2.4.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>8.0</version>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+        <finalName>Guestbook</finalName>
+    </build>
+
+</project>
