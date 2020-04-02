@@ -1,6 +1,7 @@
-pom.xml
-README.md
-untitled2.iml
-.idea/*
-target/*
-src/main/webapp/WEB-INF/spring-servlet.xml
+/pom.xml
+/README.md
+/untitled2.iml
+/.idea/*
+/target/*
+/src/main/webapp/WEB-INF/spring-servlet.xml
+/yeni.txt
