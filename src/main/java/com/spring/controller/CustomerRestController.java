@@ -36,4 +36,16 @@ public class CustomerRestController
             return new ResponseEntity<Void>(HttpStatus.CREATED);
         }
     }
+    @RequestMapping(value = "/searchByEmail", method = RequestMethod.GET)
+    public ResponseEntity<Customer> searchByEmail(@RequestParam("email") String email)
+    {
+        if(customerService.findByEmail(email)==null)
+        {
+            return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            return new ResponseEntity<Customer>(customerService.findByEmail(email),HttpStatus.OK);
+        }
+    }
 }
