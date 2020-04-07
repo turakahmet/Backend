@@ -29,10 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerDAO.findByName(name);
     }
 
-    @Override
-    public Customer findByEmail(String email) {
-        return customerDAO.findByEmail(email);
-    }
+
 
     @Override
     public void Create(Customer customer) {
@@ -64,4 +61,10 @@ public class CustomerServiceImpl implements CustomerService {
         return customerDAO.isCustomerExist(customer);
 
     }
+    @Override
+    public Customer findByEmail(String email)
+    {
+        return customerDAO.findByEmail(email);
+    }
+
 }
