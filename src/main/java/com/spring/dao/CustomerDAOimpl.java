@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
+
 public class CustomerDAOimpl implements CustomerDAO{
 
 
@@ -47,7 +48,7 @@ public class CustomerDAOimpl implements CustomerDAO{
         Customer customer=new Customer();
         String hql="from com.spring.model.Customer where name= ?";
         try {
-            Query query=session.createQuery(hql);
+            Query query=session.createNativeQuery(hql);
             //query.setParameter(o,name);
             customer=(Customer)query.uniqueResult();
             transaction.commit();
@@ -63,7 +64,27 @@ public class CustomerDAOimpl implements CustomerDAO{
 
 
     public Customer findByEmail(String email) {
-        return null;
+
+        String hql="from Customer where email=:email";
+            try {
+                Query query = sessionFactory.getCurrentSession().createQuery(hql);
+                query.setString("email", email);
+                System.out.println(query.getResultList().size());
+                if(query.getResultList().size()>0)
+                    return (Customer) query.getSingleResult();
+                else
+                    return null;
+            }
+
+            catch (Exception e){
+                return null;
+            }
+
+
+
+
+
+
     }
 
     public void Create(Customer customer) {
