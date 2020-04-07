@@ -23,19 +23,20 @@ public class RestaurantDaoimpl implements RestaurantDAO {
     @Override
     public boolean deleteAllRestaurants() {
 
+        try {
+            System.out.println("deleteAllRestauranttayım");
+            Query query = sessionFactory.getCurrentSession().createSQLQuery("delete FROM Restaurant"); //bütün restaurantları silen sorgu
+            query.executeUpdate();
+            return true;
+        }
 
-        System.out.println("deleteAllRestauranttayım");
-        Query query = sessionFactory.getCurrentSession().createSQLQuery("delete FROM Restaurant"); //bütün restaurantları silen sorgu
-        query.executeUpdate();
-        return true;
+        catch(Exception e){
 
-//        catch(Exception e){
-//
-//            System.out.print(e.getMessage()); //catche girerse exceptionu gösterir.
-//            return false;
-//
-//
-//        }
+            System.out.print(e.getMessage()); //catche girerse exceptionu gösterir.
+            return false;
+
+
+        }
 
 
     }
