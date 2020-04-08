@@ -38,7 +38,7 @@ public class AppUser {
     @Column(unique = true, nullable = false)
     private String userToken;
 
-    @Column
+    @Column(nullable = false)
     private String userType;
 
     @Column
