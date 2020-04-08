@@ -7,7 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+import org.hibernate.Criteria;
 import java.util.List;
 
 @Repository
@@ -95,6 +95,9 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void Update(Restaurant p) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.update(p);
+        logger.info("Restaurant updated successfully, Restaurant Details="+p);
     }
 
     @Override
@@ -103,7 +106,9 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public List<Restaurant> findAllRestaurant() {
-        return null;
+        Restaurant restaurant = createEntityCriteria();
+        return (List<Restaurant>)findAllRestaurant();
+
     }
 
     @Override
