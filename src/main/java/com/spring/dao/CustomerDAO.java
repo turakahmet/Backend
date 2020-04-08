@@ -18,7 +18,7 @@ public interface CustomerDAO {
 
     void Delete(long id);
 
-    List<Customer>findAllCustomer();
+    List<Customer>findAllCustomers();
 
     void deleteAllCustomers();
 
