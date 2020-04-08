@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantRestController {
+
     @Autowired
     private RestaurantService restaurantService;
 
