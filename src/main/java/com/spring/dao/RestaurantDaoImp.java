@@ -73,10 +73,13 @@ public class RestaurantDaoImp implements RestaurantDao {
         }
     }
 
+
+    @Override
     public void Create(Restaurant restaurant) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        if (restaurant != null) {
+        if(restaurant!= null) {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+
             try {
                 session.save(restaurant);
                 transaction.commit();
@@ -85,7 +88,10 @@ public class RestaurantDaoImp implements RestaurantDao {
                 session.close();
             }
         }
+
     }
+
+
 
     @Override
     public void Update(Restaurant p) {
