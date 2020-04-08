@@ -30,6 +30,7 @@ public class RestaurantServiceImp implements RestaurantService {
     public Restaurant findByCity(String city) {
         return restaurantDao.findByCity(city);
     }
+
     @Override
     public void Create(Restaurant restaurant) {
         restaurantDao.Create(restaurant);
