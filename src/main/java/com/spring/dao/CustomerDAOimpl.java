@@ -110,10 +110,20 @@ public class CustomerDAOimpl implements CustomerDAO{
     public void Delete(long id) {
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Customer> findAllCustomer() {
-        return null;
-    }
+    public List<Customer> customerList() {
+            Session session = this.sessionFactory.getCurrentSession();
+            List<Customer> customersList = session.createQuery("from Customer").list();
+            for(Customer p : customersList){
+                logger.info("Customer List::"+p);
+            }
+            return customersList;
+
+        }
+
+
+
 
     @Override
     public void deleteAllCustomers() {

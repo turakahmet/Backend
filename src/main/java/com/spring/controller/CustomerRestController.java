@@ -48,4 +48,10 @@ public class CustomerRestController
             return new ResponseEntity<Customer>(customerService.findByEmail(email),HttpStatus.OK);
         }
     }
+    @RequestMapping(value = "/customers", method = RequestMethod.GET)
+    public String listCustomers(Model model) {
+        model.addAttribute("customer", new Customer());
+        model.addAttribute("listCustomers", this.customerService.listCustomers());
+        return "customer";
+    }
 }
