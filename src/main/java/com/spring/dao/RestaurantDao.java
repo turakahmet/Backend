@@ -1,9 +1,10 @@
-package com.spring.service;
+package com.spring.dao;
+
 import com.spring.model.Restaurant;
 
 import java.util.List;
 
-public interface RestaurantService {
+public interface RestaurantDao {
 
     Restaurant findById(long id);
 
@@ -23,4 +24,3 @@ public interface RestaurantService {
 
     boolean isRestaurantExist(Restaurant restaurant);
 }
-

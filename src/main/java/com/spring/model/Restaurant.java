@@ -60,7 +60,7 @@ public class Restaurant  {
     private int review_count;
 
     @Embedded
-    @Column(nullable = true)
+    @Column
     private ReviewScore reviewScore;
 
     @Column

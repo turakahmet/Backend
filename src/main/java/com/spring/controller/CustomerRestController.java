@@ -12,59 +12,46 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/customer")
-public class CustomerRestController {
+public class CustomerRestController
+{
     @Autowired
     private CustomerService customerService;
 
-    public void setCustomerService(CustomerService customerService) {
+    public void setCustomerService(CustomerService customerService)
+    {
         this.customerService = customerService;
     }
 
     //add new context
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public ResponseEntity<Void> createCustomer(@RequestBody Customer customer) {
-        if (customerService.isCustomerExist(customer)) {
+    public ResponseEntity<Void> createCustomer(@RequestBody Customer customer)
+    {
+        if(customerService.isCustomerExist(customer))
+        {
             return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        } else {
+        }
+        else
+        {
             customerService.Create(customer);
             return new ResponseEntity<Void>(HttpStatus.CREATED);
         }
     }
-
     @RequestMapping(value = "/searchByEmail", method = RequestMethod.GET)
-    public ResponseEntity<Customer> searchByEmail(@RequestParam("email") String email) {
-        if (customerService.findByEmail(email) == null) {
+    public ResponseEntity<Customer> searchByEmail(@RequestParam("email") String email)
+    {
+        if(customerService.findByEmail(email)==null)
+        {
             return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<Customer>(customerService.findByEmail(email), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<Customer>(customerService.findByEmail(email),HttpStatus.OK);
         }
     }
-
     @RequestMapping(value = "/customers", method = RequestMethod.GET)
     public String listCustomers(Model model) {
         model.addAttribute("customer", new Customer());
         model.addAttribute("listCustomers", this.customerService.listCustomers());
         return "customer";
-    }
-
-    @RequestMapping(value = "/customer/edit/{id}", method = RequestMethod.GET)
-    public ModelAndView updateCustomer(@PathVariable Integer id) {
-        ModelAndView modelAndView = new ModelAndView("edit-customer-form");
-        Customer customer = customerService.get(id);
-        modelAndView.addObject("customer", customer);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/customer/edit/{id}", method = RequestMethod.POST)
-    public ModelAndView edditingCustomer(@ModelAttribute Customer customer, @PathVariable Integer id) {
-
-        ModelAndView modelAndView = new ModelAndView("home");
-
-        teamService.updateTeam(customer);
-
-        String message = "Customer was successfully edited.";
-        modelAndView.addObject("message", message);
-
-        return modelAndView;
     }
 }

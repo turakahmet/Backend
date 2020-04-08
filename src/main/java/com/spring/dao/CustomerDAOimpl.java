@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.hibernate.Criteria;
+
 import java.util.List;
 
 @Repository
@@ -104,9 +104,6 @@ public class CustomerDAOimpl implements CustomerDAO{
     }
     @Override
     public void Update(Customer p) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.update(p);
-        logger.info("Customer updated successfully, Customer Details="+p);
     }
 
     @Override
@@ -114,9 +111,14 @@ public class CustomerDAOimpl implements CustomerDAO{
     }
 
     @SuppressWarnings("unchecked")
-    public List<Customer> findAllCustomers() {
-        Customer customer = createEntityCriteria();
-        return (List<Customer>)findAllCustomers();
+    @Override
+    public List<Customer> customerList() {
+            Session session = this.sessionFactory.getCurrentSession();
+            List<Customer> customersList = session.createQuery("from Customer").list();
+            for(Customer p : customersList){
+                logger.info("Customer List::"+p);
+            }
+            return customersList;
 
         }
 
