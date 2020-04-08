@@ -17,7 +17,8 @@ import java.util.Set;
 @Getter
 @Entity
 @Table
-public class AppUser {
+
+public class AppUser   {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +33,7 @@ public class AppUser {
     @Column(unique = true, nullable = false)
     private String userEmail;
 
-    @Column(length = 8)
+    @Column(length = 30)
     private String userPassword;
 
     @Column(unique = true, nullable = false)
@@ -48,7 +49,6 @@ public class AppUser {
     public AppUser() {
         super();
     }
-
     public AppUser(String userName, String userSurname, String userEmail, String userPassword, String userToken, String userType, String profilImageID) {
         super();
         this.userName = userName;
