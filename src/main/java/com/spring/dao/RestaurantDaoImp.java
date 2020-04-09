@@ -93,12 +93,12 @@ public class RestaurantDaoImp implements RestaurantDao {
 
 
 
-    @Override
-    public void Update(Restaurant p) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.update(p);
-        logger.info("Restaurant updated successfully, Restaurant Details="+p);
-    }
+   @Override
+   public void Update(Restaurant p) {
+//        Session session = this.sessionFactory.getCurrentSession();
+//        session.update(p);
+//        logger.info("Restaurant updated successfully, Restaurant Details="+p);
+   }
 
     @Override
     public void Delete(long id) {
@@ -106,7 +106,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public List<Restaurant> findAllRestaurant() {
-        Restaurant restaurant = createEntityCriteria();
+//        Restaurant restaurant = createEntityCriteria();
         return (List<Restaurant>)findAllRestaurant();
 
     }
