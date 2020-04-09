@@ -6,10 +6,7 @@ import com.spring.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -29,14 +26,15 @@ public class UserRestController {
     public ResponseEntity<AppUser> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
         try {
-            return new ResponseEntity<AppUser>(userService.insertUserWithMail(user),HttpStatus.CREATED); //
-        }
+            if (!userService.isUserExist(user.getUserEmail())) //gelen objenin sadece unique mailiyle kontrol amaçlı gönderiliyor.
+                return new ResponseEntity<AppUser>(userService.insertUserWithMail(user), HttpStatus.CREATED);
+            else
+                return new ResponseEntity<AppUser>(HttpStatus.CONFLICT);
 
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<AppUser>(HttpStatus.NOT_MODIFIED);
         }
-
 
 
     }
@@ -45,34 +43,44 @@ public class UserRestController {
     public ResponseEntity<ArrayList<AppUser>> listAllUsers()   //Kullanıcı ekleyen endpoint
     {
         try {
-            return new ResponseEntity<ArrayList<AppUser>>(userService.listAllUsers(),HttpStatus.OK); //
-        }
-
-        catch(Exception e){
+            return new ResponseEntity<ArrayList<AppUser>>(userService.listAllUsers(), HttpStatus.OK); //
+        } catch (Exception e) {
 
             return new ResponseEntity<ArrayList<AppUser>>(HttpStatus.NOT_MODIFIED);
         }
 
 
-
     }
+
     @RequestMapping(value = "/updateuser", method = RequestMethod.POST)
-    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
 
     {       //kullanıcıyı update ederken komple kullanıcı classını karşılayan bir json gönderin
-            //Ancak idsivtde olan bir id olmalı
-            try{
-                return new ResponseEntity<AppUser>(userService.updateUser(user),HttpStatus.OK); //
+        //Ancak idsivtde olan bir id olmalı
+        try {
+            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.OK); //
 
-            }
-            catch(Exception e){
-                return new ResponseEntity<AppUser>(userService.updateUser(user),HttpStatus.NOT_MODIFIED); //
+        } catch (Exception e) {
+            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.NOT_MODIFIED); //
 
-            }
-
-
-
+        }
 
 
     }
+
+
+//    @RequestMapping(value = "/isuserexist", method = RequestMethod.GET)
+//    public ResponseEntity<Void> isUserExist(@RequestParam("email") String email)
+//
+//    {
+//        try {
+//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.OK); //
+//
+//        } catch (Exception e) {
+//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.NOT_MODIFIED); //
+//
+//        }
+//
+//
+//    }
 }

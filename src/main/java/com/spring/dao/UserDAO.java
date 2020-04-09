@@ -12,6 +12,6 @@ public interface UserDAO {
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;
     ArrayList<AppUser> listAllUsers();//Bütün kullanıcıları listeler
     AppUser updateUser(AppUser user); //Kullanıcı günceller
-
+    Boolean isUserExist(String email);
 
 }

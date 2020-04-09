@@ -35,4 +35,9 @@ public class UserServiceImpl implements UserService {
     public AppUser updateUser(AppUser user) {
         return userDao.updateUser(user);
     }
+
+    @Override
+    public Boolean isUserExist(String email) {
+        return userDao.isUserExist(email);
+    }
 }

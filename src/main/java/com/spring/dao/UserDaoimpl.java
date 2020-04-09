@@ -45,7 +45,7 @@ public class UserDaoimpl implements UserDAO {
     @Override
     public ArrayList<AppUser> listAllUsers() {
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser"); //burdaki sorgu ırmızı çıkabilir ancak çalışıyo.
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser");//burdaki sorgu ırmızı çıkabilir ancak çalışıyo.
             return (ArrayList<AppUser>) query.getResultList();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -56,7 +56,10 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public AppUser updateUser(AppUser user) { //Kullanıcının update olacak hali geliyor saedece id aynı
+    public AppUser updateUser(AppUser user) {
+        //Kullanıcının update olacak hali geliyor saedece id aynı
+
+
         try {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
@@ -73,11 +76,31 @@ public class UserDaoimpl implements UserDAO {
             tx.commit();
             session.close();
             return upUser;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
+
+
+    }
+
+    @Override
+    public Boolean isUserExist(String email) {
+
+        try {
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email");
+            query.setParameter("email",email);
+            if (query.getResultList().size() > 0)
+                return true;
+            else return false;
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+
 
 
     }
