@@ -6,6 +6,7 @@ import com.spring.model.Review;
 import java.util.List;
 
 public interface RestaurantDao {
+    boolean checkRestaurant(long id);
 
     Restaurant findById(long id);
 
@@ -27,5 +28,6 @@ public interface RestaurantDao {
 
     void voteRestaurant(Review review);
 
-    boolean isVoteExist(Review review);
+    boolean isVoteExist(long userID ,long restaurantID);
+
 }

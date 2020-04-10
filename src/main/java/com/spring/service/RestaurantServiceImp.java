@@ -22,6 +22,13 @@ public class RestaurantServiceImp implements RestaurantService {
     public Restaurant findById(long id) {
         return restaurantDao.findById(id);
     }
+
+    @Override
+    public boolean checkRestaurant(long id) {
+
+        return restaurantDao.checkRestaurant(id);
+    }
+
     @Override
     public Restaurant findByName(String name) {
         return restaurantDao.findByName(name);
@@ -66,7 +73,7 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public boolean isVoteExist(Review review) {
-        return restaurantDao.isVoteExist(review);
+    public boolean isVoteExist(long userID, long restaurantID) {
+        return restaurantDao.isVoteExist(userID,restaurantID);
     }
 }

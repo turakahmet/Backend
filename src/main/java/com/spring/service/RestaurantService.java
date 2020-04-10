@@ -8,6 +8,8 @@ public interface RestaurantService {
 
     Restaurant findById(long id);
 
+    boolean checkRestaurant(long id); //restaurant check
+
     Restaurant findByName(String name);
 
     Restaurant findByCity(String city);
@@ -22,9 +24,10 @@ public interface RestaurantService {
 
     void deleteAllRestaurant();
 
+
     boolean isRestaurantExist(Restaurant restaurant);
 
     void voteRestaurant(Review review);
-    boolean isVoteExist(Review review);
+    boolean isVoteExist(long userID, long restaurantID);
 }
 

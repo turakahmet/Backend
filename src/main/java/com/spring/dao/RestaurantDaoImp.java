@@ -10,6 +10,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ExceptionDepthComparator;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,27 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    public boolean checkRestaurant(long id) {
+        int result=0;
+        try {
+            Query query = sessionFactory.getCurrentSession().
+                    createQuery("from Restaurant where restaurantID =: id");
+            query.setParameter("id",id);
+           result = query.getResultList().size();
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+            System.out.println(result);
+            if (result > 0)
+                return true; //restaurant var
+            else
+                return false;
+
+
     }
 
     public Restaurant findById(long id) {
@@ -84,7 +107,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void Create(Restaurant restaurant) {
-        if(restaurant!= null) {
+        if (restaurant != null) {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
 
@@ -98,7 +121,6 @@ public class RestaurantDaoImp implements RestaurantDao {
         }
 
     }
-
 
 
     @Override
@@ -124,6 +146,7 @@ public class RestaurantDaoImp implements RestaurantDao {
             System.out.print(e.getMessage()); //catche girerse exceptionu gösterir.
         }
     }
+
     @Override
     public boolean isRestaurantExist(Restaurant restaurant) {
         return false;
@@ -135,12 +158,12 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            double aHygieneScore= Math.round((( review.getHygiene1()+review.getHygiene2()+review.getHygiene3())/3)*10.0)/10.0;
-            double aChildrenScore= Math.round(((review.getChild_friendly_1()+review.getChild_friendly_2()+review.getChild_friendly_3())/3)*10.0)/10.0;
-            double aDisabledScore= Math.round(((review.getDisabled_friendly1()+review.getDisabled_friendly2()+review.getDisabled_friendly3())/3)*10.0)/10.0;
-            double averageScore=  Math.round((( aHygieneScore+aChildrenScore+aDisabledScore)/3)*10.0)/10.0;
+            double aHygieneScore = Math.round(((review.getHygiene1() + review.getHygiene2() + review.getHygiene3()) / 3) * 10.0) / 10.0;
+            double aChildrenScore = Math.round(((review.getChild_friendly_1() + review.getChild_friendly_2() + review.getChild_friendly_3()) / 3) * 10.0) / 10.0;
+            double aDisabledScore = Math.round(((review.getDisabled_friendly1() + review.getDisabled_friendly2() + review.getDisabled_friendly3()) / 3) * 10.0) / 10.0;
+            double averageScore = Math.round(((aHygieneScore + aChildrenScore + aDisabledScore) / 3) * 10.0) / 10.0;
 
-            ReviewScore reviewScore=new ReviewScore(averageScore,aHygieneScore,aChildrenScore,aDisabledScore);
+            ReviewScore reviewScore = new ReviewScore(averageScore, aHygieneScore, aChildrenScore, aDisabledScore);
             review.setReviewRestaurantScore(reviewScore);
             session.save(review);
             transaction.commit();
@@ -151,9 +174,28 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public boolean isVoteExist(Review review) {
+    public boolean isVoteExist(long userID, long restaurantID) {
 
-        return false;
+        try {
+
+
+            Query query = sessionFactory.getCurrentSession().
+                    createQuery("from Review where restaurantID =:restaurantID and userID =:userID");
+            query.setParameter("restaurantID", restaurantID);
+            query.setParameter("userID", userID);
+
+
+            if (query.getResultList().size() > 0)
+                return true;
+
+            else return false;
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+
     }
 
 }

@@ -38,9 +38,26 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
-    public ResponseEntity<Void> voteRest(@RequestBody Review review) {
-        restaurantService.voteRestaurant(review);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+
+
+    public ResponseEntity<String> voteRest(@RequestBody Review review) {
+
+        try {
+            if (restaurantService.checkRestaurant(review.getRestaurant().getRestaurantID())) {
+                if (!restaurantService.isVoteExist(review.getUser().getUserID(), review.getRestaurant().getRestaurantID())) {
+                    restaurantService.voteRestaurant(review);
+                    return new ResponseEntity<String>("", HttpStatus.OK);
+
+                } else return new ResponseEntity<String>("Vote already exist", HttpStatus.CONFLICT);
+
+
+            } else return new ResponseEntity<String>("Restaurant does not exist", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+
+            return new ResponseEntity<String>("Something went wrong.", HttpStatus.NOT_MODIFIED);
+
+        }
     }
 }
 
