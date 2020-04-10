@@ -6,13 +6,14 @@ package com.spring.model;
 
 import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Setter
 @Getter
 @Entity
-@Table
 public class Review {
 
 
@@ -23,11 +24,11 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "restaurantID")
-    private Restaurant restaurantID;
+    private Restaurant restaurant;
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    private AppUser userID;
+    private AppUser user;
 
     @Column
     private int hygiene1;
@@ -57,26 +58,8 @@ public class Review {
     private int disabled_friendly3;
 
     @Embedded
-    @Column(nullable = true)
+    @Column
     private ReviewScore reviewRestaurantScore;
 
-    public Review() {
-        super();
-    }
 
-    public Review(Restaurant restaurantID, AppUser userID, int hygiene1, int hygiene2, int hygiene3, int child_friendly_1, int child_friendly_2, int child_friendly_3, int disabled_friendly1, int disabled_friendly2, int disabled_friendly3, ReviewScore reviewRestaurantScore) {
-        super();
-        this.restaurantID = restaurantID;
-        this.userID = userID;
-        this.hygiene1 = hygiene1;
-        this.hygiene2 = hygiene2;
-        this.hygiene3 = hygiene3;
-        this.child_friendly_1 = child_friendly_1;
-        this.child_friendly_2 = child_friendly_2;
-        this.child_friendly_3 = child_friendly_3;
-        this.disabled_friendly1 = disabled_friendly1;
-        this.disabled_friendly2 = disabled_friendly2;
-        this.disabled_friendly3 = disabled_friendly3;
-        this.reviewRestaurantScore = reviewRestaurantScore;
-    }
 }
