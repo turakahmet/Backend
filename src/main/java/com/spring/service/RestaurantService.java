@@ -28,6 +28,7 @@ public interface RestaurantService {
     boolean isRestaurantExist(Restaurant restaurant);
 
     void voteRestaurant(Review review);
-    boolean isVoteExist(long userID, long restaurantID);
+
+    boolean isVoteExist(Review review);
 }
 

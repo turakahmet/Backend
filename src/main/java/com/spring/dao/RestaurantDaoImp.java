@@ -5,6 +5,7 @@ import com.spring.model.AppUser;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
 import com.spring.model.ReviewScore;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -23,13 +24,10 @@ import java.util.Set;
 @Repository
 public class RestaurantDaoImp implements RestaurantDao {
 
-
+    @Setter
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     @Override
     public boolean checkRestaurant(long id) {
@@ -173,29 +171,31 @@ public class RestaurantDaoImp implements RestaurantDao {
         }
     }
 
+
     @Override
-    public boolean isVoteExist(long userID, long restaurantID) {
+    public boolean isVoteExist(Review review) {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            boolean result = false;
+            Query query = session.createNativeQuery("select reviewID FROM Review WHERE userID = :userID and restaurantID= :restaurantID");
+            query.setParameter("userID",review.getUser().getUserID() );
+            query.setParameter("restaurantID",review.getRestaurant().getRestaurantID());
+            if (query.uniqueResult() != null) {
+                result = true;
+            }else{
+                result=false;
+            }
+            transaction.commit();
+            session.close();
 
-        try {
 
-
-            Query query = sessionFactory.getCurrentSession().
-                    createQuery("from Review where restaurantID =:restaurantID and userID =:userID");
-            query.setParameter("restaurantID", restaurantID);
-            query.setParameter("userID", userID);
-
-
-            if (query.getResultList().size() > 0)
-                return true;
-
-            else return false;
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-            return false;
+            return result;
         }
-
-
     }
 
-}
+
+
+
+
+
+

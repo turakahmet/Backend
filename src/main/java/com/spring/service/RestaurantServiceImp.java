@@ -73,7 +73,9 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public boolean isVoteExist(long userID, long restaurantID) {
-        return restaurantDao.isVoteExist(userID,restaurantID);
+    public boolean isVoteExist(Review review) {
+        return restaurantDao.isVoteExist(review);
     }
+
+
 }
