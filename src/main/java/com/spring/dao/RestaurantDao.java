@@ -28,6 +28,6 @@ public interface RestaurantDao {
 
     void voteRestaurant(Review review);
 
-    boolean isVoteExist(Review review);
+    boolean isVoteExist(long userID,long restaurantID);
 
 }

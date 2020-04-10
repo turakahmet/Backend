@@ -173,20 +173,18 @@ public class RestaurantDaoImp implements RestaurantDao {
 
 
     @Override
-    public boolean isVoteExist(Review review) {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
+    public boolean isVoteExist(long userID,long restaurantID) {
+
+        Query query = sessionFactory.getCurrentSession().createQuery("select reviewID FROM Review WHERE userID = :userID and restaurantID= :restaurantID");
+
             boolean result = false;
-            Query query = session.createNativeQuery("select reviewID FROM Review WHERE userID = :userID and restaurantID= :restaurantID");
-            query.setParameter("userID",review.getUser().getUserID() );
-            query.setParameter("restaurantID",review.getRestaurant().getRestaurantID());
+            query.setParameter("userID",userID);
+            query.setParameter("restaurantID",restaurantID);
             if (query.uniqueResult() != null) {
                 result = true;
             }else{
                 result=false;
             }
-            transaction.commit();
-            session.close();
 
 
             return result;

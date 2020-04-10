@@ -41,7 +41,7 @@ public class RestaurantRestController {
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
     public ResponseEntity<String> voteRest(@RequestBody Review review) {
         try {
-            if (!restaurantService.isVoteExist(review)) {
+            if (!restaurantService.isVoteExist(review.getUser().getUserID(),review.getRestaurant().getRestaurantID())) {
                 restaurantService.voteRestaurant(review);
                 return new ResponseEntity<String>("Eklendi", HttpStatus.OK);
 
