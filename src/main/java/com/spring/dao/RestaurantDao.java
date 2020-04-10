@@ -1,6 +1,7 @@
 package com.spring.dao;
 
 import com.spring.model.Restaurant;
+import com.spring.model.Review;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface RestaurantDao {
     void deleteAllRestaurant();
 
     boolean isRestaurantExist(Restaurant restaurant);
+
+    void voteRestaurant(Review review);
+
+    boolean isVoteExist(Review review);
 }

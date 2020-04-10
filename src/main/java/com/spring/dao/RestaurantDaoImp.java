@@ -1,14 +1,22 @@
 package com.spring.dao;
 
+import com.google.protobuf.StringValueOrBuilder;
+import com.spring.model.AppUser;
 import com.spring.model.Restaurant;
+import com.spring.model.Review;
+import com.spring.model.ReviewScore;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.hibernate.Criteria;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.Id;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class RestaurantDaoImp implements RestaurantDao {
@@ -93,12 +101,9 @@ public class RestaurantDaoImp implements RestaurantDao {
 
 
 
-   @Override
-   public void Update(Restaurant p) {
-//        Session session = this.sessionFactory.getCurrentSession();
-//        session.update(p);
-//        logger.info("Restaurant updated successfully, Restaurant Details="+p);
-   }
+    @Override
+    public void Update(Restaurant p) {
+    }
 
     @Override
     public void Delete(long id) {
@@ -106,9 +111,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public List<Restaurant> findAllRestaurant() {
-//        Restaurant restaurant = createEntityCriteria();
-        return (List<Restaurant>)findAllRestaurant();
-
+        return null;
     }
 
     @Override
@@ -123,6 +126,33 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
     @Override
     public boolean isRestaurantExist(Restaurant restaurant) {
+        return false;
+    }
+
+
+    @Override
+    public void voteRestaurant(Review review) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            double aHygieneScore= Math.round((( review.getHygiene1()+review.getHygiene2()+review.getHygiene3())/3)*10.0)/10.0;
+            double aChildrenScore= Math.round(((review.getChild_friendly_1()+review.getChild_friendly_2()+review.getChild_friendly_3())/3)*10.0)/10.0;
+            double aDisabledScore= Math.round(((review.getDisabled_friendly1()+review.getDisabled_friendly2()+review.getDisabled_friendly3())/3)*10.0)/10.0;
+            double averageScore=  Math.round((( aHygieneScore+aChildrenScore+aDisabledScore)/3)*10.0)/10.0;
+
+            ReviewScore reviewScore=new ReviewScore(averageScore,aHygieneScore,aChildrenScore,aDisabledScore);
+            review.setReviewRestaurantScore(reviewScore);
+            session.save(review);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            session.close();
+        }
+    }
+
+    @Override
+    public boolean isVoteExist(Review review) {
+
         return false;
     }
 

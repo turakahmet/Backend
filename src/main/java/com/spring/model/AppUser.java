@@ -1,8 +1,8 @@
 package com.spring.model;
 import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,8 +16,9 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppUser   {
 
     @Id
@@ -45,18 +46,8 @@ public class AppUser   {
     @Column
     private String profilImageID;
 
+    @JsonIgnoreProperties ("user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Review> user;
 
-    public AppUser() {
-        super();
-    }
-    public AppUser(String userName, String userSurname, String userEmail, String userPassword, String userToken, String userType, String profilImageID) {
-        super();
-        this.userName = userName;
-        this.userSurname = userSurname;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userToken = userToken;
-        this.userType = userType;
-        this.profilImageID = profilImageID;
-    }
 }
