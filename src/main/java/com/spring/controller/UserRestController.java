@@ -1,8 +1,11 @@
 package com.spring.controller;
 
+import com.spring.dao.denemeclass;
 import com.spring.model.AppUser;
+import com.spring.model.Review;
 import com.spring.service.UserService;
 import com.spring.service.UserServiceImpl;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ public class UserRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    denemeclass deneme;
 
     @RequestMapping(value = "/insertuser", method = RequestMethod.POST)
     public ResponseEntity<AppUser> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
@@ -69,18 +75,5 @@ public class UserRestController {
     }
 
 
-//    @RequestMapping(value = "/isuserexist", method = RequestMethod.GET)
-//    public ResponseEntity<Void> isUserExist(@RequestParam("email") String email)
-//
-//    {
-//        try {
-//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.OK); //
-//
-//        } catch (Exception e) {
-//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.NOT_MODIFIED); //
-//
-//        }
-//
-//
-//    }
+
 }
