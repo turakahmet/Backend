@@ -24,7 +24,7 @@ public class AppUser   {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userID;
-
+    //cinli dosya comment satırı
     @Column
     private String userName;
 
