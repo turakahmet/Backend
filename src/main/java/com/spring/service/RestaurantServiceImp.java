@@ -2,6 +2,7 @@ package com.spring.service;
 
 import com.spring.dao.RestaurantDao;
 import com.spring.model.Restaurant;
+import com.spring.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,15 @@ public class RestaurantServiceImp implements RestaurantService {
     @Override
     public boolean isRestaurantExist(Restaurant restaurant) {
         return restaurantDao.isRestaurantExist(restaurant);
+    }
+
+    @Override
+    public void voteRestaurant(Review review) {
+        restaurantDao.voteRestaurant(review);
+    }
+
+    @Override
+    public boolean isVoteExist(Review review) {
+        return restaurantDao.isVoteExist(review);
     }
 }
