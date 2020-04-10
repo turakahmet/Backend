@@ -31,31 +31,31 @@ public class Review {
     private AppUser user;
 
     @Column
-    private int hygiene1;
+    private double hygiene1;
 
     @Column
-    private int hygiene2;
+    private double hygiene2;
 
     @Column
-    private int hygiene3;
+    private double hygiene3;
 
     @Column
-    private int child_friendly_1;
+    private double child_friendly_1;
 
     @Column
-    private int child_friendly_2;
+    private double child_friendly_2;
 
     @Column
-    private int child_friendly_3;
+    private double child_friendly_3;
 
     @Column
-    private int disabled_friendly1;
+    private double disabled_friendly1;
 
     @Column
-    private int disabled_friendly2;
+    private double disabled_friendly2;
 
     @Column
-    private int disabled_friendly3;
+    private double disabled_friendly3;
 
     @Embedded
     @Column
