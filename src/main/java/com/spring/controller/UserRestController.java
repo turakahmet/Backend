@@ -1,6 +1,5 @@
 package com.spring.controller;
 
-import com.spring.dao.denemeclass;
 import com.spring.model.AppUser;
 import com.spring.model.Review;
 import com.spring.service.UserService;
@@ -25,8 +24,6 @@ public class UserRestController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    denemeclass deneme;
 
     @RequestMapping(value = "/insertuser", method = RequestMethod.POST)
     public ResponseEntity<AppUser> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
