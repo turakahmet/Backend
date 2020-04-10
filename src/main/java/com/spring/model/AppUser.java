@@ -48,6 +48,6 @@ public class AppUser   {
 
     @JsonIgnoreProperties ("user")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Review> user;
+    private List<Review> user;
 
 }
