@@ -3,14 +3,19 @@ package com.spring.dao;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RestaurantDao {
+
+
     boolean checkRestaurant(long id);
 
     Restaurant findById(long id);
 
     Restaurant findByName(String name);
+
+    Restaurant findRestaurant(long restaurantID);
 
     Restaurant findByCity(String city);
 
@@ -20,7 +25,7 @@ public interface RestaurantDao {
 
     void Delete(long id);
 
-    List<Restaurant>findAllRestaurant();
+    ArrayList<Restaurant> findAllRestaurant();
 
     void deleteAllRestaurant();
 

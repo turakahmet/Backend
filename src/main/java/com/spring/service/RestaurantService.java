@@ -2,6 +2,7 @@ package com.spring.service;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RestaurantService {
@@ -20,7 +21,7 @@ public interface RestaurantService {
 
     void Delete(long id);
 
-    List<Restaurant>findAllRestaurant();
+    ArrayList<Restaurant> findAllRestaurant();
 
     void deleteAllRestaurant();
 

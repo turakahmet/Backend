@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,15 +60,17 @@ public class Restaurant  {
     private int phone_number;
 
     @Column
+    @Formula("select")
     private int review_count;
 
     @Embedded
     @Column
-    private ReviewScore reviewScore;
+    private ReviewScore reviewRestaurantScore;
+
 
     @JsonIgnoreProperties("restaurant")
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Review> restaurant;
+    private Set<Review> review;
 
     @Column
     private String restaurantImageUrl;

@@ -57,9 +57,6 @@ public class Review {
     @Column
     private double disabled_friendly3;
 
-    @Embedded
-    @Column
-    private ReviewScore reviewRestaurantScore;
 
 
 }

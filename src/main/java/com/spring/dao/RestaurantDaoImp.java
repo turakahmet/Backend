@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Id;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,21 +32,20 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public boolean checkRestaurant(long id) {
-        int result=0;
+        int result = 0;
         try {
             Query query = sessionFactory.getCurrentSession().
                     createQuery("from Restaurant where restaurantID =: id");
-            query.setParameter("id",id);
-           result = query.getResultList().size();
-        }
-        catch (Exception e){
+            query.setParameter("id", id);
+            result = query.getResultList().size();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-            System.out.println(result);
-            if (result > 0)
-                return true; //restaurant var
-            else
-                return false;
+        System.out.println(result);
+        if (result > 0)
+            return true; //restaurant var
+        else
+            return false;
 
 
     }
@@ -86,6 +86,19 @@ public class RestaurantDaoImp implements RestaurantDao {
         return restaurant;
     }
 
+    @Override
+    public Restaurant findRestaurant(long restaurantID) {
+                Query query = sessionFactory.getCurrentSession().
+                createQuery("select from Restaurant where restaurantID =: restaurantID");
+                query.setParameter("restaurantID",restaurantID);
+                Restaurant restaurant = new Restaurant();
+                 restaurant = (Restaurant) query.uniqueResult();
+
+                return  restaurant;
+
+
+    }
+
 
     public Restaurant findByCity(String city) {
         String hql = "from Restaurant where city=:city";
@@ -105,18 +118,20 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void Create(Restaurant restaurant) {
-        if (restaurant != null) {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
 
-            try {
-                session.save(restaurant);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                session.close();
-            }
-        }
+        sessionFactory.getCurrentSession().save(restaurant);
+//        if (restaurant != null) {
+//            Session session = sessionFactory.openSession();
+//            Transaction transaction = session.beginTransaction();
+//
+//            try {
+//                session.save(restaurant);
+//                transaction.commit();
+//            } catch (Exception e) {
+//                transaction.rollback();
+//                session.close();
+//            }
+//        }
 
     }
 
@@ -130,8 +145,18 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Restaurant> findAllRestaurant() {
-        return null;
+    public ArrayList<Restaurant> findAllRestaurant() {
+
+        try {
+            Query query = sessionFactory.getCurrentSession().createNativeQuery("select * from Restaurant");
+            return (ArrayList<Restaurant>) query.getResultList();
+        } catch (Exception e) {
+
+            return null;
+
+        }
+
+
     }
 
     @Override
@@ -153,43 +178,85 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void voteRestaurant(Review review) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            double aHygieneScore = Math.round(((review.getHygiene1() + review.getHygiene2() + review.getHygiene3()) / 3) * 10.0) / 10.0;
-            double aChildrenScore = Math.round(((review.getChild_friendly_1() + review.getChild_friendly_2() + review.getChild_friendly_3()) / 3) * 10.0) / 10.0;
-            double aDisabledScore = Math.round(((review.getDisabled_friendly1() + review.getDisabled_friendly2() + review.getDisabled_friendly3()) / 3) * 10.0) / 10.0;
-            double averageScore = Math.round(((aHygieneScore + aChildrenScore + aDisabledScore) / 3) * 10.0) / 10.0;
 
-            ReviewScore reviewScore = new ReviewScore(averageScore, aHygieneScore, aChildrenScore, aDisabledScore);
-            review.setReviewRestaurantScore(reviewScore);
-            session.save(review);
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            session.close();
-        }
+
+
+
+
+        sessionFactory.getCurrentSession().save(review);
+
+
+
+        Query queryChild =sessionFactory.getCurrentSession().
+                createQuery("select  avg((CHILD_FRIENDLY_1+CHILD_FRIENDLY_2+CHILD_FRIENDLY_3)/3) from Review where restaurantID=:restaurantID");
+
+       queryChild.setParameter("restaurantID",review.getRestaurant().getRestaurantID());
+
+
+        Query queryDisabled =sessionFactory.getCurrentSession().
+                createQuery("select  avg((disabled_friendly1+disabled_friendly2+disabled_friendly3)/3) from Review where restaurantID=:restaurantID");
+
+       queryDisabled.setParameter("restaurantID",review.getRestaurant().getRestaurantID());
+
+
+        Query queryHygiene =sessionFactory.getCurrentSession().
+               createQuery("select  avg((HYGIENE1+HYGIENE2+HYGIENE3)/3) from Review where restaurantID=:restaurantID");
+
+        queryHygiene.setParameter("restaurantID",review.getRestaurant().getRestaurantID());
+
+        Double childAvg = (Double) queryChild.uniqueResult();
+        Double hygieneAvg= (Double) queryHygiene.uniqueResult();
+        Double disabledAvg= (Double) queryDisabled.uniqueResult();
+        Double average = (childAvg + disabledAvg+hygieneAvg)/3;
+
+        ReviewScore reviewScore = new ReviewScore(average,hygieneAvg,childAvg, disabledAvg);
+
+
+
+
+       updateRestaurantReview(review, reviewScore);
+
+
+    }
+
+    private void updateRestaurantReview(Review review, ReviewScore reviewScore) {
+
+
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+        Restaurant upRestaurant = (Restaurant) session.get(Restaurant.class, review.getRestaurant().getRestaurantID());
+
+
+        upRestaurant.setReviewRestaurantScore(reviewScore);
+        //update işlemi başlar
+        session.update(upRestaurant);
+        tx.commit();
+        session.close();
+
+
     }
 
 
     @Override
-    public boolean isVoteExist(long userID,long restaurantID) {
+    public boolean isVoteExist(long userID, long restaurantID) {
+        System.out.println("is exist vote");
 
         Query query = sessionFactory.getCurrentSession().createQuery("select reviewID FROM Review WHERE userID = :userID and restaurantID= :restaurantID");
 
-            boolean result = false;
-            query.setParameter("userID",userID);
-            query.setParameter("restaurantID",restaurantID);
-            if (query.uniqueResult() != null) {
-                result = true;
-            }else{
-                result=false;
-            }
-
-
-            return result;
+        boolean result = false;
+        query.setParameter("userID", userID);
+        query.setParameter("restaurantID", restaurantID);
+        if (query.uniqueResult() != null) {
+            result = true;
+        } else {
+            result = false;
         }
+
+
+        return result;
     }
+}
 
 
 

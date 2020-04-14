@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,7 +54,7 @@ public class RestaurantServiceImp implements RestaurantService {
     public void Delete(long id) {
     }
     @Override
-    public List<Restaurant> findAllRestaurant() {
+    public ArrayList<Restaurant> findAllRestaurant() {
         return restaurantDao.findAllRestaurant();
     }
 
