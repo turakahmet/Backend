@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 import lombok.*;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -19,8 +21,7 @@ public class Review {
 
     @Id
     @GeneratedValue
-    private int reviewID;
-
+    private long reviewID;
 
     @ManyToOne
     @JoinColumn(name = "restaurantID")
@@ -57,6 +58,7 @@ public class Review {
     @Column
     private double disabled_friendly3;
 
-
+    @Temporal(TemporalType.DATE)
+    private Date reviewDate;
 
 }

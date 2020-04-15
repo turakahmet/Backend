@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
@@ -60,13 +61,19 @@ public class Restaurant  {
     private int phone_number;
 
     @Column
-    @Formula("select")
     private int review_count;
 
-    @Embedded
-    @Column
-    private ReviewScore reviewRestaurantScore;
+    @ColumnDefault("0")
+    private double average_review;
 
+    @ColumnDefault("0")
+    private double hygiene_review;
+
+    @ColumnDefault("0")
+    private double child_friendly_review;
+
+    @ColumnDefault("0")
+    private double disabled_friendly_review;
 
     @JsonIgnoreProperties("restaurant")
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
