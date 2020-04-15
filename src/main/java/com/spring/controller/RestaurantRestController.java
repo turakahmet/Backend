@@ -42,8 +42,20 @@ public class RestaurantRestController {
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
     public ResponseEntity<String> voteRest(@RequestBody Review review) {
 
-        restaurantService.voteRestaurant(review);
-              return new ResponseEntity<String>("Eklendi", HttpStatus.OK);
+        try {
+        
+        if (!restaurantService.isVoteExist(review.getUser().getUserID(), review.getRestaurant().getRestaurantID())) {
+            restaurantService.voteRestaurant(review);
+            return new ResponseEntity<String>("Inserted", HttpStatus.OK);
+        } else
+            return new ResponseEntity<String>("Vote already exist", HttpStatus.CONFLICT);
+    }
+    catch(Exception e){
+        return new ResponseEntity<String>("Something went wrong.", HttpStatus.NOT_MODIFIED);
+
+    }
+        
+
 
     }
 
