@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jdk.nashorn.internal.objects.NativeMath.round;
+
 @Repository
 public class RestaurantDaoImp implements RestaurantDao {
 
@@ -226,7 +228,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void voteRestaurant(Review review) {
-        
+
         try {
 
             sessionFactory.getCurrentSession().save(review);
@@ -254,19 +256,15 @@ public class RestaurantDaoImp implements RestaurantDao {
             Double disabledAvg = (Double) queryDisabled.uniqueResult();
             Double average = (childAvg + disabledAvg + hygieneAvg) / 3;
             updateRestaurantReview(review.getRestaurant().getRestaurantID(), childAvg, hygieneAvg, disabledAvg, average);
-        }
-        
-        catch(Exception e){
-            
-        }
+        } catch (Exception e) {
 
-
+        }
 
 
     }
 
     private void updateRestaurantReview(long restaurantID, double childAvg, double hygieneAvg, double disabledAvg, double average) {
-        
+
         try {
 
             Session session = sessionFactory.openSession();
@@ -275,17 +273,15 @@ public class RestaurantDaoImp implements RestaurantDao {
             Restaurant upRestaurant = (Restaurant) session.get(Restaurant.class, restaurantID);
 
 
-            upRestaurant.setChild_friendly_review(childAvg);
-            upRestaurant.setHygiene_review(hygieneAvg);
-            upRestaurant.setDisabled_friendly_review(disabledAvg);
-            upRestaurant.setAverage_review(average);
+            upRestaurant.setChild_friendly_review(Math.round(childAvg * 10) / 10.0);
+            upRestaurant.setHygiene_review(Math.round(hygieneAvg * 10) / 10.0);
+            upRestaurant.setDisabled_friendly_review(Math.round(disabledAvg * 10) / 10.0);
+            upRestaurant.setAverage_review(Math.round(average * 10) / 10.0);
             session.update(upRestaurant);
             tx.commit();
             session.close();
-        }
-        
-        catch(Exception e){
-            
+        } catch (Exception e) {
+
         }
 
 
@@ -295,11 +291,11 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Override
     public boolean isVoteExist(long userID, long restaurantID) {
         boolean result = false;
-       
+
 
         Query query = sessionFactory.getCurrentSession().createQuery("select reviewID FROM Review WHERE userID = :userID and restaurantID= :restaurantID");
 
-       
+
         query.setParameter("userID", userID);
         query.setParameter("restaurantID", restaurantID);
         if (query.uniqueResult() != null) {
