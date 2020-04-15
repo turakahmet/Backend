@@ -43,10 +43,10 @@ public class Restaurant  {
     private String city;
 
     @Column(nullable = false)
-    private int latitude;
+    private String latitude;
 
     @Column(nullable = false)
-    private int longitude;
+    private String longitude;
 
     @Column
     private String locality_verbose;
@@ -58,7 +58,7 @@ public class Restaurant  {
     private String timings;
 
     @Column
-    private int phone_number;
+    private String phone_number;
 
     @Column
     private int review_count;
