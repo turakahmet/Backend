@@ -1,14 +1,16 @@
 package com.spring.dao;
 
 import com.spring.model.AppUser;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +20,9 @@ import java.util.List;
 
 
 @Repository
-
 public class UserDaoimpl implements UserDAO {
 
+    @Setter
     @Autowired
     SessionFactory sessionFactory;
 
@@ -43,16 +45,20 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public ArrayList<AppUser> listAllUsers() {
+    public List<Object> listAllUsers() {
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser");//burdaki sorgu ırmızı çıkabilir ancak çalışıyo.
-            return (ArrayList<AppUser>) query.getResultList();
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname,a.userEmail as userEmail,a.profilImageID as profilImageID) from AppUser a");
+           @SuppressWarnings("unchecked")
+            List<Object> userList = query.list();
+            transaction.commit();
+            return userList;
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
             return null;
         }
-
     }
 
     @Override

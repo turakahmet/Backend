@@ -5,12 +5,15 @@ import com.spring.model.Review;
 import com.spring.service.UserService;
 import com.spring.service.UserServiceImpl;
 import com.sun.org.apache.regexp.internal.RE;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.SecondaryTable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by egulocak on 8.04.2020.
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 @RequestMapping("/user")
 public class UserRestController {
 
+    @Setter
     @Autowired
     UserService userService;
 
@@ -43,19 +47,18 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/listallusers", method = RequestMethod.GET)
-    public ResponseEntity<ArrayList<AppUser>> listAllUsers()   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> listAllUsers()   //Kullanıcı ekleyen endpoint
     {
         try {
-            return new ResponseEntity<ArrayList<AppUser>>(userService.listAllUsers(), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(userService.listAllUsers(), HttpStatus.OK); //
         } catch (Exception e) {
 
-            return new ResponseEntity<ArrayList<AppUser>>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
-
 
     }
 
-    @RequestMapping(value = "/updateuser", method = RequestMethod.POST)
+        @RequestMapping(value = "/updateuser", method = RequestMethod.POST)
     public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
 
     {       //kullanıcıyı update ederken komple kullanıcı classını karşılayan bir json gönderin

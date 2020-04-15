@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by egulocak on 8.04.2020.
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<AppUser> listAllUsers() {
+    public List<Object> listAllUsers() {
         return userDao.listAllUsers();
     }
 
