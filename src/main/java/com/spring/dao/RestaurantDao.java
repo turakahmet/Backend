@@ -11,13 +11,17 @@ public interface RestaurantDao {
 
     boolean checkRestaurant(long id);
 
-    Restaurant findById(long id);
+    List<Object> findById(long id);
 
-    Restaurant findByName(String name);
+    List<Object> findByName(String name);
 
-    Restaurant findRestaurant(long restaurantID);
+    List<Object> findByCity(String city);
 
-    Restaurant findByCity(String city);
+    List<Object> findByLocality(String locality);
+
+    List<Object> votedRestaurantList(long id);
+
+    Restaurant detailRestaurant(long id);
 
     void Create(Restaurant restaurant);
 
@@ -25,7 +29,7 @@ public interface RestaurantDao {
 
     void Delete(long id);
 
-    ArrayList<Restaurant> findAllRestaurant();
+    List<Object> findAllRestaurant();
 
     void deleteAllRestaurant();
 

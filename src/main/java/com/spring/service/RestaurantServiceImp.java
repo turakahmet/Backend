@@ -19,8 +19,10 @@ public class RestaurantServiceImp implements RestaurantService {
     public void setRestaurantDAO(RestaurantDao restaurantDao){
         this.restaurantDao=restaurantDao;
     }
+
+
     @Override
-    public Restaurant findById(long id) {
+    public List<Object> findById(long id) {
         return restaurantDao.findById(id);
     }
 
@@ -31,13 +33,28 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public Restaurant findByName(String name) {
+    public List<Object> findByName(String name) {
         return restaurantDao.findByName(name);
     }
 
     @Override
-    public Restaurant findByCity(String city) {
+    public List<Object> findByCity(String city) {
         return restaurantDao.findByCity(city);
+    }
+
+    @Override
+    public List<Object> findByLocality(String locality) {
+        return restaurantDao.findByLocality(locality);
+    }
+
+    @Override
+    public List<Object> votedRestaurantList(long id) {
+        return restaurantDao.votedRestaurantList(id);
+    }
+
+    @Override
+    public Restaurant detailRestaurant(long id) {
+        return restaurantDao.detailRestaurant(id);
     }
 
     @Override
@@ -53,10 +70,12 @@ public class RestaurantServiceImp implements RestaurantService {
     @Override
     public void Delete(long id) {
     }
+
     @Override
-    public ArrayList<Restaurant> findAllRestaurant() {
+    public List<Object> findAllRestaurant() {
         return restaurantDao.findAllRestaurant();
     }
+
 
     @Override
     public void deleteAllRestaurant() {

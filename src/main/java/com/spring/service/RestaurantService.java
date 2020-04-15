@@ -7,13 +7,20 @@ import java.util.List;
 
 public interface RestaurantService {
 
-    Restaurant findById(long id);
+    List<Object> findById(long id);
 
     boolean checkRestaurant(long id); //restaurant check
 
-    Restaurant findByName(String name);
+    List<Object> findByName(String name);
 
-    Restaurant findByCity(String city);
+    List<Object> findByCity(String city);
+
+    List<Object> findByLocality(String locality);
+
+    List<Object> votedRestaurantList(long id);
+
+    Restaurant detailRestaurant(long id);
+
 
     void Create(Restaurant restaurant);
 
@@ -21,7 +28,7 @@ public interface RestaurantService {
 
     void Delete(long id);
 
-    ArrayList<Restaurant> findAllRestaurant();
+    List<Object> findAllRestaurant();
 
     void deleteAllRestaurant();
 

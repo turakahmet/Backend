@@ -42,34 +42,74 @@ public class RestaurantRestController {
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
     public ResponseEntity<String> voteRest(@RequestBody Review review) {
 
-
-
-
-
-
-
         restaurantService.voteRestaurant(review);
               return new ResponseEntity<String>("Eklendi", HttpStatus.OK);
 
-
-
     }
 
-    @RequestMapping(value = "/lisallrestaurants", method = RequestMethod.GET)
-    public ResponseEntity<ArrayList<Restaurant>> listAllRestaurants() {
+    @RequestMapping(value = "/findRestaurantbyName", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyName(@RequestBody String name)
+    {
         try {
-
-
-            return new ResponseEntity<ArrayList<Restaurant>>(restaurantService.findAllRestaurant(), HttpStatus.OK);
-
-
+            return new ResponseEntity<List<Object>>(restaurantService.findByName(name), HttpStatus.OK); //
         } catch (Exception e) {
 
-            return new ResponseEntity<ArrayList<Restaurant>> (HttpStatus.NOT_FOUND);
-
-
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
+    @RequestMapping(value = "/findRestaurantbyID", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyID(@RequestBody long id){
+        try {
+            return new ResponseEntity<List<Object>>(restaurantService.findById(id), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    @RequestMapping(value = "/findRestaurantbyCity", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestBody String city){
+        try {
+            return new ResponseEntity<List<Object>>(restaurantService.findByCity(city), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    @RequestMapping(value = "/findRestaurantbyLocality", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyLocality(@RequestBody String locality){
+        try {
+            return new ResponseEntity<List<Object>>(restaurantService.findByLocality(locality), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/allRestaurants", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> listAllRestaurants(){
+        try {
+            return new ResponseEntity<List<Object>>(restaurantService.findAllRestaurant(), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    @RequestMapping(value = "/votedRestaurantList", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> votedRestaurants(@RequestBody long id){
+        try {
+            return new ResponseEntity<List<Object>>(restaurantService.votedRestaurantList(id), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    @RequestMapping(value = "/detailRestaurant", method = RequestMethod.GET)
+    public ResponseEntity<Restaurant> detailRestaurant(@RequestBody long id){
+        try {
+            return new ResponseEntity<Restaurant>(restaurantService.detailRestaurant(id), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<Restaurant>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
 }
 
 
