@@ -6,7 +6,14 @@ package com.spring.model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
@@ -23,10 +30,12 @@ public class Review {
     @GeneratedValue
     private long reviewID;
 
+    @JsonIgnoreProperties("restaurant")
     @ManyToOne
     @JoinColumn(name = "restaurantID")
     private Restaurant restaurant;
 
+    @JsonIgnoreProperties("user")
     @ManyToOne
     @JoinColumn(name = "userID")
     private AppUser user;
@@ -58,6 +67,8 @@ public class Review {
     @Column
     private double disabled_friendly3;
 
+    @JsonFormat(pattern="dd-MM-yyyy")
+    @UpdateTimestamp
     @Temporal(TemporalType.DATE)
     private Date reviewDate;
 

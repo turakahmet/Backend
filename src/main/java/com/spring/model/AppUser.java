@@ -2,6 +2,7 @@ package com.spring.model;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class AppUser   {
     @Column
     private String profilImageID;
 
-    @JsonIgnoreProperties ("user")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> review;
 

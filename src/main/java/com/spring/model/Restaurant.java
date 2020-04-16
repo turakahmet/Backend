@@ -7,6 +7,7 @@ package com.spring.model;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Formula;
@@ -75,7 +76,6 @@ public class Restaurant  {
     @ColumnDefault("0")
     private double disabled_friendly_review;
 
-    @JsonIgnoreProperties("restaurant")
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> review;
 
