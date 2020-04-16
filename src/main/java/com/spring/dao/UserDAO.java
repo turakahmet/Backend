@@ -11,6 +11,9 @@ import java.util.List;
 public interface UserDAO {
 
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;
+    boolean checkStandardCredentials(String userEmail, String password);
+    boolean checkGoogleCredentials(AppUser user);
+    AppUser findUserByEmail(String userEmail);
     List<Object> listAllUsers();//Bütün kullanıcıları listeler
     AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);

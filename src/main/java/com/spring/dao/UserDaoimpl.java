@@ -44,13 +44,54 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+
+    @Override
+    public boolean checkStandardCredentials(String userEmail, String password) {
+
+
+        Query query = sessionFactory.getCurrentSession().
+                createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword");
+        query.setParameter("userEmail", userEmail);
+        query.setParameter("userPassword", password);
+
+
+
+        if (query.uniqueResult() != null) {
+            return true;
+        } else
+            return false;
+
+
+        //ToDo hangisi yanlıssa onu de bildiren bir  query vs yazılabilir.
+
+
+    }
+
+    @Override
+    public boolean checkGoogleCredentials(AppUser user) {
+        return false;
+    }
+
+    @Override
+    public AppUser findUserByEmail(String userEmail) {
+
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from AppUser where userEmail =: userEmail");
+        query.setParameter("userEmail", userEmail);
+
+
+        return (AppUser) query.uniqueResult();
+    }
+
+
+
     @Override
     public List<Object> listAllUsers() {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname,a.userEmail as userEmail,a.profilImageID as profilImageID) from AppUser a");
-           @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")
             List<Object> userList = query.list();
             transaction.commit();
             return userList;
@@ -95,7 +136,7 @@ public class UserDaoimpl implements UserDAO {
 
         try {
             Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email");
-            query.setParameter("email",email);
+            query.setParameter("email", email);
             if (query.getResultList().size() > 0)
                 return true;
             else return false;
@@ -105,8 +146,6 @@ public class UserDaoimpl implements UserDAO {
             System.out.println(e.getMessage());
             return null;
         }
-
-
 
 
     }

@@ -23,7 +23,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public AppUser insertUserWithMail(AppUser user) {
+    public String checkUserType(AppUser user) {
+        if(user.getUserType() == "google")
+            return "google";
+        else if(user.getUserType() == "standard")
+            return "standard";
+
+        else
+            return "facebook";
+
+    }
+
+    @Override
+    public AppUser insertUser(AppUser user) {
         return userDao.insertUser(user);
     }
 
@@ -40,5 +52,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isUserExist(String email) {
         return userDao.isUserExist(email);
+    }
+
+    @Override
+    public boolean checkStandardCredentials(String userEmail,String password) {
+        return userDao.checkStandardCredentials(userEmail,password);
+    }
+
+    @Override
+    public AppUser findUserByEmail(String userEmail) {
+        return userDao.findUserByEmail(userEmail);
     }
 }
