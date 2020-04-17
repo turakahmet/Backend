@@ -1,5 +1,6 @@
 package com.spring.dao;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import com.spring.model.AppUser;
 
 import java.util.ArrayList;
@@ -17,5 +18,5 @@ public interface UserDAO {
     List<Object> listAllUsers();//Bütün kullanıcıları listeler
     AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);
-
+      AppUser findByName(String name); // deneme efe sil bunu
 }
