@@ -150,5 +150,63 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+    @Override
+    public Boolean isUserActive(String email) {
+
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail and status =: status");
+        query.setParameter("userEmail",email);
+        query.setParameter("status","active");
+
+        if(query.uniqueResult() != null)
+            return true;
+        else
+            return false;
+
+
+    }
+
+
+    @Override
+    public Boolean checkUserCode(String email, long code) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from AppUser  where userEmail =: userEmail and code=:code");
+        query.setParameter("userEmail",email);
+        query.setParameter("code",code);
+        if(query.uniqueResult()!=null)
+            return true;
+        else
+            return false;
+    }
+
+
+    @Override
+    public AppUser updateUserStatus(String email) {
+
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail",email);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setStatus("active");
+            //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
+            //neler değişecekse ilgili şeyler altta yapılır.
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+            return upUser;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
 
 }

@@ -47,6 +47,12 @@ public class AppUser   {
     @Column
     private String profilImageID;
 
+    @Column
+    private String status;
+
+    @Column
+    private long code;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> review;
 

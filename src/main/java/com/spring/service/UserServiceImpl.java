@@ -63,4 +63,19 @@ public class UserServiceImpl implements UserService {
     public AppUser findUserByEmail(String userEmail) {
         return userDao.findUserByEmail(userEmail);
     }
+
+    @Override
+    public Boolean checkUserCode(String email, long code) {
+        return userDao.checkUserCode(email,code);
+    }
+
+    @Override
+    public AppUser updateUserStatus(String email) {
+        return  userDao.updateUserStatus(email);
+    }
+
+    @Override
+    public Boolean isUserActive(String email) {
+        return userDao.isUserActive(email);
+    }
 }

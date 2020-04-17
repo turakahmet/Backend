@@ -16,7 +16,8 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendMail(String userEmail,String code){
+    public long sendMail(String userEmail){
+        long code = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("teamoftarnet@gmail.com");
         email.setTo(userEmail);
@@ -24,6 +25,7 @@ public class MailService {
         email.setText("üyeliği tamamlamak için gereken kod: "+code);
 
         mailSender.send(email);
+        return code;
     }
 
 

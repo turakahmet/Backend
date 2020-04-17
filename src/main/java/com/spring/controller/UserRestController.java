@@ -37,16 +37,24 @@ public class UserRestController {
     public ResponseEntity<?> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
         try {
-            mailService.sendMail(user.getUserEmail(),"2TOT");
             if (!userService.isUserExist(user.getUserEmail())) {
 
 
+
+                if (user.getUserType().equals("standard")) {
+
+
+                    user.setCode(mailService.sendMail(user.getUserEmail()));
+                    userService.insertUser(user);
+
+                    return new ResponseEntity<String>("Code sent. Check  your email to activate your account", HttpStatus.OK);
+                }
+
                 return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.CREATED);
 
-            }
+            } else
 
 
-            else
                 return new ResponseEntity<String>("User Already Exist", HttpStatus.CONFLICT);
 
 
@@ -56,6 +64,7 @@ public class UserRestController {
         }
 
     }
+
 
 
     @RequestMapping(value = "/listallusers", method = RequestMethod.GET)
@@ -95,8 +104,16 @@ public class UserRestController {
         try {
             if (userService.checkStandardCredentials(email, password)) {
 
-                System.out.println("BURDA");
-                return new ResponseEntity<AppUser>(userService.findUserByEmail(email), HttpStatus.OK);
+
+                if (userService.isUserActive(email)) {
+
+
+                    return new ResponseEntity<AppUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                } else {
+
+                    return new ResponseEntity<String>("Please Activate your account via Code sent to your email", HttpStatus.UNAUTHORIZED);
+
+                }
 
             } else
                 return new ResponseEntity<String>("Wrong Email or Password", HttpStatus.NOT_FOUND);
@@ -112,10 +129,10 @@ public class UserRestController {
 
     {
         if (!userService.isUserExist(user.getUserEmail())){
-            return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);
-        }
+            return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);        }
         else {
             if(userService.checkUserType(user) =="google")
+
                 return new ResponseEntity<AppUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
             else
                 return new ResponseEntity<String>("User exist with another membership type", HttpStatus.CONFLICT);
@@ -124,6 +141,20 @@ public class UserRestController {
 
 
 
+
+
+    }
+
+    @RequestMapping(value = "/checkusercode", method = RequestMethod.GET)
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code)   //Kullanıcı güncelleyen endpoint
+
+    {
+        if (userService.checkUserCode(email, code)) {
+            return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Code is not valid", HttpStatus.UNAUTHORIZED);
+
+        }
 
 
     }

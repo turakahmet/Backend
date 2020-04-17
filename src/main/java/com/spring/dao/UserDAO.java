@@ -18,5 +18,7 @@ public interface UserDAO {
     List<Object> listAllUsers();//Bütün kullanıcıları listeler
     AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);
-      AppUser findByName(String name); // deneme efe sil bunu
+    Boolean isUserActive(String email);
+    Boolean checkUserCode(String email,long code);
+    AppUser updateUserStatus(String email);
 }
