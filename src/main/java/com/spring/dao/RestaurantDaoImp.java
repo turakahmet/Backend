@@ -188,6 +188,14 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void Delete(long id) {
+
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("delete FROM  Restaurant  where restaurantID=:id");
+        query.setParameter("id",id);
+
+        query.executeUpdate();
+
+
     }
 
     @Override

@@ -69,6 +69,7 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void Delete(long id) {
+        restaurantDao.Delete(id);
     }
 
     @Override

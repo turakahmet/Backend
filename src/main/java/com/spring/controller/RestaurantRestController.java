@@ -25,8 +25,16 @@ public class RestaurantRestController {
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public ResponseEntity<Void> createRestaurant(@RequestBody Restaurant restaurant) {
 
-            restaurantService.Create(restaurant);
-            return new ResponseEntity<Void>(HttpStatus.CREATED);
+        restaurantService.Create(restaurant);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+
+    }
+
+    @RequestMapping(value = "/deletebyId", method = RequestMethod.GET)
+    public ResponseEntity<Void> delete(@RequestParam("id") long id) {
+
+        restaurantService.Delete(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
 
     }
 
