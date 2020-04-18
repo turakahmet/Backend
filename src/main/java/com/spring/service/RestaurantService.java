@@ -21,11 +21,13 @@ public interface RestaurantService {
 
     Object detailRestaurant(long id);
 
+    void updateRestaurantReview(long restaurantID);
+
     Object detailVote(long id);
 
     void updateVote(Review review);
 
-    List<Object> findAllRestaurant(int page); //+
+    List<Object> findAllRestaurant(int page);
 
     void Create(Restaurant restaurant);
 

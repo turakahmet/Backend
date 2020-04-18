@@ -59,6 +59,11 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public void updateRestaurantReview(long restaurantID) {
+        restaurantDao.updateRestaurantReview(restaurantID);
+    }
+
+    @Override
     public Object detailVote(long id) {
         return restaurantDao.detailVote(id);
     }

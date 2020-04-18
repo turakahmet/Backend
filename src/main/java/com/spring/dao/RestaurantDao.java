@@ -3,8 +3,6 @@ package com.spring.dao;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface RestaurantDao {
@@ -12,19 +10,19 @@ public interface RestaurantDao {
 
     boolean checkRestaurant(long id);
 
-    Object findById(long id); //+
+    Object findById(long id);
 
-    List<Object> findByName(String name,int page); //+
+    List<Object> findByName(String name,int page);
 
-    List<Object> findByCity(String city,int page); //+
+    List<Object> findByCity(String city, int page);
 
-    List<Object> findByLocality(String locality,int page); //+
+    List<Object> findByLocality(String locality,int page);
 
-    List<Object> votedRestaurantList(long id,int page); //+
+    List<Object> votedRestaurantList(long id,int page);
 
-    List<Object> findAllRestaurant(int page);  //+
+    List<Object> findAllRestaurant(int page);
 
-    Object detailRestaurant(long id);  //+
+    Object detailRestaurant(long id);
 
     Object detailVote(long id);
 
@@ -33,6 +31,8 @@ public interface RestaurantDao {
     void Create(Restaurant restaurant);
 
     void Update(Restaurant restaurant);
+
+    void updateRestaurantReview(long restaurantID);
 
     void Delete(long id);
 
