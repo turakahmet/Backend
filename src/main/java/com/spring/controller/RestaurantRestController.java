@@ -135,13 +135,6 @@ public class RestaurantRestController {
             return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/deletebyId", method = RequestMethod.GET)
-    public ResponseEntity<Void> delete(@RequestParam("id") long id) {
-
-        restaurantService.Delete(id);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-
-    }
 
     @RequestMapping(value = "/updateVote", method = RequestMethod.PUT)
     public ResponseEntity<?> update(@RequestBody Review review) {

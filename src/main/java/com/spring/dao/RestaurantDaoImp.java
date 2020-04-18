@@ -190,7 +190,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.reviewID as reviewID,r.child_friendly_1 as child_friendly_1,r.child_friendly_2 as child_friendly_2," +
-                          "r.child_friendly_3 as child_friendly_3,r.disabled_friendly1 as disabled_friendly1,r.disabled_friendly2 as disabled_friendly2,r.disabled_friendly3 as disabled_friendly3," +
+                            "r.child_friendly_3 as child_friendly_3,r.disabled_friendly1 as disabled_friendly1,r.disabled_friendly2 as disabled_friendly2,r.disabled_friendly3 as disabled_friendly3," +
                             "r.hygiene1 as hygiene1,r.hygiene2 as hygiene2,r.hygiene3 as hygiene3,cast(r.reviewDate as string) as reviewDate,rr.restaurantID as restaurantID,rr.restaurantName as restaurantName,ru.userID as userID)" +
                             " from Review r inner join r.restaurant rr inner join r.user ru where r.reviewID = :id");
             query.setParameter("id",id);
