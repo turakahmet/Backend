@@ -22,7 +22,7 @@ public class RestaurantServiceImp implements RestaurantService {
 
 
     @Override
-    public List<Object> findById(long id) {
+    public Object findById(long id) {
         return restaurantDao.findById(id);
     }
 
@@ -33,28 +33,44 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findByName(String name) {
-        return restaurantDao.findByName(name);
+    public List<Object> findByName(String name, int page) {
+        return restaurantDao.findByName(name,page);
     }
 
     @Override
-    public List<Object> findByCity(String city) {
-        return restaurantDao.findByCity(city);
+    public List<Object> findByCity(String city, int page) {
+        return restaurantDao.findByCity(city,page);
     }
 
     @Override
-    public List<Object> findByLocality(String locality) {
-        return restaurantDao.findByLocality(locality);
+    public List<Object> findByLocality(String locality, int page) {
+        return restaurantDao.findByLocality(locality,page);
     }
 
     @Override
-    public List<Object> votedRestaurantList(long id) {
-        return restaurantDao.votedRestaurantList(id);
+    public List<Object> votedRestaurantList(long id, int page) {
+        return restaurantDao.votedRestaurantList(id,page);
     }
 
+
     @Override
-    public Restaurant detailRestaurant(long id) {
+    public Object detailRestaurant(long id) {
         return restaurantDao.detailRestaurant(id);
+    }
+
+    @Override
+    public Object detailVote(long id) {
+        return restaurantDao.detailVote(id);
+    }
+
+    @Override
+    public void updateVote(Review review) {
+         restaurantDao.updateVote(review);
+    }
+
+    @Override
+    public List<Object> findAllRestaurant(int page) {
+        return restaurantDao.findAllRestaurant(page);
     }
 
     @Override
@@ -69,13 +85,9 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void Delete(long id) {
-    }
+        restaurantDao.Delete(id);
 
-    @Override
-    public List<Object> findAllRestaurant() {
-        return restaurantDao.findAllRestaurant();
     }
-
 
     @Override
     public void deleteAllRestaurant() {

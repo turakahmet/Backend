@@ -52,74 +52,93 @@ public class RestaurantRestController {
     }
     catch(Exception e){
         return new ResponseEntity<String>("Something went wrong.", HttpStatus.NOT_MODIFIED);
-
     }
-        
-
 
     }
 
-    @RequestMapping(value = "/findRestaurantbyName", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyName(@RequestBody String name)
+    @RequestMapping(value = "/findRestaurantbyName/page={page}", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyName(@PathVariable("page") int page,@RequestBody String name)
     {
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.findByName(name), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(restaurantService.findByName(name,page), HttpStatus.OK); //
         } catch (Exception e) {
 
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
     @RequestMapping(value = "/findRestaurantbyID", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyID(@RequestBody long id){
+    public ResponseEntity<Object> findRestaurantbyID(@RequestBody long id){
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.findById(id), HttpStatus.OK); //
+            return new ResponseEntity<Object>(restaurantService.findById(id), HttpStatus.OK); //
         } catch (Exception e) {
 
-            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/findRestaurantbyCity", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestBody String city){
+    @RequestMapping(value = "/findRestaurantbyCity/page={page}", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyCity(@PathVariable("page") int page,@RequestBody String city){
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.findByCity(city), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(restaurantService.findByCity(city,page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/findRestaurantbyLocality", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyLocality(@RequestBody String locality){
+    @RequestMapping(value = "/findRestaurantbyLocality/page={page}", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyLocality(@PathVariable("page") int page, @RequestBody String locality){
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.findByLocality(locality), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(restaurantService.findByLocality(locality,page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
 
-    @RequestMapping(value = "/allRestaurants", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllRestaurants(){
+    @RequestMapping(value = "/allRestaurants/page={page}", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> listAllRestaurants(@PathVariable("page") int page){
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.findAllRestaurant(), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(restaurantService.findAllRestaurant(page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/votedRestaurantList", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> votedRestaurants(@RequestBody long id){
+    @RequestMapping(value = "/votedRestaurantList/page={page}", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> votedRestaurants(@PathVariable("page")int page,@RequestBody long id){
         try {
-            return new ResponseEntity<List<Object>>(restaurantService.votedRestaurantList(id), HttpStatus.OK); //
+            return new ResponseEntity<List<Object>>(restaurantService.votedRestaurantList(id,page), HttpStatus.OK); //
         } catch (Exception e) {
 
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
         }
     }
     @RequestMapping(value = "/detailRestaurant", method = RequestMethod.GET)
-    public ResponseEntity<Restaurant> detailRestaurant(@RequestBody long id){
+    public ResponseEntity<Object> detailRestaurant(@RequestBody long id){
         try {
-            return new ResponseEntity<Restaurant>(restaurantService.detailRestaurant(id), HttpStatus.OK); //
+            return new ResponseEntity<Object>(restaurantService.detailRestaurant(id), HttpStatus.OK); //
         } catch (Exception e) {
 
-            return new ResponseEntity<Restaurant>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
         }
+    }
+    @RequestMapping(value = "/detailVote", method = RequestMethod.GET)
+    public ResponseEntity<Object> detailVote(@RequestBody long id){
+        try {
+            return new ResponseEntity<Object>(restaurantService.detailVote(id), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    @RequestMapping(value = "/deletebyId", method = RequestMethod.GET)
+    public ResponseEntity<Void> delete(@RequestParam("id") long id) {
+
+        restaurantService.Delete(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/updateVote", method = RequestMethod.PUT)
+    public ResponseEntity<?> update(@RequestBody Review review) {
+        restaurantService.updateVote(review);
+        return ResponseEntity.ok().body("Vote has been updated successfully.");
     }
 
 }
