@@ -146,7 +146,7 @@ public class UserRestController {
         if (!userService.isUserExist(user.getUserEmail())){
             return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);        }
         else {
-            if(userService.checkUserType(user) =="google")
+            if(userService.checkUserType(user).equals("google"))
 
                 return new ResponseEntity<AppUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
             else

@@ -1,0 +1,170 @@
+----/restaurant/allRestaurants/page=1
+[
+    {
+        "Cuisine": "Steak",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Nusr-Et Steakhouse",
+        "average_review": 1.9,
+        "locality_verbose": "Gazi Osman Paşa, Ankara",
+        "RestaurantID": 6000019
+    },
+    {
+        "Cuisine": "World Cuisine, Mexican, Italian",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Cafemiz",
+        "average_review": 0.0,
+        "locality_verbose": "Gazi Osman Paşa, Ankara",
+        "RestaurantID": 6000409
+    }
+]
+
+----/restaurant/findRestaurantbyLocality/page=1   ----Gazi kelimesi gönderildi.
+
+[
+    {
+        "Cuisine": "Turkish Pizza, Black Sea, Turkish",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Ayme Karadeniz Yayla Evi",
+        "average_review": 0.0,
+        "locality_verbose": "Gazi, Ankara",
+        "RestaurantID": 6004678
+    }
+]
+
+----/restaurant/findRestaurantbyCity/page=1   -----Ankara kelimesi gönderildi.
+
+[
+    {
+        "Cuisine": "Steak",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Nusr-Et Steakhouse",
+        "average_review": 1.9,
+        "locality_verbose": "Gazi Osman Paşa, Ankara",
+        "RestaurantID": 6000019
+    }
+]
+
+----/restaurant/findRestaurantbyName/page=1     -----iz kelimesi gönderildi.Burdaki sorguda gönderdiğimiz harfleri/kelimeleri içeren veri dönücek.
+[
+    {
+        "Cuisine": "World Cuisine, Mexican, Italian",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Cafemiz",
+        "average_review": 0.0,
+        "locality_verbose": "Gazi Osman Paşa, Ankara",
+        "RestaurantID": 6000409
+    },
+    {
+        "Cuisine": "Turkish Pizza, Black Sea, Turkish",
+        "restaurantImageUrl": null,
+        "RestaurantName": "Ayme Karadeniz Yayla Evi",
+        "average_review": 0.0,
+        "locality_verbose": "Gazi, Ankara",
+        "RestaurantID": 6004678
+    }
+]
+
+----/restaurant/votedRestaurantList/page=1     ----userID gönderilir.   
+[
+    {
+        "restaurantImageUrl": null,
+        "restaurantID": 6002297,
+        "average_review": 0.0,
+        "reviewID": 14,
+        "restaurantName": "Trilye",
+        "locality_verbose": "Gazi Osman Paşa, Ankara"
+    },
+    {
+        "restaurantImageUrl": null,
+        "restaurantID": 6000019,
+        "average_review": 1.9,
+        "reviewID": 10,
+        "restaurantName": "Nusr-Et Steakhouse",
+        "locality_verbose": "Gazi Osman Paşa, Ankara"
+    }
+]
+
+----/restaurant/findRestaurantbyID   --restaurantID si gönderilir.
+
+{
+    "Cuisine": "Fresh Fish, Seafood",
+    "restaurantImageUrl": null,
+    "RestaurantName": "Trilye",
+    "average_review": 0.0,
+    "locality_verbose": "Gazi Osman Paşa, Ankara",
+    "RestaurantID": 6002297
+}
+
+-----/restaurant/detailRestaurant    ----restaurantID si gönderilir.
+
+{
+    "address": "Gaziosmanpaşa Mahallesi, Şehit Ömer Haluk Sipahioğlu Sokak, No 8, Çankaya, Ankara",
+    "average_review": 1.9,
+    "restaurantName": "Nusr-Et Steakhouse",
+    "locality_verbose": "Gazi Osman Paşa, Ankara",
+    "review_count": 1,
+    "disabled_friendly_review": 3.0,
+    "phone_number": "0312 4262382",
+    "restaurantID": 6000019,
+    "child_friendly_review": 1.7,
+    "cuisines": "Steak"
+}
+
+----/restaurant/detailVote        ----reviewID si gönderilir.
+
+{
+    "child_friendly_3": 2.0,
+    "child_friendly_2": 2.0,
+    "child_friendly_1": 1.0,
+    "hygiene3": 1.0,
+    "restaurantID": 6002297,
+    "hygiene1": 1.0,
+    "hygiene2": 1.0,
+    "reviewDate": "16/04/2020",
+    "restaurantName": "Trilye",
+    "disabled_friendly2": 3.0,
+    "disabled_friendly3": 3.0,
+    "reviewID": 18,
+    "disabled_friendly1": 3.0
+}
+
+-----/restaurant/voteRestaurant      --- Aşağıdaki formatta veri gönderilir. 
+
+{
+	"restaurant":{
+		"restaurantID":"6000019"
+	},
+	"user":{
+		"userID":"2"
+	},
+	"hygiene1":"1",
+	"hygiene2":"1",
+	"hygiene3":"1",
+	"child_friendly_1":"1",
+	"child_friendly_2":"2",
+	"child_friendly_3":"2",
+	"disabled_friendly1":"3",
+	"disabled_friendly2":"3",
+	"disabled_friendly3":"3"
+}
+
+------/restaurant/updateVote       ---Aşağıdaki formatta veri gönderilir. 
+
+{
+	"hygiene1":"3",
+	"hygiene2":"2",
+	"hygiene3":"2",
+	"child_friendly_1":"1",
+	"child_friendly_2":"2",
+	"child_friendly_3":"2",
+	"disabled_friendly1":"3",
+	"disabled_friendly2":"3",
+	"disabled_friendly3":"3",
+	"restaurant":{
+		"restaurantID":"6002297"
+	},
+	"user":{
+		"userID":"3"
+	},
+    "reviewID": "18"
+}
