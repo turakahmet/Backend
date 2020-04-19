@@ -6,6 +6,7 @@ import com.spring.service.RestaurantService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,8 +66,8 @@ public class RestaurantRestController {
 
     }
 
-    @RequestMapping(value = "/findRestaurantbyName/page={page}", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyName(@PathVariable("page") int page,@RequestBody String name)
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyName(@RequestParam("name") String name,@RequestParam("page") int page)
     {
         try {
             return new ResponseEntity<>(restaurantService.findByName(name,page), HttpStatus.OK); //
@@ -75,8 +76,8 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/findRestaurantbyID", method = RequestMethod.GET)
-    public ResponseEntity<Object> findRestaurantbyID(@RequestBody long id){
+    @RequestMapping(value = "/findRestaurantbyID",method = RequestMethod.GET)
+    public ResponseEntity<Object> findRestaurantbyID(@RequestParam("id") long id){
         try {
             return new ResponseEntity<>(restaurantService.findById(id), HttpStatus.OK); //
         } catch (Exception e) {
@@ -84,16 +85,16 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/findRestaurantbyCity/page={page}", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyCity(@PathVariable("page") int page,@RequestBody String city){
+    @RequestMapping(value = "/findRestaurantbyCity",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestParam("city") String city,@RequestParam("page") int page){
         try {
             return new ResponseEntity<>(restaurantService.findByCity(city,page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/findRestaurantbyLocality/page={page}", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyLocality(@PathVariable("page") int page, @RequestBody String locality){
+   @RequestMapping(value = "/findRestaurantbyLocality",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyLocality(@RequestParam("locality") String locality,@RequestParam("page") int page){
         try {
             return new ResponseEntity<>(restaurantService.findByLocality(locality,page), HttpStatus.OK); //
         } catch (Exception e) {
@@ -101,16 +102,16 @@ public class RestaurantRestController {
         }
     }
 
-    @RequestMapping(value = "/allRestaurants/page={page}", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllRestaurants(@PathVariable("page") int page){
+    @RequestMapping(value = "/allRestaurants",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> listAllRestaurants(@RequestParam("page") int page){
         try {
             return new ResponseEntity<>(restaurantService.findAllRestaurant(page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-    @RequestMapping(value = "/votedRestaurantList/page={page}", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> votedRestaurants(@PathVariable("page")int page,@RequestBody long id){
+    @RequestMapping(value = "/votedRestaurants",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> votedRestaurants(@RequestParam("user") long id,@RequestParam("page")int page){
         try {
             return new ResponseEntity<>(restaurantService.votedRestaurantList(id,page), HttpStatus.OK); //
         } catch (Exception e) {
@@ -119,7 +120,7 @@ public class RestaurantRestController {
         }
     }
     @RequestMapping(value = "/detailRestaurant", method = RequestMethod.GET)
-    public ResponseEntity<Object> detailRestaurant(@RequestBody long id){
+    public ResponseEntity<Object> detailRestaurant(@RequestParam("restaurant") long id){
         try {
             return new ResponseEntity<>(restaurantService.detailRestaurant(id), HttpStatus.OK); //
         } catch (Exception e) {
@@ -128,7 +129,7 @@ public class RestaurantRestController {
         }
     }
     @RequestMapping(value = "/detailVote", method = RequestMethod.GET)
-    public ResponseEntity<Object> detailVote(@RequestBody long id){
+    public ResponseEntity<Object> detailVote(@RequestParam("vote") long id){
         try {
             return new ResponseEntity<>(restaurantService.detailVote(id), HttpStatus.OK); //
         } catch (Exception e) {
