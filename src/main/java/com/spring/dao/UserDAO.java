@@ -1,8 +1,10 @@
 package com.spring.dao;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import com.spring.model.AppUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by egulocak on 8.04.2020.
@@ -10,8 +12,13 @@ import java.util.ArrayList;
 public interface UserDAO {
 
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;
-    ArrayList<AppUser> listAllUsers();//Bütün kullanıcıları listeler
+    boolean checkStandardCredentials(String userEmail, String password);
+    boolean checkGoogleCredentials(AppUser user);
+    AppUser findUserByEmail(String userEmail);
+    List<Object> listAllUsers();//Bütün kullanıcıları listeler
     AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);
-
+    Boolean isUserActive(String email);
+    Boolean checkUserCode(String email,long code);
+    AppUser updateUserStatus(String email);
 }

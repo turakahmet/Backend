@@ -5,9 +5,15 @@ package com.spring.model;
  */
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import org.hibernate.annotations.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,10 +22,10 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Setter
 @Getter
 @Entity
+@Table
 public class Restaurant  {
 
 
@@ -41,10 +47,10 @@ public class Restaurant  {
     private String city;
 
     @Column(nullable = false)
-    private int latitude;
+    private String latitude;
 
     @Column(nullable = false)
-    private int longitude;
+    private String longitude;
 
     @Column
     private String locality_verbose;
@@ -56,18 +62,25 @@ public class Restaurant  {
     private String timings;
 
     @Column
-    private int phone_number;
+    private String phone_number;
 
     @Column
-    private int review_count;
+    private long review_count;
 
-    @Embedded
-    @Column
-    private ReviewScore reviewScore;
+    @ColumnDefault("0")
+    private double average_review;
 
-    @JsonIgnoreProperties("restaurant")
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Review> restaurant;
+    @ColumnDefault("0")
+    private double hygiene_review;
+
+    @ColumnDefault("0")
+    private double child_friendly_review;
+
+    @ColumnDefault("0")
+    private double disabled_friendly_review;
+
+    @OneToMany(mappedBy = "restaurant", cascade = { CascadeType.PERSIST, CascadeType.REFRESH },orphanRemoval = true)
+    private Set<Review> review;
 
     @Column
     private String restaurantImageUrl;

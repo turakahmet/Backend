@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,8 +19,10 @@ public class RestaurantServiceImp implements RestaurantService {
     public void setRestaurantDAO(RestaurantDao restaurantDao){
         this.restaurantDao=restaurantDao;
     }
+
+
     @Override
-    public Restaurant findById(long id) {
+    public Object findById(long id) {
         return restaurantDao.findById(id);
     }
 
@@ -30,13 +33,49 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public Restaurant findByName(String name) {
-        return restaurantDao.findByName(name);
+    public List<Object> findByName(String name, int page) {
+        return restaurantDao.findByName(name,page);
     }
 
     @Override
-    public Restaurant findByCity(String city) {
-        return restaurantDao.findByCity(city);
+    public List<Object> findByCity(String city, int page) {
+        return restaurantDao.findByCity(city,page);
+    }
+
+    @Override
+    public List<Object> findByLocality(String locality, int page) {
+        return restaurantDao.findByLocality(locality,page);
+    }
+
+    @Override
+    public List<Object> votedRestaurantList(long id, int page) {
+        return restaurantDao.votedRestaurantList(id,page);
+    }
+
+
+    @Override
+    public Object detailRestaurant(long id) {
+        return restaurantDao.detailRestaurant(id);
+    }
+
+    @Override
+    public void updateRestaurantReview(long restaurantID) {
+        restaurantDao.updateRestaurantReview(restaurantID);
+    }
+
+    @Override
+    public Object detailVote(long id) {
+        return restaurantDao.detailVote(id);
+    }
+
+    @Override
+    public void updateVote(Review review) {
+         restaurantDao.updateVote(review);
+    }
+
+    @Override
+    public List<Object> findAllRestaurant(int page) {
+        return restaurantDao.findAllRestaurant(page);
     }
 
     @Override
@@ -51,10 +90,8 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void Delete(long id) {
-    }
-    @Override
-    public List<Restaurant> findAllRestaurant() {
-        return restaurantDao.findAllRestaurant();
+        restaurantDao.Delete(id);
+
     }
 
     @Override

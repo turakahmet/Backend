@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by egulocak on 8.04.2020.
@@ -22,12 +23,24 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public AppUser insertUserWithMail(AppUser user) {
+    public String checkUserType(AppUser user) {
+        if(user.getUserType() == "google")
+            return "google";
+        else if(user.getUserType() == "standard")
+            return "standard";
+
+        else
+            return "facebook";
+
+    }
+
+    @Override
+    public AppUser insertUser(AppUser user) {
         return userDao.insertUser(user);
     }
 
     @Override
-    public ArrayList<AppUser> listAllUsers() {
+    public List<Object> listAllUsers() {
         return userDao.listAllUsers();
     }
 
@@ -39,5 +52,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isUserExist(String email) {
         return userDao.isUserExist(email);
+    }
+
+    @Override
+    public boolean checkStandardCredentials(String userEmail,String password) {
+        return userDao.checkStandardCredentials(userEmail,password);
+    }
+
+    @Override
+    public AppUser findUserByEmail(String userEmail) {
+        return userDao.findUserByEmail(userEmail);
+    }
+
+    @Override
+    public Boolean checkUserCode(String email, long code) {
+        return userDao.checkUserCode(email,code);
+    }
+
+    @Override
+    public AppUser updateUserStatus(String email) {
+        return  userDao.updateUserStatus(email);
+    }
+
+    @Override
+    public Boolean isUserActive(String email) {
+        return userDao.isUserActive(email);
     }
 }

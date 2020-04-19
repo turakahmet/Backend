@@ -6,21 +6,35 @@ import com.spring.model.Review;
 import java.util.List;
 
 public interface RestaurantDao {
+
+
     boolean checkRestaurant(long id);
 
-    Restaurant findById(long id);
+    Object findById(long id);
 
-    Restaurant findByName(String name);
+    List<Object> findByName(String name,int page);
 
-    Restaurant findByCity(String city);
+    List<Object> findByCity(String city, int page);
+
+    List<Object> findByLocality(String locality,int page);
+
+    List<Object> votedRestaurantList(long id,int page);
+
+    List<Object> findAllRestaurant(int page);
+
+    Object detailRestaurant(long id);
+
+    Object detailVote(long id);
+
+    void updateVote(Review review);
 
     void Create(Restaurant restaurant);
 
     void Update(Restaurant restaurant);
 
-    void Delete(long id);
+    void updateRestaurantReview(long restaurantID);
 
-    List<Restaurant>findAllRestaurant();
+    void Delete(long id);
 
     void deleteAllRestaurant();
 

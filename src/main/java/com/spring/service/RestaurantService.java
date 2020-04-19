@@ -2,25 +2,38 @@ package com.spring.service;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RestaurantService {
 
-    Restaurant findById(long id);
+    Object findById(long id);
 
     boolean checkRestaurant(long id); //restaurant check
 
-    Restaurant findByName(String name);
+    List<Object> findByName(String name,int page);
 
-    Restaurant findByCity(String city);
+    List<Object> findByCity(String city,int page);
+
+    List<Object> findByLocality(String locality,int page);
+
+    List<Object> votedRestaurantList(long id,int page);
+
+    Object detailRestaurant(long id);
+
+    void updateRestaurantReview(long restaurantID);
+
+    Object detailVote(long id);
+
+    void updateVote(Review review);
+
+    List<Object> findAllRestaurant(int page);
 
     void Create(Restaurant restaurant);
 
     void Update(Restaurant restaurant);
 
     void Delete(long id);
-
-    List<Restaurant>findAllRestaurant();
 
     void deleteAllRestaurant();
 

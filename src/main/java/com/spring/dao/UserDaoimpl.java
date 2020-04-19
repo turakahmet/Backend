@@ -1,14 +1,16 @@
 package com.spring.dao;
 
 import com.spring.model.AppUser;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +20,9 @@ import java.util.List;
 
 
 @Repository
-
 public class UserDaoimpl implements UserDAO {
 
+    @Setter
     @Autowired
     SessionFactory sessionFactory;
 
@@ -42,17 +44,62 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+
     @Override
-    public ArrayList<AppUser> listAllUsers() {
+    public boolean checkStandardCredentials(String userEmail, String password) {
+
+
+        Query query = sessionFactory.getCurrentSession().
+                createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword");
+        query.setParameter("userEmail", userEmail);
+        query.setParameter("userPassword", password);
+
+
+
+        if (query.uniqueResult() != null) {
+            return true;
+        } else
+            return false;
+
+
+        //ToDo hangisi yanlıssa onu de bildiren bir  query vs yazılabilir.
+
+
+    }
+
+    @Override
+    public boolean checkGoogleCredentials(AppUser user) {
+        return false;
+    }
+
+    @Override
+    public AppUser findUserByEmail(String userEmail) {
+
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from AppUser where userEmail =: userEmail");
+        query.setParameter("userEmail", userEmail);
+
+
+        return (AppUser) query.uniqueResult();
+    }
+
+
+
+    @Override
+    public List<Object> listAllUsers() {
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser");//burdaki sorgu ırmızı çıkabilir ancak çalışıyo.
-            return (ArrayList<AppUser>) query.getResultList();
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname,a.userEmail as userEmail,a.profilImageID as profilImageID) from AppUser a");
+            @SuppressWarnings("unchecked")
+            List<Object> userList = query.list();
+            transaction.commit();
+            return userList;
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
             return null;
         }
-
     }
 
     @Override
@@ -89,7 +136,7 @@ public class UserDaoimpl implements UserDAO {
 
         try {
             Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email");
-            query.setParameter("email",email);
+            query.setParameter("email", email);
             if (query.getResultList().size() > 0)
                 return true;
             else return false;
@@ -101,8 +148,64 @@ public class UserDaoimpl implements UserDAO {
         }
 
 
+    }
+
+    @Override
+    public Boolean isUserActive(String email) {
 
 
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail and status =: status");
+        query.setParameter("userEmail",email);
+        query.setParameter("status","active");
+
+        if(query.uniqueResult() != null)
+            return true;
+        else
+            return false;
+
+
+    }
+
+
+    @Override
+    public Boolean checkUserCode(String email, long code) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("from AppUser  where userEmail =: userEmail and code=:code");
+        query.setParameter("userEmail",email);
+        query.setParameter("code",code);
+        if(query.uniqueResult()!=null)
+            return true;
+        else
+            return false;
+    }
+
+
+    @Override
+    public AppUser updateUserStatus(String email) {
+
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail",email);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setStatus("active");
+            //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
+            //neler değişecekse ilgili şeyler altta yapılır.
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+            return upUser;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
 
