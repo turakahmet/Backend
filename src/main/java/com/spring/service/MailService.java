@@ -13,19 +13,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
-
+    @Autowired
     private JavaMailSender mailSender;
 
     public long sendMail(String userEmail){
-        long code = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("teamoftarnet@gmail.com");
-        email.setTo(userEmail);
-        email.setSubject("Üyelik Onay");
-        email.setText("üyeliği tamamlamak için gereken kod: "+code);
 
-        mailSender.send(email);
-        return code;
+            long code = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+            SimpleMailMessage email = new SimpleMailMessage();
+            email.setFrom("teamoftarnet@gmail.com");
+            email.setTo(userEmail);
+            email.setSubject("Üyelik Onay");
+            email.setText("üyeliği tamamlamak için gereken kod: "+code);
+
+            mailSender.send(email);
+            return code;
+
+
+
     }
 
 
