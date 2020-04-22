@@ -50,7 +50,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as restaurantImageUrl,r.locality_verbose as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.locality_verbose as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude) from Restaurant r where r.restaurantID =:id ");
             query.setParameter("id", id);
             Object restaurant = query.uniqueResult();
@@ -67,7 +67,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as restaurantImageUrl,r.locality_verbose as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.locality_verbose as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude) " +
                             "from Restaurant r where lower(r.restaurantName) like lower(concat('%',:restName,'%'))").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
             query.setParameter("restName", name);
@@ -88,7 +88,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as RestaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as restaurantImageUrl,r.locality_verbose as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.locality_verbose as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude)" +
                             " from Restaurant r where r.city =:city ").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
             query.setParameter("city", city);
@@ -109,7 +109,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as RestaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as restaurantImageUrl,r.locality_verbose as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.locality_verbose as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude)" +
                             " from Restaurant r where r.locality =:locality").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
             query.setParameter("locality", locality);
@@ -130,7 +130,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.reviewID as reviewID,rr.restaurantName as restaurantName,rr.restaurantID as restaurantID,rr.average_review as reviewScore,rr.locality_verbose as localityVerbose,rr.restaurantImageUrl as restaurantImageUrl,r.reviewDate as reviewDate," +
+                    "select new Map(r.reviewID as reviewID,rr.restaurantName as restaurantName,rr.restaurantID as restaurantID,rr.average_review as reviewScore,rr.locality_verbose as localityVerbose,rr.restaurantImageUrl as rImageUrl,r.reviewDate as reviewDate," +
                             "r.latitude as rLatitude,r.longitude as rLongitude)" +
                             "from Review r inner join r.restaurant rr join r.user ru where ru.userID =:id").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
             query.setParameter("id", id);
@@ -149,7 +149,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Override
     public List<Object> findAllRestaurant(int page) {
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as restaurantImageUrl," +
+            Query query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl," +
                     "r.locality_verbose as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude) from Restaurant r").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
 
             List<Object> restaurantList = query.getResultList();
