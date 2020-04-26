@@ -42,12 +42,13 @@ public class UserRestController {
 
 
                 if (user.getUserType().equals("standard")) {
+                    user.setStatus("deactive");
 
 
-                    error.setFeedback("Code sent. Check  your email to activate your account");
+                    error.setFeedback("Giriş Yaparken tek kullanımlık kod mail adresinize gönderildi.");
                     error.setCode(200);
                     user.setCode(mailService.sendMail(user.getUserEmail()));
-                    userService.insertUser(user);
+                     userService.insertUser(user);
 
                     return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
                 }
@@ -57,7 +58,7 @@ public class UserRestController {
             } else
             {
                 error.setCode(409);
-                error.setFeedback("User already Exists");
+                error.setFeedback("Bu email ile kayıtlı kullanıcı zaten var.");
                 return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
             }
 
@@ -117,7 +118,7 @@ public class UserRestController {
                 } else {
 
                     error.setCode(204);
-                    error.setFeedback("Please Activate your account via Code sent to your email");
+                    error.setFeedback("Lütfen mailinize göndermiş olduğumuz kod ile hesabınızı aktifleştiriniz.");
                     return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
 
                 }
@@ -125,7 +126,7 @@ public class UserRestController {
             } else
             {
                 error.setCode(404);
-                error.setFeedback("Wrong email or password");
+                error.setFeedback("Parolanızı veya email adresinizi yanlış girdiniz.");
                 return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
 
             }
@@ -152,7 +153,7 @@ public class UserRestController {
             else
             {
                 error.setCode(409);
-                error.setFeedback("User exist with another membership type");
+                error.setFeedback("Bu adrese kayıtlı kullanıcı zaten var.");
                 return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
             }
         }
@@ -172,7 +173,7 @@ public class UserRestController {
             return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
         } else {
             error.setCode(204 );
-            error.setFeedback("Code is not valid");
+            error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
 
         }

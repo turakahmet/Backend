@@ -1,4 +1,4 @@
-----/restaurant/allRestaurants/page=1
+----/restaurant/allRestaurants?page=2
 [
     {
         "Cuisine": "Steak",
@@ -18,7 +18,7 @@
     }
 ]
 
-----/restaurant/findRestaurantbyLocality/page=1   ----Gazi kelimesi gönderildi.
+----/restaurant/findRestaurantbyLocality?locality=Gazi Osman Paşa&page=2   ----Semte göre restaurantları getirir.
 
 [
     {
@@ -31,7 +31,7 @@
     }
 ]
 
-----/restaurant/findRestaurantbyCity/page=1   -----Ankara kelimesi gönderildi.
+----/restaurant/findRestaurantbyCity?city=Ankara&page=2   -----Ankara kelimesi gönderildi.
 
 [
     {
@@ -44,7 +44,7 @@
     }
 ]
 
-----/restaurant/findRestaurantbyName/page=1     -----iz kelimesi gönderildi.Burdaki sorguda gönderdiğimiz harfleri/kelimeleri içeren veri dönücek.
+----/restaurant?name=cafe&page=1     -----iz kelimesi gönderildi.Burdaki sorguda gönderdiğimiz harfleri/kelimeleri içeren veri dönücek.
 [
     {
         "Cuisine": "World Cuisine, Mexican, Italian",
@@ -53,18 +53,10 @@
         "average_review": 0.0,
         "locality_verbose": "Gazi Osman Paşa, Ankara",
         "RestaurantID": 6000409
-    },
-    {
-        "Cuisine": "Turkish Pizza, Black Sea, Turkish",
-        "restaurantImageUrl": null,
-        "RestaurantName": "Ayme Karadeniz Yayla Evi",
-        "average_review": 0.0,
-        "locality_verbose": "Gazi, Ankara",
-        "RestaurantID": 6004678
     }
 ]
 
-----/restaurant/votedRestaurantList/page=1     ----userID gönderilir.   
+----/restaurant/votedRestaurants?user=3&page=1     ----userID gönderilir.   
 [
     {
         "restaurantImageUrl": null,
@@ -84,7 +76,7 @@
     }
 ]
 
-----/restaurant/findRestaurantbyID   --restaurantID si gönderilir.
+----/restaurant/findRestaurantbyID?id=6002297   --restaurantID si gönderilir.
 
 {
     "Cuisine": "Fresh Fish, Seafood",
@@ -95,7 +87,7 @@
     "RestaurantID": 6002297
 }
 
------/restaurant/detailRestaurant    ----restaurantID si gönderilir.
+-----/restaurant/detailRestaurant?restaurant=6000019    ----restaurantID si gönderilir.
 
 {
     "address": "Gaziosmanpaşa Mahallesi, Şehit Ömer Haluk Sipahioğlu Sokak, No 8, Çankaya, Ankara",
@@ -110,21 +102,22 @@
     "cuisines": "Steak"
 }
 
-----/restaurant/detailVote        ----reviewID si gönderilir.
+----/restaurant/detailVote?vote=60        ----reviewID si gönderilir.
 
 {
     "child_friendly_3": 2.0,
     "child_friendly_2": 2.0,
     "child_friendly_1": 1.0,
-    "hygiene3": 1.0,
-    "restaurantID": 6002297,
-    "hygiene1": 1.0,
-    "hygiene2": 1.0,
-    "reviewDate": "16/04/2020",
-    "restaurantName": "Trilye",
+    "hygiene3": 15.0,
+    "restaurantID": 6000019,
+    "userID": 2,
+    "hygiene1": 15.0,
+    "hygiene2": 15.0,
+    "reviewDate": "18/04/2020",
+    "restaurantName": "Nusr-Et Steakhouse",
     "disabled_friendly2": 3.0,
     "disabled_friendly3": 3.0,
-    "reviewID": 18,
+    "reviewID": 60,
     "disabled_friendly1": 3.0
 }
 
