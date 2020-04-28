@@ -154,7 +154,7 @@ public class RestaurantRestController {
 
     //get userID and restaurantID service
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public ResponseEntity<Object> getInfo(@RequestParam("user") int user,@RequestParam("restaurant")int restaurant) {
+    public ResponseEntity<Object> getInfo(@RequestParam("user") long user,@RequestParam("restaurant")long restaurant) {
 
         try {
             return new ResponseEntity<>(restaurantService.getInfo(user,restaurant), HttpStatus.OK); //

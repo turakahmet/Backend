@@ -25,7 +25,7 @@ public interface RestaurantDao {
 
     Object detailRestaurant(long id);
 
-    Object getInfo(int userID, int restaurantID);
+    Object getInfo(long userID, long restaurantID);
 
     Object detailVote(long id);
 

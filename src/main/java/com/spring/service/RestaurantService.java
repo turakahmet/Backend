@@ -27,7 +27,7 @@ public interface RestaurantService {
 
     void updateVote(Review review);
 
-    Object getInfo(int userID, int restaurantID);
+    Object getInfo(long userID, long restaurantID);
 
     List<Object> findAllRestaurant(int page);
 

@@ -74,7 +74,7 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public Object getInfo(int userID, int restaurantID) {
+    public Object getInfo(long userID, long restaurantID) {
         return restaurantDao.getInfo(userID,restaurantID);
     }
 
