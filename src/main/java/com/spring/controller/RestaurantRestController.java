@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,6 +151,21 @@ public class RestaurantRestController {
         }
 
     }
+
+    //get userID and restaurantID service
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public ResponseEntity<Object> getInfo(@RequestParam("user") int user,@RequestParam("restaurant")int restaurant) {
+
+        try {
+            return new ResponseEntity<>(restaurantService.getInfo(user,restaurant), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
+
 }
 
 

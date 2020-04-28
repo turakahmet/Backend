@@ -2,6 +2,7 @@ package com.spring.dao;
 
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public interface RestaurantDao {
     List<Object> findAllRestaurant(int page);
 
     Object detailRestaurant(long id);
+
+    Object getInfo(int userID, int restaurantID);
 
     Object detailVote(long id);
 

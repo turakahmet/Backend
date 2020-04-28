@@ -74,6 +74,11 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public Object getInfo(int userID, int restaurantID) {
+        return restaurantDao.getInfo(userID,restaurantID);
+    }
+
+    @Override
     public List<Object> findAllRestaurant(int page) {
         return restaurantDao.findAllRestaurant(page);
     }
