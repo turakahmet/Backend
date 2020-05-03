@@ -185,6 +185,26 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
+    public Object getInfo(long userID, long restaurantID) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+
+            Query query = session.createQuery(
+                    "select new Map(r.restaurant.restaurantID as restaurantID,r.user.userID as userID) from Review r where r.restaurant.restaurantID =:resid AND r.user.userID=:userid");
+            query.setParameter("resid",restaurantID);
+            query.setParameter("userid",userID);
+            Object info =  query.uniqueResult();
+            transaction.commit();
+            return info;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+
+        }
+    }
+
+    @Override
     public Object detailVote(long id) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();

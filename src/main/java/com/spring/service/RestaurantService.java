@@ -27,6 +27,8 @@ public interface RestaurantService {
 
     void updateVote(Review review);
 
+    Object getInfo(long userID, long restaurantID);
+
     List<Object> findAllRestaurant(int page);
 
     void Create(Restaurant restaurant);
