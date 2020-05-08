@@ -39,7 +39,7 @@ public interface RestaurantService {
 
     void deleteAllRestaurant();
 
-
+    List<Object> getTopRated(int page);
     boolean isRestaurantExist(Restaurant restaurant);
 
     void voteRestaurant(Review review);

@@ -164,6 +164,17 @@ public class RestaurantRestController {
         }
 
     }
+    @RequestMapping(value = "/toprated", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> topRated(@RequestParam("page") int page) {
+
+        try {
+            return new ResponseEntity<>(restaurantService.getTopRated(page), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
 
 
 }

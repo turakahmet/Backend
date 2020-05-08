@@ -47,4 +47,6 @@ public interface RestaurantDao {
 
     boolean isVoteExist(long userID,long restaurantID);
 
+    List<Object> getTopRated(int page);
+
 }

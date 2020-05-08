@@ -364,6 +364,15 @@ public class RestaurantDaoImp implements RestaurantDao {
         System.out.print(result);
         return result;
     }
+
+    @Override
+    public List<Object> getTopRated(int page) {
+        Query query= sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl," +
+                "r.locality_verbose as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude) from Restaurant r order by  average_review desc")
+        .setMaxResults(10);
+        List<Object> restaurantList = query.getResultList();
+        return restaurantList;
+    }
 }
 
 
