@@ -105,8 +105,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> getTopRated(int page) {
-        return restaurantDao.getTopRated(page);
+    public List<Object> getTopRated(int page,String type) {
+        return restaurantDao.getTopRated(page,type);
     }
 
     @Override
