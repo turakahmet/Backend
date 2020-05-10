@@ -105,6 +105,11 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public List<Object> getTopRated(int page,String type) {
+        return restaurantDao.getTopRated(page,type);
+    }
+
+    @Override
     public boolean isRestaurantExist(Restaurant restaurant) {
         return restaurantDao.isRestaurantExist(restaurant);
     }
