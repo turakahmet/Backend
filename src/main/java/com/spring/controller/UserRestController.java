@@ -2,6 +2,7 @@ package com.spring.controller;
 
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
+import com.spring.model.CustomUser;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
 import lombok.Setter;
@@ -114,7 +115,7 @@ public class UserRestController {
                 if (userService.isUserActive(email)) {
 
 
-                    return new ResponseEntity<AppUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
                 } else {
 
                     error.setCode(204);
@@ -145,11 +146,12 @@ public class UserRestController {
 
     {
         if (!userService.isUserExist(user.getUserEmail())){
+
             return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);        }
         else {
-            if(userService.checkUserType(user).equals("google"))
+            if(userService.checkUserType(user).equals("google") || userService.checkUserType(user).equals("facebook") )
 
-                return new ResponseEntity<AppUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
             else
             {
                 error.setCode(409);

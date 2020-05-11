@@ -1,6 +1,7 @@
 package com.spring.dao;
 
 import com.spring.model.AppUser;
+import com.spring.model.CustomUser;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -73,14 +74,22 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public AppUser findUserByEmail(String userEmail) {
+    public CustomUser findUserByEmail(String userEmail) {
 
+
+        CustomUser cUser = new CustomUser();
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from AppUser where userEmail =: userEmail");
         query.setParameter("userEmail", userEmail);
 
+        AppUser aUser =  (AppUser) query.uniqueResult();
 
-        return (AppUser) query.uniqueResult();
+        cUser.setUserID(aUser.getUserID());
+        cUser.setUserEmail(aUser.getUserEmail());
+        cUser.setUserName(aUser.getUserName());
+        cUser.setUserSurname(aUser.getUserSurname());
+        return cUser;
+
     }
 
 

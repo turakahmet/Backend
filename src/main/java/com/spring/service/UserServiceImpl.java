@@ -2,6 +2,7 @@ package com.spring.service;
 
 import com.spring.dao.UserDAO;
 import com.spring.model.AppUser;
+import com.spring.model.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String checkUserType(AppUser user) {
-        if(user.getUserType() == "google")
+        if(user.getUserType().equals("google"))
             return "google";
-        else if(user.getUserType() == "standard")
+        else if(user.getUserType().equals("standard"))
             return "standard";
 
         else
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser findUserByEmail(String userEmail) {
+    public CustomUser findUserByEmail(String userEmail) {
         return userDao.findUserByEmail(userEmail);
     }
 

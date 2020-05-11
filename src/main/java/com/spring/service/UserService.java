@@ -1,6 +1,7 @@
 package com.spring.service;
 
 import com.spring.model.AppUser;
+import com.spring.model.CustomUser;
 import com.sun.corba.se.impl.oa.poa.AOMEntry;
 
 import java.util.ArrayList;
@@ -16,10 +17,11 @@ public interface UserService {
     AppUser updateUser(AppUser user);
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);
-    AppUser findUserByEmail(String userEmail);
+    CustomUser findUserByEmail(String userEmail);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
+
 
 
     //....
