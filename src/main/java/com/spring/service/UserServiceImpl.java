@@ -79,4 +79,6 @@ public class UserServiceImpl implements UserService {
     public Boolean isUserActive(String email) {
         return userDao.isUserActive(email);
     }
+
+
 }

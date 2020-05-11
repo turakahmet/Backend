@@ -182,6 +182,16 @@ public class UserRestController {
 
 
     }
+    @RequestMapping(value = "/getuserid", method = RequestMethod.GET)
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email)   //Kullanıcı güncelleyen endpoint
+
+    {
+
+            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+
+
+
+    }
 
 
 }
