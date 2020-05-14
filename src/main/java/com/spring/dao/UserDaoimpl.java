@@ -182,8 +182,11 @@ public class UserDaoimpl implements UserDAO {
                 .createQuery("from AppUser  where userEmail =: userEmail and code=:code");
         query.setParameter("userEmail",email);
         query.setParameter("code",code);
-        if(query.uniqueResult()!=null)
+        if(query.uniqueResult()!=null){
+            changeUserCode(email,code);
             return true;
+        }
+
         else
             return false;
     }
@@ -217,6 +220,36 @@ public class UserDaoimpl implements UserDAO {
         }
     }
 
+
+
+    @Override
+    public void changeUserCode(String email, long code) {
+
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail and code=:code");
+            query.setParameter("userEmail",email);
+            query.setParameter("code",code);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setCode(0);
+            //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
+            //neler değişecekse ilgili şeyler altta yapılır.
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
 
 
 

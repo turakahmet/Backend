@@ -118,9 +118,8 @@ public class UserRestController {
                     return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
                 } else {
 
-                    error.setCode(204);
-                    error.setFeedback("Lütfen mailinize göndermiş olduğumuz kod ile hesabınızı aktifleştiriniz.");
-                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
 
                 }
 
@@ -172,6 +171,7 @@ public class UserRestController {
 
     {
         if (userService.checkUserCode(email, code)) {
+            System.out.println("Code: "+code+"");
             return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
         } else {
             error.setCode(204 );
