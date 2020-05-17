@@ -2,9 +2,11 @@ package com.spring.controller;
 
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import com.spring.model.UserRecords;
 import com.spring.service.RestaurantService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -111,6 +113,16 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
+    @RequestMapping(value = "/allRestaurantsAdmin",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> listAllRestaurantsAdmin(@RequestParam("page") int page){
+        try {
+            return new ResponseEntity<>(restaurantService.findAllRestaurantAdmin(page), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
     @RequestMapping(value = "/votedRestaurants",method = RequestMethod.GET)
     public ResponseEntity<List<Object>> votedRestaurants(@RequestParam("user") long id,@RequestParam("page")int page){
         try {
@@ -153,13 +165,11 @@ public class RestaurantRestController {
     }
 
     //get userID and restaurantID service
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public ResponseEntity<Object> getInfo(@RequestParam("user") long user,@RequestParam("restaurant")long restaurant) {
-
+    @RequestMapping(value = "/infoAdmin", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList> getInfo() {
         try {
-            return new ResponseEntity<>(restaurantService.getInfo(user,restaurant), HttpStatus.OK); //
+            return new ResponseEntity<ArrayList>(restaurantService.getInfo(),HttpStatus.OK); //
         } catch (Exception e) {
-
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
 
@@ -175,6 +185,27 @@ public class RestaurantRestController {
         }
 
     }
+    @RequestMapping(value = "/getRecord", method = RequestMethod.POST)
+    public ResponseEntity<Void> addRecord(@RequestBody UserRecords userRecords){
+        try {
+            restaurantService.createRecord(userRecords);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
+    @RequestMapping(value = "/deleteRecord", method = RequestMethod.POST)
+    public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId){
+        try {
+            restaurantService.deleteRecordId(recordId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
+
 
 
 }

@@ -3,6 +3,7 @@ package com.spring.service;
 import com.spring.dao.RestaurantDao;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import com.spring.model.UserRecords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,8 +75,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public Object getInfo(long userID, long restaurantID) {
-        return restaurantDao.getInfo(userID,restaurantID);
+    public ArrayList getInfo() {
+        return restaurantDao.getInfo();
     }
 
     @Override
@@ -84,8 +85,23 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public List<Object> findAllRestaurantAdmin(int page) {
+        return restaurantDao.findAllRestaurantAdmin(page);
+    }
+
+    @Override
     public void Create(Restaurant restaurant) {
         restaurantDao.Create(restaurant);
+    }
+
+    @Override
+    public void createRecord(UserRecords userRecords) {
+        restaurantDao.createRecord(userRecords);
+    }
+
+    @Override
+    public void deleteRecordId(long recordId) {
+        restaurantDao.deleteRecordId(recordId);
     }
 
     @Override
