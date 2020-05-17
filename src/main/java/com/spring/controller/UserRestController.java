@@ -2,6 +2,7 @@ package com.spring.controller;
 
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
+import com.spring.model.CustomUser;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
 import lombok.Setter;
@@ -114,12 +115,11 @@ public class UserRestController {
                 if (userService.isUserActive(email)) {
 
 
-                    return new ResponseEntity<AppUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
                 } else {
 
-                    error.setCode(204);
-                    error.setFeedback("Lütfen mailinize göndermiş olduğumuz kod ile hesabınızı aktifleştiriniz.");
-                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
 
                 }
 
@@ -145,11 +145,12 @@ public class UserRestController {
 
     {
         if (!userService.isUserExist(user.getUserEmail())){
+
             return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);        }
         else {
-            if(userService.checkUserType(user).equals("google"))
+            if(userService.checkUserType(user).equals("google") || userService.checkUserType(user).equals("facebook") )
 
-                return new ResponseEntity<AppUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
             else
             {
                 error.setCode(409);
@@ -170,6 +171,7 @@ public class UserRestController {
 
     {
         if (userService.checkUserCode(email, code)) {
+            System.out.println("Code: "+code+"");
             return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
         } else {
             error.setCode(204 );
@@ -177,6 +179,16 @@ public class UserRestController {
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
 
         }
+
+
+    }
+    @RequestMapping(value = "/getuserid", method = RequestMethod.GET)
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email)   //Kullanıcı güncelleyen endpoint
+
+    {
+
+            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+
 
 
     }

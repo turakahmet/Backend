@@ -1,6 +1,7 @@
 package com.spring.dao;
 
 import com.spring.model.AppUser;
+import com.spring.model.CustomUser;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -73,14 +74,22 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public AppUser findUserByEmail(String userEmail) {
+    public CustomUser findUserByEmail(String userEmail) {
 
+
+        CustomUser cUser = new CustomUser();
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from AppUser where userEmail =: userEmail");
         query.setParameter("userEmail", userEmail);
 
+        AppUser aUser =  (AppUser) query.uniqueResult();
 
-        return (AppUser) query.uniqueResult();
+        cUser.setUserID(aUser.getUserID());
+        cUser.setUserEmail(aUser.getUserEmail());
+        cUser.setUserName(aUser.getUserName());
+        cUser.setUserSurname(aUser.getUserSurname());
+        return cUser;
+
     }
 
 
@@ -173,8 +182,11 @@ public class UserDaoimpl implements UserDAO {
                 .createQuery("from AppUser  where userEmail =: userEmail and code=:code");
         query.setParameter("userEmail",email);
         query.setParameter("code",code);
-        if(query.uniqueResult()!=null)
+        if(query.uniqueResult()!=null){
+            changeUserCode(email,code);
             return true;
+        }
+
         else
             return false;
     }
@@ -207,6 +219,39 @@ public class UserDaoimpl implements UserDAO {
             return null;
         }
     }
+
+
+
+    @Override
+    public void changeUserCode(String email, long code) {
+
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail and code=:code");
+            query.setParameter("userEmail",email);
+            query.setParameter("code",code);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setCode(0);
+            //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
+            //neler değişecekse ilgili şeyler altta yapılır.
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
+
+
 
 
 }

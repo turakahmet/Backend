@@ -1,6 +1,7 @@
 package com.spring.service;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import com.spring.model.UserRecords;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,17 @@ public interface RestaurantService {
 
     void updateVote(Review review);
 
-    Object getInfo(long userID, long restaurantID);
+    ArrayList getInfo();
 
     List<Object> findAllRestaurant(int page);
 
+    List<Object> findAllRestaurantAdmin(int page);
+
     void Create(Restaurant restaurant);
+
+    void createRecord(UserRecords userRecords);
+
+    void deleteRecordId(long recordId);
 
     void Update(Restaurant restaurant);
 

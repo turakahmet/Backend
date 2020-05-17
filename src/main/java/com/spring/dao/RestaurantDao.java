@@ -2,8 +2,10 @@ package com.spring.dao;
 
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import com.spring.model.UserRecords;
 import org.omg.CORBA.OBJ_ADAPTER;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RestaurantDao {
@@ -25,7 +27,7 @@ public interface RestaurantDao {
 
     Object detailRestaurant(long id);
 
-    Object getInfo(long userID, long restaurantID);
+    ArrayList getInfo();
 
     Object detailVote(long id);
 
@@ -49,4 +51,9 @@ public interface RestaurantDao {
 
     List<Object> getTopRated(int page,String type);
 
+    void createRecord(UserRecords userRecords);
+
+    void deleteRecordId(long recordId);
+
+    List<Object> findAllRestaurantAdmin(int page);
 }

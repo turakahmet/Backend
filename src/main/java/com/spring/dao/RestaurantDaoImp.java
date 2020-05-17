@@ -1,7 +1,10 @@
 package com.spring.dao;
 
+import com.spring.model.Info;
 import com.spring.model.Restaurant;
 import com.spring.model.Review;
+import com.spring.model.UserRecords;
+import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +13,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,7 +25,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    int pageSize =5;
+    int pageSize =10;
 
 
     @Override
@@ -185,18 +189,31 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public Object getInfo(long userID, long restaurantID) {
+    public ArrayList getInfo() {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+        ArrayList<Long> arr= new ArrayList<Long>();
+        Info mInfo= new Info();
         try {
 
-            Query query = session.createQuery(
-                    "select new Map(r.restaurant.restaurantID as restaurantID,r.user.userID as userID) from Review r where r.restaurant.restaurantID =:resid AND r.user.userID=:userid");
-            query.setParameter("resid",restaurantID);
-            query.setParameter("userid",userID);
-            Object info =  query.uniqueResult();
+            Query queryLastRecord = session.createQuery(
+                    "select MAX(restaurantID)from Restaurant");
+            Query queryTotalRestaurant = session.createQuery(
+                    "select COUNT(restaurantID)from Restaurant");
+            Query queryTotalUser= session.createQuery(
+                    "select COUNT(userID)from AppUser");
+            Query queryTotalRecord= session.createQuery(
+                    "select COUNT(recordID)from UserRecords");
+            mInfo.setTotalRestaurant((long) queryTotalRestaurant.getSingleResult());
+            mInfo.setTotalUser((long) queryTotalUser.getSingleResult());
+            mInfo.setTotalRecord((long) queryTotalRecord.getSingleResult());
+            mInfo.setLastRestaurantId((long) queryLastRecord.getSingleResult());
+            arr.add(mInfo.getLastRestaurantId());
+            arr.add(mInfo.getTotalRecord());
+            arr.add(mInfo.getTotalRestaurant());
+            arr.add(mInfo.getTotalUser());
             transaction.commit();
-            return info;
+            return arr;
         }catch (Exception e){
             System.out.println(e.getMessage());
             return null;
@@ -239,6 +256,32 @@ public class RestaurantDaoImp implements RestaurantDao {
         }
     }
 
+    @Override
+    public void createRecord(UserRecords userRecords) {
+        sessionFactory.getCurrentSession().save(userRecords);
+    }
+
+    @Override
+    public void deleteRecordId(long recordId) {
+        Query query = sessionFactory.getCurrentSession()
+                .createQuery("delete FROM  UserRecords  where recordID=:recordId");
+        query.setParameter("recordId",recordId);
+        query.executeUpdate();
+    }
+
+    @Override
+    public List<Object> findAllRestaurantAdmin(int page) {
+        try{
+            Query query = sessionFactory.getCurrentSession().createQuery("select new Map(recordID as recordID,userID as userID,restaurantName as restaurantName,address as address,city as city,district as district," +
+                    "locality_verbose as locality_verbose,phone_number as phone_number, timings as timings, place_type as place_type, cuisines as cuisines,sticker as sticker, latitude as latitude,longitude as longitude,"+
+                    "restaurantImageUrl as restaurantImageUrl) from UserRecords").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
+            List<Object> restaurantList = query.getResultList();
+            return restaurantList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
     @Override
     public void Create(Restaurant restaurant) {
@@ -388,6 +431,8 @@ public class RestaurantDaoImp implements RestaurantDao {
         List<Object> restaurantList = query.getResultList();
         return restaurantList;
     }
+
+
 }
 
 
