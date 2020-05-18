@@ -29,7 +29,7 @@ import java.util.Set;
 public class Restaurant  {
 
 
-    @GeneratedValue
+    //@GeneratedValue
     @Id
     @Column
     private long restaurantID;

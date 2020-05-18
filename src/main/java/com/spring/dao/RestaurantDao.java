@@ -56,4 +56,6 @@ public interface RestaurantDao {
     void deleteRecordId(long recordId);
 
     List<Object> findAllRestaurantAdmin(int page);
+
+    void saveRecord(Restaurant restaurant);
 }

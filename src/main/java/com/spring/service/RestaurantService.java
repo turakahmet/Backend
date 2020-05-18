@@ -52,5 +52,7 @@ public interface RestaurantService {
     void voteRestaurant(Review review);
 
     boolean isVoteExist(long  userID,long restaurantID);
+
+    void saveRecord(Restaurant restaurant);
 }
 

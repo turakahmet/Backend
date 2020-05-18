@@ -284,6 +284,33 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
+    public void saveRecord(Restaurant restaurant) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Restaurant record=new Restaurant();
+            record.setRestaurantID(restaurant.getRestaurantID());
+            record.setRestaurantName(restaurant.getRestaurantName());
+            record.setAddress(restaurant.getAddress());
+            record.setCity(restaurant.getCity());
+            record.setLocality(restaurant.getLocality());
+            record.setLocality_verbose(restaurant.getLocality_verbose());
+            record.setCuisines(restaurant.getCuisines());
+            record.setTimings(restaurant.getTimings());
+            record.setPhone_number(restaurant.getPhone_number());
+            record.setReview_count(restaurant.getReview_count());
+            record.setLatitude(restaurant.getLatitude());
+            record.setLongitude(restaurant.getLongitude());
+            record.setRestaurantImageUrl(restaurant.getRestaurantImageUrl());
+            session.save(record);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
+
+    @Override
     public void Create(Restaurant restaurant) {
 
         sessionFactory.getCurrentSession().save(restaurant);
