@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
-
+    @Autowired
     private JavaMailSender mailSender;
 
     public long sendMail(String userEmail){
+            System.out.println("Mail service");
 
             long code = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
             SimpleMailMessage email = new SimpleMailMessage();
