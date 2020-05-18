@@ -42,7 +42,7 @@ public class UserRestController {
 
 
 
-                if (user.getUserType().equals("standard")) {
+
                     user.setStatus("deactive");
 
 
@@ -51,10 +51,9 @@ public class UserRestController {
                     user.setCode(mailService.sendMail(user.getUserEmail()));
                      userService.insertUser(user);
 
-                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
-                }
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
 
-                return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.CREATED);
+
 
             } else
             {
