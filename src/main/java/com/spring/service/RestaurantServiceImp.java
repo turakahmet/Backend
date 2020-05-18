@@ -140,5 +140,10 @@ public class RestaurantServiceImp implements RestaurantService {
         return restaurantDao.isVoteExist(userID,restaurantID);
     }
 
+    @Override
+    public void saveRecord(Restaurant restaurant) {
+        restaurantDao.saveRecord(restaurant);
+    }
+
 
 }

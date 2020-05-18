@@ -205,6 +205,16 @@ public class RestaurantRestController {
 
         }
     }
+    @RequestMapping(value = "/saveRecord", method = RequestMethod.POST)
+    public ResponseEntity<Void> saveRecord(@RequestBody Restaurant restaurant){
+        try {
+            restaurantService.saveRecord(restaurant);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
 
 
 
