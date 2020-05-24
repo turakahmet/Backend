@@ -35,7 +35,7 @@ public class UserRecords {
 
     @Column(nullable = false)
     private String district;
-
+        //upup
     @Column
     private String locality_verbose;
 
