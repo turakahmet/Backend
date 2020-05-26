@@ -99,7 +99,7 @@ public class UserDaoimpl implements UserDAO {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname,a.userEmail as userEmail,a.profilImageID as profilImageID) from AppUser a");
+            Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname,a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken) from AppUser a");
             @SuppressWarnings("unchecked")
             List<Object> userList = query.list();
             transaction.commit();
