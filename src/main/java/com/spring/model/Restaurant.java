@@ -29,9 +29,8 @@ import java.util.Set;
 public class Restaurant  {
 
 
-    //@GeneratedValue
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long restaurantID;
 
     @Column(nullable = false)
@@ -40,11 +39,6 @@ public class Restaurant  {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private String locality;
-
-    @Column(nullable = false)
-    private String city;
 
     @Column(nullable = false)
     private String latitude;
@@ -53,13 +47,13 @@ public class Restaurant  {
     private String longitude;
 
     @Column
-    private String locality_verbose;
-
-    @Column
     private String cuisines;
 
     @Column
     private String timings;
+
+    @Column
+    private String category;
 
     @Column
     private String phone_number;
@@ -79,11 +73,21 @@ public class Restaurant  {
     @ColumnDefault("0")
     private double disabled_friendly_review;
 
-    @OneToMany(mappedBy = "restaurant", cascade = { CascadeType.PERSIST, CascadeType.REFRESH },orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", cascade = { CascadeType.ALL },orphanRemoval = true)
     private Set<Review> review;
 
     @Column
     private String restaurantImageUrl;
+
+    @JsonIgnoreProperties("cityID")
+    @ManyToOne
+    @JoinColumn(name = "cityID")
+    private City cityID;
+
+    @JsonIgnoreProperties("townID")
+    @ManyToOne
+    @JoinColumn(name = "townID")
+    private Town townID;
 
 
 }
