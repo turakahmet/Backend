@@ -96,10 +96,10 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-   @RequestMapping(value = "/findRestaurantbyLocality",method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyLocality(@RequestParam("locality") String locality,@RequestParam("page") int page){
+   @RequestMapping(value = "/findRestaurantbyTown",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findRestaurantbyLocality(@RequestParam("town") String town,@RequestParam("page") int page){
         try {
-            return new ResponseEntity<>(restaurantService.findByLocality(locality,page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findByTown(town,page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -195,6 +195,34 @@ public class RestaurantRestController {
 
         }
     }
+
+    @RequestMapping(value = "/allbycategory",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> listAllbyCategory(@RequestParam("category") String category,@RequestParam("page") int page){
+        try {
+            return new ResponseEntity<>(restaurantService.findAllbyCategory(category,page), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/city",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getCities(){
+        try {
+            return new ResponseEntity<>(restaurantService.getCity(), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/town",method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getTowns(@RequestParam("cityName") String cityName){
+        try {
+            return new ResponseEntity<>(restaurantService.getTown(cityName), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
     @RequestMapping(value = "/deleteRecord", method = RequestMethod.POST)
     public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId){
         try {
