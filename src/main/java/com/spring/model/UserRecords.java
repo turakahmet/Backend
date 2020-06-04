@@ -32,12 +32,12 @@ public class UserRecords {
     private String address;
 
 
-    @JsonIgnoreProperties("townID")
+ //   @JsonIgnoreProperties("townID")
     @ManyToOne
     @JoinColumn(name = "townID")
     private Town townID;
 
-    @JsonIgnoreProperties("cityID")
+  //  @JsonIgnoreProperties("cityID")
     @ManyToOne
     @JoinColumn(name = "cityID")
     private City cityID;
@@ -49,7 +49,7 @@ public class UserRecords {
     private String timings;
 
     @Column
-    private String place_type;
+    private String category;
 
     @Column
     private String cuisines;

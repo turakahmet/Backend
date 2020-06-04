@@ -1,8 +1,6 @@
 package com.spring.controller;
 
-import com.spring.model.Restaurant;
-import com.spring.model.Review;
-import com.spring.model.UserRecords;
+import com.spring.model.*;
 import com.spring.service.RestaurantService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,18 +204,18 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/city",method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getCities(){
+    public ResponseEntity<ArrayList<City>> getCities(){
         try {
-            return new ResponseEntity<>(restaurantService.getCity(), HttpStatus.OK); //
+            return new ResponseEntity<ArrayList<City>>(restaurantService.getCity(), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
 
     @RequestMapping(value = "/town",method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getTowns(@RequestParam("cityName") String cityName){
+    public ResponseEntity<ArrayList<Town>> getTowns(@RequestParam("cityName") String cityName){
         try {
-            return new ResponseEntity<>(restaurantService.getTown(cityName), HttpStatus.OK); //
+            return new ResponseEntity<ArrayList<Town>>(restaurantService.getTown(cityName), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -237,7 +235,7 @@ public class RestaurantRestController {
     public ResponseEntity<Void> saveRecord(@RequestBody Restaurant restaurant){
         try {
             restaurantService.saveRecord(restaurant);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 

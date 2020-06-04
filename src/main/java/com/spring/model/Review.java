@@ -30,12 +30,12 @@ public class Review {
     @GeneratedValue
     private long reviewID;
 
-    @JsonIgnoreProperties("restaurantID")
+    //@JsonIgnoreProperties("restaurantID")
     @ManyToOne
     @JoinColumn(name = "restaurantID")
     private Restaurant restaurant;
 
-    @JsonIgnoreProperties("userID")
+   // @JsonIgnoreProperties("userID")
     @ManyToOne
     @JoinColumn(name = "userID")
     private AppUser user;

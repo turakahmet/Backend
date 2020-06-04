@@ -1,9 +1,6 @@
 package com.spring.dao;
 
-import com.spring.model.Info;
-import com.spring.model.Restaurant;
-import com.spring.model.Review;
-import com.spring.model.UserRecords;
+import com.spring.model.*;
 import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import lombok.Setter;
 import org.hibernate.Session;
@@ -25,7 +22,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    int pageSize =10;
+    int pageSize =5;
 
 
     @Override
@@ -187,13 +184,13 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Object> getCity() {
+    public ArrayList<City>  getCity() {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
                     "select new Map(c.cityID as cityID,c.cityName as city) from City c");
-            List<Object> cities = query.getResultList();
+            ArrayList<City> cities = (ArrayList<City>) query.getResultList();
             transaction.commit();
             return cities;
         } catch (Exception e) {
@@ -204,14 +201,14 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Object> getTown(String cityName) {
+    public ArrayList<Town> getTown(String cityName) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(t.townID as townID, t.townName as townName from Town t inner join t.cityID c where c.cityName= :name ");
+                    "select new Map(t.townID as townID, t.townName as townName) from Town t inner join t.cityID c where c.cityName= :name ");
             query.setParameter("name", cityName);
-            List<Object> restaurantList = query.getResultList();
+            ArrayList<Town> restaurantList = (ArrayList<Town>) query.getResultList();
             transaction.commit();
             return restaurantList;
         } catch (Exception e) {
@@ -327,7 +324,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     public List<Object> findAllRestaurantAdmin(int page) {
         try{
             Query query = sessionFactory.getCurrentSession().createQuery("select new Map(u.recordID as recordID,u.userID as userID,u.restaurantName as restaurantName,u.address as address," +
-                    "concat(t.townName,',',c.cityName) as localityVerbose,u.phone_number as phone_number, u.timings as timings, u.place_type as place_type, u.cuisines as cuisines,u.sticker as sticker, u.latitude as latitude,u.longitude as longitude,"+
+                    "t.townName as town,c.cityName as city,t.townID as townID,c.cityID as cityID, u.phone_number as phone_number, u.timings as timings, u.category as category, u.cuisines as cuisines,u.sticker as sticker, u.latitude as latitude,u.longitude as longitude,"+
                     "u.restaurantImageUrl as restaurantImageUrl) from UserRecords u inner join u.townID t inner join t.cityID c").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
             List<Object> restaurantList = query.getResultList();
             return restaurantList;
@@ -348,10 +345,11 @@ public class RestaurantDaoImp implements RestaurantDao {
             record.setAddress(restaurant.getAddress());
             record.setCityID(restaurant.getCityID());
             record.setTownID(restaurant.getTownID());
-            record.setCuisines(restaurant.getCuisines());
-            record.setTimings(restaurant.getTimings());
             record.setPhone_number(restaurant.getPhone_number());
+            record.setTimings(restaurant.getTimings());
+            record.setCategory(restaurant.getCategory());
             record.setReview_count(restaurant.getReview_count());
+            record.setCuisines(restaurant.getCuisines());
             record.setLatitude(restaurant.getLatitude());
             record.setLongitude(restaurant.getLongitude());
             record.setRestaurantImageUrl(restaurant.getRestaurantImageUrl());

@@ -1,9 +1,8 @@
 package com.spring.service;
-import com.spring.model.Restaurant;
-import com.spring.model.Review;
-import com.spring.model.UserRecords;
+import com.spring.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface RestaurantService {
@@ -22,9 +21,9 @@ public interface RestaurantService {
 
     List<Object> findAllbyCategory(String category,int page);
 
-    List<Object> getCity();
+    ArrayList<City> getCity();
 
-    List<Object> getTown(String cityName);
+    ArrayList<Town> getTown(String cityName);
 
 
     Object detailRestaurant(long id);

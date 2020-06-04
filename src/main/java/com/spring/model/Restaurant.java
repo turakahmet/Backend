@@ -26,11 +26,10 @@ import java.util.Set;
 @Getter
 @Entity
 @Table
-public class Restaurant  {
-
+public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private long restaurantID;
 
     @Column(nullable = false)
@@ -73,18 +72,18 @@ public class Restaurant  {
     @ColumnDefault("0")
     private double disabled_friendly_review;
 
-    @OneToMany(mappedBy = "restaurant", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<Review> review;
 
     @Column
     private String restaurantImageUrl;
 
-    @JsonIgnoreProperties("cityID")
+    //@JsonIgnoreProperties("cityID")
     @ManyToOne
     @JoinColumn(name = "cityID")
     private City cityID;
 
-    @JsonIgnoreProperties("townID")
+    //@JsonIgnoreProperties("townID")
     @ManyToOne
     @JoinColumn(name = "townID")
     private Town townID;

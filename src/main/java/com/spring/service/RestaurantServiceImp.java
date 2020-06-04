@@ -1,9 +1,7 @@
 package com.spring.service;
 
 import com.spring.dao.RestaurantDao;
-import com.spring.model.Restaurant;
-import com.spring.model.Review;
-import com.spring.model.UserRecords;
+import com.spring.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,13 +57,12 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> getCity() {
+    public ArrayList<City> getCity() {
         return restaurantDao.getCity();
     }
 
     @Override
-    public List<Object> getTown(String cityName) {
-        return restaurantDao.getTown(cityName);
+    public ArrayList<Town> getTown(String cityName) { return restaurantDao.getTown(cityName);
     }
 
 
