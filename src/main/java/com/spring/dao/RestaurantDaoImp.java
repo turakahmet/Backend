@@ -149,11 +149,16 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public List<Object> findAllRestaurant(int page) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl," +
-                    "r.locality_verbose as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude) from Restaurant r").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
+            Query query = session.createQuery(
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose, " +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.category as category)" +
+                            " from Restaurant r inner join r.townID t inner join t.cityID c").setFirstResult(pageSize*(page-1)).setMaxResults(pageSize);
 
-            List<Object> restaurantList = query.getResultList();
+            List restaurantList = query.getResultList();
+            transaction.commit();
             return restaurantList;
         } catch (Exception e) {
             System.out.println(e.getMessage());
