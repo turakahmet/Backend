@@ -1,5 +1,6 @@
 package com.spring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import oracle.sql.BLOB;
 import org.hibernate.annotations.ColumnDefault;
@@ -30,14 +31,16 @@ public class UserRecords {
     @Column
     private String address;
 
-    @Column(nullable = false)
-    private String city;
 
-    @Column(nullable = false)
-    private String district;
-        //upup
-    @Column
-    private String locality_verbose;
+ //   @JsonIgnoreProperties("townID")
+    @ManyToOne
+    @JoinColumn(name = "townID")
+    private Town townID;
+
+  //  @JsonIgnoreProperties("cityID")
+    @ManyToOne
+    @JoinColumn(name = "cityID")
+    private City cityID;
 
     @Column
     private String phone_number;
@@ -46,7 +49,7 @@ public class UserRecords {
     private String timings;
 
     @Column
-    private String place_type;
+    private String category;
 
     @Column
     private String cuisines;

@@ -1,9 +1,7 @@
 package com.spring.service;
 
 import com.spring.dao.RestaurantDao;
-import com.spring.model.Restaurant;
-import com.spring.model.Review;
-import com.spring.model.UserRecords;
+import com.spring.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +42,27 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findByLocality(String locality, int page) {
-        return restaurantDao.findByLocality(locality,page);
+    public List<Object> findByTown(String town, int page) {
+        return restaurantDao.findByTown(town,page);
     }
 
     @Override
     public List<Object> votedRestaurantList(long id, int page) {
         return restaurantDao.votedRestaurantList(id,page);
+    }
+
+    @Override
+    public List<Object> findAllbyCategory(String category, int page) {
+        return restaurantDao.findAllbyCategory(category,page);
+    }
+
+    @Override
+    public ArrayList<City> getCity() {
+        return restaurantDao.getCity();
+    }
+
+    @Override
+    public ArrayList<Town> getTown(String cityName) { return restaurantDao.getTown(cityName);
     }
 
 
