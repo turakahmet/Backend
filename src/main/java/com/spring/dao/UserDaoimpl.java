@@ -2,6 +2,7 @@ package com.spring.dao;
 
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
+import com.spring.model.Review;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +11,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.List;
  * Created by egulocak on 8.04.2020.
  */
 
-
+@Transactional
 @Repository
 public class UserDaoimpl implements UserDAO {
 
@@ -253,7 +255,52 @@ public class UserDaoimpl implements UserDAO {
         }
     }
 
+    @Override
+    public List<Review> getReview(String email) {
+        Session session = sessionFactory.openSession();
+        CustomUser  cUser = new CustomUser();
+        cUser = findUserByEmail(email);
+        long id = cUser.getUserID();
+        Query query = session.createQuery("from Review where user =:id  ");
+        query.setParameter("id",id);
+        List<Review> reviewList = query.list();
 
+        return reviewList;
+
+
+
+
+    }
+
+    @Override
+    public List<Object> getuserreviews(String email) {
+
+        Session session = sessionFactory.openSession();
+
+        Transaction transaction = session.beginTransaction();
+
+        Query query = session.createQuery("select a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
+                "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
+                "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
+        CustomUser cUser = findUserByEmail(email);
+        System.out.println(cUser.getUserID());
+        Query query2 = session.createQuery("from Review ");
+
+        Query query3 = session.createQuery("select new Map(r.child_friendly_1 as child_friendly_1,r.disabled_friendly1 as disabled_friendly1" +
+                "  ,r.restaurant.restaurantName as restaurantName  ,r.hygiene1 as hygiene1,r.hygiene2 as hygiene2 ) from Review  r where user.userID =: id");
+        query3.setParameter("id",cUser.getUserID());
+
+
+
+
+
+//        query2.setParameter("email",email);
+        List<Object> reviewList = query3.list();
+        transaction.commit();
+//        <ListAppUser aUser =  (AppUser) query2.uniqueResult();
+
+        return reviewList;
+    }
 
 
 }
