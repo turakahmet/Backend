@@ -60,5 +60,9 @@ public interface RestaurantService {
     boolean isVoteExist(long  userID,long restaurantID);
 
     void saveRecord(Restaurant restaurant);
+
+    ArrayList<Object> fastPoint(long ResID, double point);
+
+    void fastPointSend(long resID, long userID, double point);
 }
 

@@ -157,5 +157,15 @@ public class RestaurantServiceImp implements RestaurantService {
         restaurantDao.saveRecord(restaurant);
     }
 
+    @Override
+    public ArrayList<Object> fastPoint(long ResID,double point) {
+        return restaurantDao.fastPoint(ResID, point);
+    }
+///
+    @Override
+    public void fastPointSend(long resID, long userID, double point) {
+         restaurantDao.fastPointSend(resID,userID,point);
+    }
+
 
 }
