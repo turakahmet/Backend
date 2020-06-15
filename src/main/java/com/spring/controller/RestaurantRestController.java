@@ -241,6 +241,35 @@ public class RestaurantRestController {
 
         }
     }
+    ////hızlı puanlama servisleri
+    //get
+    @RequestMapping(value = "/fastPoint", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Object>> fastPoint(@RequestParam("ResID") long ResID, @RequestParam("point") double point){
+        try {
+            return new ResponseEntity<ArrayList<Object>>(restaurantService.fastPoint(ResID,point), HttpStatus.OK); //
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
+
+    //post
+    @RequestMapping(value = "/fastPointSend", method = RequestMethod.POST)
+    public ResponseEntity<Void> fastPointSend(@RequestParam("ResID") long ResID,@RequestParam("UserID") long UserID, @RequestParam("point") double point){
+        try {
+            if (!restaurantService.isVoteExist(UserID, ResID)) {
+                restaurantService.fastPointSend(ResID, UserID, point);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }else{
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
+
+    ////
 
 
 

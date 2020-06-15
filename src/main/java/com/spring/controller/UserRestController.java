@@ -1,8 +1,10 @@
 package com.spring.controller;
 
+import com.spring.dao.UserDAO;
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
 import com.spring.model.CustomUser;
+import com.spring.model.Review;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
 import lombok.Setter;
@@ -25,6 +27,9 @@ public class UserRestController {
     @Setter
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserDAO userDAO;
 
     @Autowired
     Error error;
@@ -192,5 +197,34 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/listreviews", method = RequestMethod.GET)
+    public ResponseEntity<List<Review>> listreviews(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    {
+        try {
+            return new ResponseEntity<List<Review>>(userService.getReview(email), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            System.out.print(e.getMessage());
+
+            return new ResponseEntity<List<Review>>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
+    @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    {
+
+
+        try {
+            return new ResponseEntity<List<Object>>(userDAO.getuserreviews(email), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            System.out.print(e.getMessage());
+
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
 
 }

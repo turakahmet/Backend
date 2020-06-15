@@ -19,7 +19,7 @@ public class MailService {
     public long sendMail(String userEmail){
             System.out.println("Mail service");
 
-            long code = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+            long code = (long) Math.floor(Math.random() * 899999L) + 100000L;
             SimpleMailMessage email = new SimpleMailMessage();
             email.setFrom("teamoftarnet@gmail.com");
             email.setTo(userEmail);

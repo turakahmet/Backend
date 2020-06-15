@@ -1,8 +1,8 @@
 package com.spring.dao;
 
 import com.spring.model.*;
-import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -22,7 +22,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    int pageSize =5;
+    int pageSize =20;
 
 
     @Override
@@ -364,6 +364,54 @@ public class RestaurantDaoImp implements RestaurantDao {
             System.out.println(e.getMessage());
 
         }
+    }
+
+    @Override
+    public ArrayList<Object> fastPoint(long ResID, double point) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Query query = session.createQuery(
+                    "select restaurantName from Restaurant  where restaurantID= :resID ");
+            query.setParameter("resID", ResID);
+            ArrayList<Object> fastPoint = (ArrayList<Object>) query.getResultList();
+            fastPoint.add(point);
+            transaction.commit();
+            return fastPoint;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+
+        }
+
+    }
+
+    @Override
+    public void fastPointSend(long resID, long userID, double point) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Review review= new Review();
+            Restaurant restaurant= new Restaurant();
+            AppUser appUser=new AppUser();
+            restaurant.setRestaurantID(resID);
+            if(userID!=-1) {
+                appUser.setUserID(userID);//
+            }
+            //review.setRestaurant(ResID);
+            // review.setUser(UserID);
+            review.setRestaurant(restaurant);
+            review.setUser(appUser);
+            review.setChild_friendly_1(point);
+            review.setDisabled_friendly1(point);
+            review.setHygiene1(point);
+            session.save(review);
+            session.getTransaction().commit();
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @Override

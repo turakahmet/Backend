@@ -3,6 +3,7 @@ package com.spring.dao;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
+import com.spring.model.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,5 +24,8 @@ public interface UserDAO {
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     void changeUserCode(String email,long code);
+    List<Review> getReview(String email);
+    List<Object> getuserreviews(String email);
+
 
 }

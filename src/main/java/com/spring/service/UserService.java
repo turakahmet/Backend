@@ -2,6 +2,7 @@ package com.spring.service;
 
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
+import com.spring.model.Review;
 import com.sun.corba.se.impl.oa.poa.AOMEntry;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public interface UserService {
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
+    List<Review> getReview(String email);
 
 
 

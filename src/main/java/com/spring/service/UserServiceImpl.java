@@ -3,6 +3,7 @@ package com.spring.service;
 import com.spring.dao.UserDAO;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
+import com.spring.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isUserActive(String email) {
         return userDao.isUserActive(email);
+    }
+
+    @Override
+    public List<Review> getReview(String email) {
+        return userDao.getReview(email);
     }
 
 

@@ -1,10 +1,8 @@
 package com.spring.dao;
 
 import com.spring.model.*;
-import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public interface RestaurantDao {
@@ -63,4 +61,8 @@ public interface RestaurantDao {
     List<Object> findAllRestaurantAdmin(int page);
 
     void saveRecord(Restaurant restaurant);
+
+    ArrayList<Object> fastPoint(long ResID, double point);
+
+    void fastPointSend(long resID, long userID, double point);
 }
