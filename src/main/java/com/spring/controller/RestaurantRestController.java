@@ -270,6 +270,17 @@ public class RestaurantRestController {
     }
 
     ////
+    //search controller
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> findbyNameTown(@RequestParam("name") String name,@RequestParam("town") String townName,@RequestParam("page") int page)
+    {
+        try {
+            return new ResponseEntity<>(restaurantService.findAllSourceRestaurant(name,townName,page), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 
 
 

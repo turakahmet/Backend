@@ -166,6 +166,9 @@ public class RestaurantServiceImp implements RestaurantService {
     public void fastPointSend(long resID, long userID, double point) {
          restaurantDao.fastPointSend(resID,userID,point);
     }
+    @Override
+    public List<Object> findAllSourceRestaurant(String name, String townName,int page){
+        return restaurantDao.findAllSourceRestaurant(name,townName,page);}
 
 
 }

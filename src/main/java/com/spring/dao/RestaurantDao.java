@@ -65,4 +65,6 @@ public interface RestaurantDao {
     ArrayList<Object> fastPoint(long ResID, double point);
 
     void fastPointSend(long resID, long userID, double point);
+
+    List<Object> findAllSourceRestaurant(String name, String townName,int page);
 }
