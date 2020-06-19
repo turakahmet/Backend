@@ -21,6 +21,9 @@ public class RestaurantDaoImp implements RestaurantDao {
     @Setter
     @Autowired
     private SessionFactory sessionFactory;
+    //points
+    private final double score1=0.65, score2=0.58,score3=0.55,score4=0.45,score5=0.43,score6=0.7,score7=0.58,score8=0.56,score9=0.5;
+    private final double point1=0.24, point2=0.16,point3=0.24,point4=0.36;
 
     int pageSize =20;
 
@@ -398,16 +401,19 @@ public class RestaurantDaoImp implements RestaurantDao {
             if(userID!=-1) {
                 appUser.setUserID(userID);//
             }
-            //review.setRestaurant(ResID);
-            // review.setUser(UserID);
             review.setRestaurant(restaurant);
             review.setUser(appUser);
-            review.setChild_friendly_1(point);
-            review.setDisabled_friendly1(point);
-            review.setHygiene1(point);
+            review.setHygiene1(Math.round(point*score1 * 10) / 10.0);
+            review.setHygiene2(Math.round(point*score2 * 10) / 10.0);
+            review.setHygiene3(Math.round(point*score3 * 10) / 10.0);
+            review.setChild_friendly_1(Math.round(point*score4 * 10) / 10.0);
+            review.setChild_friendly_2(Math.round(point*score5 * 10) / 10.0);
+            review.setChild_friendly_3(Math.round(point*score6 * 10) / 10.0);
+            review.setDisabled_friendly1(Math.round(point*score7 * 10) / 10.0);
+            review.setDisabled_friendly2(Math.round(point*score8 * 10) / 10.0);
+            review.setDisabled_friendly3(Math.round(point*score9 * 10) / 10.0);
             session.save(review);
             session.getTransaction().commit();
-
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -534,16 +540,37 @@ public class RestaurantDaoImp implements RestaurantDao {
     public void voteRestaurant(Review review) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+        Review flag= new Review();
+        if(review.getHygiene2()==0){
+            try {
+                flag.setUser(review.getUser());
+                flag.setRestaurant(review.getRestaurant());
+                flag.setReviewID(review.getReviewID());
+                flag.setHygiene1(Math.round(review.getHygiene1()*point1 * 10) / 10.0);
+                flag.setHygiene2(review.getHygiene2());
+                flag.setHygiene3(review.getHygiene3());
+                flag.setChild_friendly_1(Math.round(review.getChild_friendly_1()*point2*10)/10.0);
+                flag.setChild_friendly_2(review.getChild_friendly_2());
+                flag.setChild_friendly_3(Math.round(review.getChild_friendly_3()*point3*10)/10.0);
+                flag.setDisabled_friendly1(Math.round(review.getDisabled_friendly1()*point4*10)/10.0);
+                flag.setDisabled_friendly2(review.getDisabled_friendly2());
+                flag.setDisabled_friendly3(review.getDisabled_friendly3());
+                session.save(flag);
+                transaction.commit();
+                session.close();
+            }catch (Exception e){
+                System.out.print(e.getMessage());
+            }
+        }else {
+            try {
+                session.save(review);
+                transaction.commit();
+                session.close();
 
-        try {
-            session.save(review);
-            transaction.commit();
-            session.close();
-
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
+            } catch (Exception e) {
+                System.out.print(e.getMessage());
+            }
         }
-
 
     }
 

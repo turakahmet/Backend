@@ -259,6 +259,7 @@ public class RestaurantRestController {
         try {
             if (!restaurantService.isVoteExist(UserID, ResID)) {
                 restaurantService.fastPointSend(ResID, UserID, point);
+                restaurantService.updateRestaurantReview(ResID);
                 return new ResponseEntity<>(HttpStatus.CREATED);
             }else{
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
