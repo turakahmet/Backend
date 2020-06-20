@@ -67,10 +67,7 @@ public class Restaurant {
     private double hygiene_review;
 
     @ColumnDefault("0")
-    private double child_friendly_review;
-
-    @ColumnDefault("0")
-    private double disabled_friendly_review;
+    private double friendly_review;
 
     @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<Review> review;
