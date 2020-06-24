@@ -480,7 +480,7 @@ private ArrayList<String> compareResult;
     }
 
     @Override
-    public void arrowPointSend(long resID, String cleaningArrow, String hygieneArrow) {
+    public void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {

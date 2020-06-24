@@ -86,9 +86,9 @@ public class Restaurant {
     private Town townID;
 
     @ColumnDefault("1")
-    private String HygieneArrow;
+    private int HygieneArrow;
 
     @ColumnDefault("1")
-    private String CleaningArrow;
+    private int CleaningArrow;
 
 }

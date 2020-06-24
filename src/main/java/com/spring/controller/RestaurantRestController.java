@@ -294,7 +294,7 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/arrowPointSend", method = RequestMethod.POST)
-    public ResponseEntity<Void> arrowPointSend(@RequestParam("ResID") long ResID,@RequestParam("CleaningArrow") String CleaningArrow, @RequestParam("HygieneArrow") String HygieneArrow){
+    public ResponseEntity<Void> arrowPointSend(@RequestParam("ResID") long ResID,@RequestParam("CleaningArrow") int CleaningArrow, @RequestParam("HygieneArrow") int HygieneArrow){
         try {
                 restaurantService.arrowPointSend(ResID, CleaningArrow, HygieneArrow);
                 return new ResponseEntity<>(HttpStatus.OK);

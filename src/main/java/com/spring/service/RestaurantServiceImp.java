@@ -176,7 +176,7 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public void arrowPointSend(long resID, String cleaningArrow, String hygieneArrow) {
+    public void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow) {
         restaurantDao.arrowPointSend(resID,cleaningArrow,hygieneArrow);
     }
 
