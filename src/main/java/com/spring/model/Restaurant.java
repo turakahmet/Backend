@@ -85,5 +85,10 @@ public class Restaurant {
     @JoinColumn(name = "townID")
     private Town townID;
 
+    @ColumnDefault("1")
+    private String HygieneArrow;
+
+    @ColumnDefault("1")
+    private String CleaningArrow;
 
 }

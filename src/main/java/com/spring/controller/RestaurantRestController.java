@@ -282,8 +282,28 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+    //compare results
+    @RequestMapping(value = "/compare", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<String>> Compare(@RequestParam("oldValueHygiene") double oldValueHygiene,@RequestParam ("oldValueCleaning") double oldValueCleaning,@RequestParam("ResID") long ResID)
+    {
+        try {
+            return new ResponseEntity<ArrayList<String>>(restaurantService.compareResults( oldValueHygiene,oldValueCleaning,ResID), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 
+    @RequestMapping(value = "/arrowPointSend", method = RequestMethod.POST)
+    public ResponseEntity<Void> arrowPointSend(@RequestParam("ResID") long ResID,@RequestParam("CleaningArrow") String CleaningArrow, @RequestParam("HygieneArrow") String HygieneArrow){
+        try {
+                restaurantService.arrowPointSend(ResID, CleaningArrow, HygieneArrow);
+                return new ResponseEntity<>(HttpStatus.OK);
 
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
 
 }
 

@@ -286,7 +286,7 @@ public class UserDaoimpl implements UserDAO {
         System.out.println(cUser.getUserID());
         Query query2 = session.createQuery("from Review ");
 
-        Query query3 = session.createQuery("select new Map(r.child_friendly_1 as child_friendly_1,r.disabled_friendly1 as disabled_friendly1" +
+        Query query3 = session.createQuery("select new Map(r.average as average,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                 "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.hygiene1 as hygiene1,r.hygiene2 as hygiene2 ) from Review  r where user.userID =: id");
         query3.setParameter("id",cUser.getUserID());
 

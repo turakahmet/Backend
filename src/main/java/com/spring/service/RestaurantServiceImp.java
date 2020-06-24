@@ -170,5 +170,15 @@ public class RestaurantServiceImp implements RestaurantService {
     public List<Object> findAllSourceRestaurant(String name, String townName,int page){
         return restaurantDao.findAllSourceRestaurant(name,townName,page);}
 
+    @Override
+    public ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID) {
+        return restaurantDao.compareResults(oldValueHygiene,oldValueCleaning,ResID);
+    }
+
+    @Override
+    public void arrowPointSend(long resID, String cleaningArrow, String hygieneArrow) {
+        restaurantDao.arrowPointSend(resID,cleaningArrow,hygieneArrow);
+    }
+
 
 }
