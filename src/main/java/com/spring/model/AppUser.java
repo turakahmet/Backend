@@ -56,4 +56,7 @@ public class AppUser   {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> review;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Report> reports;
+
 }

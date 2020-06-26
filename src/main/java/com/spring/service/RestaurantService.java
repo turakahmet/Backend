@@ -70,5 +70,11 @@ public interface RestaurantService {
     ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID);
 
     void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow);
+
+    void reportSend(long resID, int reportID);
+
+    boolean isReportExist(long ResID);
+
+    void updateReportSend(long resID, int reportID);
 }
 

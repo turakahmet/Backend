@@ -305,6 +305,25 @@ public class RestaurantRestController {
         }
     }
 
+    //report post service
+    @RequestMapping(value = "/reportSend", method = RequestMethod.POST)
+    public ResponseEntity<Void> reportSend(@RequestParam("ResID") long ResID,@RequestParam("reportID") int reportID) {
+        try {
+            if (!restaurantService.isReportExist(ResID)) {
+                restaurantService.reportSend(ResID, reportID);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else if(restaurantService.isReportExist(ResID)){
+                restaurantService.updateReportSend(ResID,reportID);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+    }
+
 }
 
 

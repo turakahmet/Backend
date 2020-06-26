@@ -20,15 +20,16 @@ import javax.persistence.*;
 public class Report {
 
     @Id
-    @Column
-    private long reportID;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int reportID;
 
     @ManyToOne
     @JoinColumn(name = "restaurantID")
-    private Restaurant restaurantID;
+    private Restaurant restaurant;
 
-    @ColumnDefault("0")
-    private int report_count;
+    @ManyToOne
+    @JoinColumn(name = "userID")
+    private AppUser user;
 
     @ColumnDefault("0")
     private int closedPlace;
