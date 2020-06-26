@@ -86,5 +86,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getReview(email);
     }
 
+    @Override
+    public Long getreviewcount(String email) {
+        return userDao.getreviewcount(email);
+    }
+
 
 }
