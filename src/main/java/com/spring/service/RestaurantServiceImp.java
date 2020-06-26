@@ -180,5 +180,20 @@ public class RestaurantServiceImp implements RestaurantService {
         restaurantDao.arrowPointSend(resID,cleaningArrow,hygieneArrow);
     }
 
+    @Override
+    public void reportSend(long resID, int reportID) {
+        restaurantDao.reportSend(resID,reportID);
+    }
+
+    @Override
+    public boolean isReportExist(long ResID) {
+        return restaurantDao.isReportExist(ResID);
+    }
+
+    @Override
+    public void updateReportSend(long resID, int reportID) {
+        restaurantDao.updateReportSend(resID,reportID);
+    }
+
 
 }

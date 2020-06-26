@@ -71,4 +71,10 @@ public interface RestaurantDao {
     ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID);
 
     void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow);
+
+    void reportSend(long resID, int reportID);
+
+    boolean isReportExist(long resID);
+
+    void updateReportSend(long resID, int reportID);
 }
