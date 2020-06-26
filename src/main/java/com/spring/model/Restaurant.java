@@ -72,6 +72,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<Review> review;
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Report> reports;
+
     @Column
     private String restaurantImageUrl;
 

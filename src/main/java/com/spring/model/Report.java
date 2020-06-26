@@ -25,7 +25,11 @@ public class Report {
 
     @ManyToOne
     @JoinColumn(name = "restaurantID")
-    private Restaurant restaurantID;
+    private Restaurant restaurant;
+
+    @ManyToOne
+    @JoinColumn(name = "userID")
+    private AppUser user;
 
     @ColumnDefault("0")
     private int closedPlace;
@@ -41,8 +45,4 @@ public class Report {
 
     @ColumnDefault("0")
     private int wrongScore;
-
-    public Report(long resID) {
-        resID=this.restaurantID.getRestaurantID();
-    }
 }
