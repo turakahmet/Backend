@@ -302,5 +302,20 @@ public class UserDaoimpl implements UserDAO {
         return reviewList;
     }
 
+    @Override
+    public Long getreviewcount(String email) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
+        query.setParameter("email",email);
+
+
+        return (Long) query.getSingleResult();
+
+
+
+
+    }
+
 
 }

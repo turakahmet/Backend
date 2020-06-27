@@ -227,4 +227,20 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/getreviewcount", method = RequestMethod.GET)
+    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    {
+
+
+        try {
+            return new ResponseEntity<Long>(userDAO.getreviewcount(email), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            System.out.print(e.getMessage());
+
+            return new ResponseEntity<Long>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
 }
