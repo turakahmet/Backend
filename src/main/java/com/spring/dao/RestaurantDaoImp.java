@@ -498,14 +498,17 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public void reportSend(long resID, int reportID) {
+    public void reportSend(long resID,long UserID, int reportID) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Report report = new Report();
             Restaurant restaurant=new Restaurant();
+            AppUser appUser=new AppUser();
             restaurant.setRestaurantID(resID);
-            report.setRestaurantID(restaurant);
+            appUser.setUserID(UserID);
+            report.setRestaurant(restaurant);
+            report.setUser(appUser);
             switch (reportID) {
                 case 0:
                     report.setClosedPlace(1);
@@ -534,10 +537,11 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public boolean isReportExist(long resID) {
+    public boolean isReportExist(long resID,long UserID) {
         boolean result = false;
-        Query query = sessionFactory.getCurrentSession().createQuery("select r.reportID FROM Report r inner join r.restaurantID rr WHERE rr.restaurantID = :restaurantID");
+        Query query = sessionFactory.getCurrentSession().createQuery("select r.reportID FROM Report r inner join r.restaurant rr inner join r.user ru WHERE rr.restaurantID = :restaurantID and ru.userID =:userID");
         query.setParameter("restaurantID", resID);
+        query.setParameter("userID", UserID);
         if (query.uniqueResult() != null) {
             result = true;
         } else {

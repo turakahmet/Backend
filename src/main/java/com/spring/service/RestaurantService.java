@@ -71,9 +71,9 @@ public interface RestaurantService {
 
     void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow);
 
-    void reportSend(long resID, int reportID);
+    void reportSend(long resID,long UserID, int reportID);
 
-    boolean isReportExist(long ResID);
+    boolean isReportExist(long ResID,long UserID);
 
     void updateReportSend(long resID, int reportID);
 }

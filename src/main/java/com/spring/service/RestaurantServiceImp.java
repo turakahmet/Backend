@@ -181,13 +181,13 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public void reportSend(long resID, int reportID) {
-        restaurantDao.reportSend(resID,reportID);
+    public void reportSend(long resID,long UserID, int reportID) {
+        restaurantDao.reportSend(resID,UserID,reportID);
     }
 
     @Override
-    public boolean isReportExist(long ResID) {
-        return restaurantDao.isReportExist(ResID);
+    public boolean isReportExist(long ResID, long UserID) {
+        return restaurantDao.isReportExist(ResID, UserID);
     }
 
     @Override
