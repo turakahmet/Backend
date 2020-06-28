@@ -27,6 +27,7 @@ public interface UserDAO {
     List<Review> getReview(String email);
     List<Object> getuserreviews(String email);
     Long getreviewcount(String email);
+    String changpassword(String email,String password);
 
 
 }

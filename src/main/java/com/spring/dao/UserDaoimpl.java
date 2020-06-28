@@ -317,5 +317,31 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+    @Override
+    public String changpassword(String email,String password) {
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail",email);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setUserPassword(password);
+
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+            return "ok";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
 
 }
