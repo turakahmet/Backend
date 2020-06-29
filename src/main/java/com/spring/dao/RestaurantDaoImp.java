@@ -604,6 +604,26 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
+    public boolean adminCheck(AdminTK adminTK) {
+        boolean result = false;
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = sessionFactory.getCurrentSession().createQuery("select a.adminID from AdminTK a WHERE a.adminIDName=:adminIDName and a.adminPW=:adminPW and a.uniqueID=:uniqueID and a.adminStatus=:adminStatus");
+        query.setParameter("adminIDName", adminTK.getAdminIDName());
+        query.setParameter("adminPW", adminTK.getAdminPW());
+        query.setParameter("uniqueID", adminTK.getUniqueID());
+        query.setParameter("adminStatus", adminTK.getAdminStatus());
+        if (query.uniqueResult()!=null) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+
+
+    }
+
+    @Override
     public void Create(Restaurant restaurant) {
 
         sessionFactory.getCurrentSession().save(restaurant);

@@ -77,4 +77,6 @@ public interface RestaurantDao {
     boolean isReportExist(long resID,long UserID);
 
     void updateReportSend(long resID, int reportID);
+
+    boolean adminCheck(AdminTK adminTK);
 }

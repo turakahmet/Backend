@@ -76,5 +76,7 @@ public interface RestaurantService {
     boolean isReportExist(long ResID,long UserID);
 
     void updateReportSend(long resID, int reportID);
+
+    boolean adminCheck(AdminTK adminTK);
 }
 

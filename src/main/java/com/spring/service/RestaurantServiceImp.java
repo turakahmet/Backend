@@ -195,5 +195,10 @@ public class RestaurantServiceImp implements RestaurantService {
         restaurantDao.updateReportSend(resID,reportID);
     }
 
+    @Override
+    public boolean adminCheck(AdminTK adminTK) {
+        return restaurantDao.adminCheck(adminTK);
+    }
+
 
 }
