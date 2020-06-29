@@ -227,4 +227,37 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/getreviewcount", method = RequestMethod.GET)
+    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email)
+    {
+
+
+        try {
+            return new ResponseEntity<Long>(userDAO.getreviewcount(email), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            System.out.print(e.getMessage());
+
+            return new ResponseEntity<Long>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
+
+    @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
+    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
+    {
+
+
+        try {
+            return new ResponseEntity<String>(userService.changepassword(email,password), HttpStatus.OK); //
+        } catch (Exception e) {
+
+            System.out.print(e.getMessage());
+
+            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
 }

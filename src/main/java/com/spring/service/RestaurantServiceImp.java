@@ -166,6 +166,39 @@ public class RestaurantServiceImp implements RestaurantService {
     public void fastPointSend(long resID, long userID, double point) {
          restaurantDao.fastPointSend(resID,userID,point);
     }
+    @Override
+    public List<Object> findAllSourceRestaurant(String name, String townName,int page){
+        return restaurantDao.findAllSourceRestaurant(name,townName,page);}
+
+    @Override
+    public ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID) {
+        return restaurantDao.compareResults(oldValueHygiene,oldValueCleaning,ResID);
+    }
+
+    @Override
+    public void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow) {
+        restaurantDao.arrowPointSend(resID,cleaningArrow,hygieneArrow);
+    }
+
+    @Override
+    public void reportSend(long resID,long UserID, int reportID) {
+        restaurantDao.reportSend(resID,UserID,reportID);
+    }
+
+    @Override
+    public boolean isReportExist(long ResID, long UserID) {
+        return restaurantDao.isReportExist(ResID, UserID);
+    }
+
+    @Override
+    public void updateReportSend(long resID, int reportID) {
+        restaurantDao.updateReportSend(resID,reportID);
+    }
+
+    @Override
+    public boolean adminCheck(AdminTK adminTK) {
+        return restaurantDao.adminCheck(adminTK);
+    }
 
 
 }

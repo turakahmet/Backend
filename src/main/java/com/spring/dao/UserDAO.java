@@ -26,6 +26,8 @@ public interface UserDAO {
     void changeUserCode(String email,long code);
     List<Review> getReview(String email);
     List<Object> getuserreviews(String email);
+    Long getreviewcount(String email);
+    String changpassword(String email,String password);
 
 
 }

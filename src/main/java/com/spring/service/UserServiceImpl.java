@@ -86,5 +86,15 @@ public class UserServiceImpl implements UserService {
         return userDao.getReview(email);
     }
 
+    @Override
+    public Long getreviewcount(String email) {
+        return userDao.getreviewcount(email);
+    }
+
+    @Override
+    public String changepassword(String email,String password) {
+        return userDao.changpassword(email,password);
+    }
+
 
 }

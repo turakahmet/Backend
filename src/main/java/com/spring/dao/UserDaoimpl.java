@@ -284,10 +284,10 @@ public class UserDaoimpl implements UserDAO {
                 "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
         CustomUser cUser = findUserByEmail(email);
         System.out.println(cUser.getUserID());
-        Query query2 = session.createQuery("from Review ");
 
-        Query query3 = session.createQuery("select new Map(r.child_friendly_1 as child_friendly_1,r.disabled_friendly1 as disabled_friendly1" +
-                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.hygiene1 as hygiene1,r.hygiene2 as hygiene2 ) from Review  r where user.userID =: id");
+        //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
+        Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id");
         query3.setParameter("id",cUser.getUserID());
 
 
@@ -300,6 +300,47 @@ public class UserDaoimpl implements UserDAO {
 //        <ListAppUser aUser =  (AppUser) query2.uniqueResult();
 
         return reviewList;
+    }
+
+    @Override
+    public Long getreviewcount(String email) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
+        query.setParameter("email",email);
+
+
+        return (Long) query.getSingleResult();
+
+
+
+
+    }
+
+    @Override
+    public String changpassword(String email,String password) {
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail",email);
+
+
+            AppUser tempUser = (AppUser) query.uniqueResult();
+
+            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setUserPassword(password);
+
+
+            //update işlemi başlar
+            session.update(upUser);
+            tx.commit();
+            session.close();
+            return "ok";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
 

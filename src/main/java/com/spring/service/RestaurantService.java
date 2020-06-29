@@ -64,5 +64,19 @@ public interface RestaurantService {
     ArrayList<Object> fastPoint(long ResID, double point);
 
     void fastPointSend(long resID, long userID, double point);
+
+    List<Object> findAllSourceRestaurant(String name, String townName,int page);
+
+    ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID);
+
+    void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow);
+
+    void reportSend(long resID,long UserID, int reportID);
+
+    boolean isReportExist(long ResID,long UserID);
+
+    void updateReportSend(long resID, int reportID);
+
+    boolean adminCheck(AdminTK adminTK);
 }
 

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -40,32 +41,41 @@ public class Review {
     @JoinColumn(name = "userID")
     private AppUser user;
 
-    @Column
-    private double hygiene1;
+    @ColumnDefault("0")
+    private double question1;
 
-    @Column
-    private double hygiene2;
+    @ColumnDefault("0")
+    private double question2;
 
-    @Column
-    private double hygiene3;
+    @ColumnDefault("0")
+    private double question3;
 
-    @Column
-    private double child_friendly_1;
+    @ColumnDefault("0")
+    private double question4;
 
-    @Column
-    private double child_friendly_2;
+    @ColumnDefault("0")
+    private double question5;
 
-    @Column
-    private double child_friendly_3;
+    @ColumnDefault("0")
+    private double question6;
 
-    @Column
-    private double disabled_friendly1;
+    @ColumnDefault("0")
+    private double question7;
 
-    @Column
-    private double disabled_friendly2;
+    @ColumnDefault("0")
+    private double question8;
 
-    @Column
-    private double disabled_friendly3;
+    @ColumnDefault("0")
+    private double question9;
+
+    @ColumnDefault("0")
+    private double average;
+
+    @ColumnDefault("0")
+    private double hygieneAverage;
+
+    @ColumnDefault("0")
+    private double friendlyAverage;
 
     @JsonFormat(pattern="dd-MM-yyyy")
     @UpdateTimestamp

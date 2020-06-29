@@ -23,6 +23,8 @@ public interface UserService {
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
     List<Review> getReview(String email);
+    Long getreviewcount(String email);
+    String changepassword(String email,String password);
 
 
 
