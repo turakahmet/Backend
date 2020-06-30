@@ -96,5 +96,10 @@ public class UserServiceImpl implements UserService {
         return userDao.changpassword(email,password);
     }
 
+    @Override
+    public List<Object> getcategoryinfo(String email) {
+        return userDao.getcategoryinfo(email);
+    }
+
 
 }

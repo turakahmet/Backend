@@ -259,5 +259,14 @@ public class UserRestController {
         }
 
     }
+    @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
+    public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    {
 
+
+
+            return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
+
+
+    }
 }

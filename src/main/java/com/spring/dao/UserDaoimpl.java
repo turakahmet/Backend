@@ -343,5 +343,20 @@ public class UserDaoimpl implements UserDAO {
         }
     }
 
+    @Override
+    public List<Object> getcategoryinfo(String email) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        Query query3 = session.createQuery("select new Map(count(r2.category) as count,r2.category as category) from Review r,Restaurant r2 , AppUser  a where r.user.userID = a.userID and " +
+                "r.restaurant.restaurantID = r2.restaurantID and a.userEmail =:email group by r2.category");
+        query3.setParameter("email",email);
+
+
+        List<Object> reviewList = query3.list();
+        transaction.commit();
+        return reviewList;
+    }
+
 
 }
