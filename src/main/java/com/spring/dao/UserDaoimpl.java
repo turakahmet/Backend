@@ -358,5 +358,36 @@ public class UserDaoimpl implements UserDAO {
         return reviewList;
     }
 
+    @Override
+    public List<Object> getcategorizedreviews(String email, String category) {
+        Session session = sessionFactory.openSession();
+
+        Transaction transaction = session.beginTransaction();
+
+        Query query = session.createQuery("select a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
+                "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
+                "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
+        CustomUser cUser = findUserByEmail(email);
+        System.out.println(cUser.getUserID());
+
+        //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
+        Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category =: category");
+        query3.setParameter("id",cUser.getUserID());
+        query3.setParameter("category",category);
+
+
+
+
+
+
+//        query2.setParameter("email",email);
+        List<Object> reviewList = query3.list();
+        transaction.commit();
+//        <ListAppUser aUser =  (AppUser) query2.uniqueResult();
+
+        return reviewList;
+    }
+
 
 }

@@ -269,4 +269,15 @@ public class UserRestController {
 
 
     }
+
+    @RequestMapping(value = "/getcategorizedreviews", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category)   //Kullanıcı ekleyen endpoint
+    {
+
+
+
+        return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
+
+
+    }
 }

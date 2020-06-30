@@ -101,5 +101,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getcategoryinfo(email);
     }
 
+    @Override
+    public List<Object> getcategorizedreviews(String email, String category) {
+      return  userDao.getcategorizedreviews(email,category);
+    }
+
 
 }

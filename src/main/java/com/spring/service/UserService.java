@@ -26,6 +26,8 @@ public interface UserService {
     Long getreviewcount(String email);
     String changepassword(String email,String password);
     List<Object> getcategoryinfo(String email);
+    List<Object> getcategorizedreviews(String email,String category);
+
 
 
 
