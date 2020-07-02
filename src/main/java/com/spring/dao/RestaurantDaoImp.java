@@ -365,12 +365,12 @@ public class RestaurantDaoImp implements RestaurantDao {
 
     @Override
     public void detelevote(Review review) {
+
         Session session = sessionFactory.openSession();
         Query query = sessionFactory.getCurrentSession().createQuery("delete from Review where reviewID =: id");
         query.setParameter("id",review.getReviewID());
-        query.executeUpdate();
         try{
-            session.delete(review);
+            query.executeUpdate();
         }
         catch(Exception e){
             System.out.println(e.getMessage());
