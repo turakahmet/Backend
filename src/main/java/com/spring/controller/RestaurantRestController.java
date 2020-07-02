@@ -341,6 +341,19 @@ public class RestaurantRestController {
 
         }
     }
+
+    @RequestMapping(value = "/deletevote", method = RequestMethod.POST)
+    public ResponseEntity<String> deletevote(@RequestBody Review review) {
+        try{
+            restaurantService.deleteVote(review);
+            return ResponseEntity.ok().body("Vote has been deleted successfully.");
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+        }
+
+    }
 }
 
 

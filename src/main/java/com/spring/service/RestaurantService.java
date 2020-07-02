@@ -34,6 +34,9 @@ public interface RestaurantService {
 
     void updateVote(Review review);
 
+    void deleteVote(Review review);
+
+
     ArrayList getInfo();
 
     List<Object> findAllRestaurant(int page);

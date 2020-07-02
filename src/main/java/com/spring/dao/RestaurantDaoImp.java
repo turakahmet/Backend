@@ -364,6 +364,22 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
+    public void detelevote(Review review) {
+        Session session = sessionFactory.openSession();
+        Query query = sessionFactory.getCurrentSession().createQuery("delete from Review where reviewID =: id");
+        query.setParameter("id",review.getReviewID());
+        query.executeUpdate();
+        try{
+            session.delete(review);
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
+    }
+
+    @Override
     public void createRecord(UserRecords userRecords) {
         sessionFactory.getCurrentSession().save(userRecords);
     }
