@@ -286,7 +286,7 @@ public class UserDaoimpl implements UserDAO {
         System.out.println(cUser.getUserID());
 
         //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
-        Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+        Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                 "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id");
         query3.setParameter("id",cUser.getUserID());
 
@@ -373,7 +373,7 @@ public class UserDaoimpl implements UserDAO {
         //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
         if(category.equals("Benzin İstasyonu") || category.equals("AVM") || category.equals("Otel")){
 
-            Query general = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+            Query general = session.createQuery("select new Map(r.average as average,r.restaurant.restaurantID as restaurantID,r.id as ID,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category =: category");
             general.setParameter("id",cUser.getUserID());
             general.setParameter("category",category);
@@ -387,7 +387,7 @@ public class UserDaoimpl implements UserDAO {
         }
 
         else if(category.equals("Restaurant")){
-            Query restaurant = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+            Query restaurant = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category ='Kafe' " +
                     "or r.restaurant.category ='Türk Mutfağı' or r.restaurant.category ='Tatlı' or r.restaurant.category ='Bar&Pubs' or r.restaurant.category ='Dünya Mutfağı'");
             restaurant.setParameter("id",cUser.getUserID());
@@ -396,7 +396,7 @@ public class UserDaoimpl implements UserDAO {
             return reviewList;
         }
         else if(category.equals("Halka Açık")){
-            Query public_ = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+            Query public_ = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id  as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category ='Spor Salonu' " +
                     "or r.restaurant.category ='sinema' or r.restaurant.category ='Eğlence Merkezi'");
             public_.setParameter("id",cUser.getUserID());
@@ -407,7 +407,7 @@ public class UserDaoimpl implements UserDAO {
         }
 
         else{
-            Query other = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+            Query other = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.id as ID,r.restaurant.restaurantID as restaurantID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category <> 'Kafe'" +
                     "and r.restaurant.category <> 'Türk Mutfağı' and r.restaurant.category <> 'Bar&Pubs' and r.restaurant.category <> 'Dünya Mutfağı'" +
                     "and r.restaurant.category <> 'Otel' and r.restaurant.category <> 'Benzin İstasyonu' and r.restaurant.category <> 'Spor Salonu'" +

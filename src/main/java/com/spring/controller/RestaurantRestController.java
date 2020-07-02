@@ -152,8 +152,8 @@ public class RestaurantRestController {
         }
     }
 
-    @RequestMapping(value = "/updateVote", method = RequestMethod.PUT)
-    public ResponseEntity<?> update(@RequestBody Review review) {
+    @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
+    public ResponseEntity<String> update(@RequestBody Review review) {
         try {
             restaurantService.updateVote(review);
             restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
