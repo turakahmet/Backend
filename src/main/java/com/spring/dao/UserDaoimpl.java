@@ -281,13 +281,13 @@ public class UserDaoimpl implements UserDAO {
 
         Query query = session.createQuery("select a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
                 "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
-                "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
+                "a.userType as userType,a.status as status from AppUser a where userEmail =: email ");
         CustomUser cUser = findUserByEmail(email);
         System.out.println(cUser.getUserID());
 
         //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
         Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
-                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id");
+                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id ORDER BY  reviewDate ASC ");
         query3.setParameter("id",cUser.getUserID());
 
 
