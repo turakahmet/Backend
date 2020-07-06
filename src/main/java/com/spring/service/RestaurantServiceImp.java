@@ -87,6 +87,12 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public void deleteVote(Review review) {
+         restaurantDao.detelevote(review);
+
+    }
+
+    @Override
     public ArrayList getInfo() {
         return restaurantDao.getInfo();
     }
