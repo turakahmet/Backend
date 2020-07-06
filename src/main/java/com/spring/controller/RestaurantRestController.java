@@ -4,13 +4,10 @@ import com.spring.model.*;
 import com.spring.service.RestaurantService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -331,9 +328,9 @@ public class RestaurantRestController {
     @RequestMapping(value = "/adminCheck", method = RequestMethod.POST)
     public ResponseEntity<Void> adminCheck(@RequestBody AdminTK adminTK) {
         try {
-            if(restaurantService.adminCheck(adminTK)) {
+            if (restaurantService.adminCheck(adminTK)) {
                 return new ResponseEntity<>(HttpStatus.OK);
-            }else{
+            } else {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
         } catch (Exception e) {
@@ -341,6 +338,41 @@ public class RestaurantRestController {
 
         }
     }
+
+    //en yakin service
+    @RequestMapping(value = "/getYakinRestoran", method = RequestMethod.GET)
+    public ResponseEntity<List> getYakinRestoran(@RequestParam("enlem") Double enlem, @RequestParam("boylam") Double boylam) {
+        List<enyakinRestoran> enyakinRestoranList = new ArrayList<>();
+        List<Object> restorant = restaurantService.getEnYakin(enlem, boylam);
+        for (Object o : restorant) {
+            Object[] a = (Object[]) o;
+            enyakinRestoran yakin = new enyakinRestoran();
+            yakin.setIsim((String) a[0]);
+            yakin.setEnlem((String) a[1]);
+            yakin.setBoylam((String) a[2]);
+            yakin.setUzaklik(String.valueOf(a[3]));
+            enyakinRestoranList.add(yakin);
+        }
+        try {
+            return new ResponseEntity<>(enyakinRestoranList, HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //filter services
+    @RequestMapping(value = "/filter", method = RequestMethod.POST)
+    public ResponseEntity<List<Object>> filter(@RequestBody Filter filter) {
+        try {
+
+            return new ResponseEntity<>(restaurantService.filter(filter),HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
 }
 
 
