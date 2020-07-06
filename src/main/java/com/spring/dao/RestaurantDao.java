@@ -36,6 +36,8 @@ public interface RestaurantDao {
 
     void updateVote(Review review);
 
+    void detelevote(Review review);
+
     void Create(Restaurant restaurant);
 
     void Update(Restaurant restaurant);
@@ -79,4 +81,8 @@ public interface RestaurantDao {
     void updateReportSend(long resID, int reportID);
 
     boolean adminCheck(AdminTK adminTK);
+
+    List<Object> getEnYakin(Double enlem, Double boylam);
+
+    List<Object> filter(Filter filter);
 }

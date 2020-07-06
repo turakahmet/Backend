@@ -311,13 +311,72 @@ public class RestaurantDaoImp implements RestaurantDao {
     public void updateVote(Review review) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        try {
-            session.update(review);
-            transaction.commit();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        Review flag  = new Review();
+        flag.setUser(review.getUser());
+        flag.setRestaurant(review.getRestaurant());
+        flag.setReviewID(review.getReviewID());
+        flag.setQuestion1(review.getQuestion1());
+        flag.setQuestion2(review.getQuestion2());
+        flag.setQuestion3(review.getQuestion3());
+        flag.setQuestion4(review.getQuestion4());
+        flag.setQuestion5(review.getQuestion5());
+        flag.setQuestion6(review.getQuestion6());
+        flag.setQuestion7(review.getQuestion7());
+        flag.setQuestion8(review.getQuestion8());
+        flag.setQuestion9(review.getQuestion9());
 
+//        if (review.getQuestion2() == 0) {
+            try {
+                friendlyAverage = Math.round((review.getQuestion4() * 0.4 + review.getQuestion6() * 0.6) * 10) / 10.0;
+                hygieneAverage = Math.round((review.getQuestion1() * 0.6 + review.getQuestion7() * 0.4) * 10) / 10.0;
+                average = Math.round((review.getQuestion1() * fQ1Coef + review.getQuestion7() * fQ2Coef + review.getQuestion4() * fQ3Coef + review.getQuestion6() * fQ4Coef) * 10) / 10.0;
+
+                flag.setHygieneAverage(hygieneAverage);
+                flag.setFriendlyAverage(friendlyAverage);
+                flag.setAverage(average);
+                session.update(flag);
+                transaction.commit();
+                session.close();
+            } catch (Exception e) {
+                System.out.print(e.getMessage());
+            }
+//        } else {
+//            try {
+//                friendlyAverage = Math.round((review.getQuestion2() * q2CategoryCoef + review.getQuestion6() * q6CategoryCoef + review.getQuestion4() * q4CategoryCoef +
+//                        review.getQuestion5() * q5CategoryCoef + review.getQuestion8() * q8CategoryCoef) * 10) / 10.0;
+//                hygieneAverage = Math.round((review.getQuestion1() * q1CategoryCoef + review.getQuestion3() * q3CategoryCoef + review.getQuestion7() * q7CategoryCoef +
+//                        review.getQuestion9() * q9CategoryCoef) * 10) / 10.0;
+//                average = Math.round((review.getQuestion1() * q1Coef + review.getQuestion2() * q2Coef + review.getQuestion3() * q3Coef + review.getQuestion4() * q4Coef +
+//                        review.getQuestion5() * q5Coef + review.getQuestion6() * q6Coef + review.getQuestion7() * q7Coef +
+//                        review.getQuestion8() * q8Coef + review.getQuestion9() * q9Coef) * 10) / 10.0;
+//
+//                flag.setHygieneAverage(hygieneAverage);
+//                flag.setFriendlyAverage(friendlyAverage);
+//                flag.setAverage(average);
+//                session.save(flag);
+//                transaction.commit();
+//                session.close();
+//
+//            } catch (Exception e) {
+//                System.out.print(e.getMessage());
+//            }
+//        }
+    }
+
+    @Override
+    public void detelevote(Review review) {
+
+        Session session = sessionFactory.openSession();
+        Query query = sessionFactory.getCurrentSession().createQuery("delete from Review where reviewID =: id");
+        query.setParameter("id",review.getReviewID());
+        try{
+            query.executeUpdate();
         }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
     }
 
     @Override
@@ -621,6 +680,40 @@ public class RestaurantDaoImp implements RestaurantDao {
         return result;
 
 
+    }
+
+    @Override
+    public List<Object> getEnYakin(Double enlem, Double boylam) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createSQLQuery(
+                "select a.restaurantName,a.latitude, a.longitude,  SQRT(POWER((TO_NUMBER(REPLACE(a.latitude, '.',','))-:enlem),2) + POWER((TO_NUMBER(REPLACE(a.longitude, '.',','))-:boylam),2)) as hipo from Restaurant a ORDER BY hipo asc");
+        query.setParameter("enlem", enlem);
+        query.setParameter("boylam", boylam);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object> filter(Filter filter) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = null;
+        if(filter.getCovid19()!=0){
+            query = session.createQuery(
+                    "select new Map(rr.restaurantID as restaurantID,c.cityName as City,t.townName as town, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow)"+
+                            "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review,rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
+            query.getResultList();
+        }else if(filter.getScore4_5()!=0){
+
+        }else if(filter.getReviewPopularity()!=0){
+
+        }else if(filter.getFilters()!=null){
+
+        }
+        List<Object> restaurantList = query.getResultList();
+        return restaurantList;
     }
 
     @Override

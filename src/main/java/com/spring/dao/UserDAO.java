@@ -28,6 +28,10 @@ public interface UserDAO {
     List<Object> getuserreviews(String email);
     Long getreviewcount(String email);
     String changpassword(String email,String password);
+    List<Object> getcategoryinfo(String email);
+    List<Object> getcategorizedreviews(String email,String category);
+
+
 
 
 }

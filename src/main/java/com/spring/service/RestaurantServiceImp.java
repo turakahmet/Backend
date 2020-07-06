@@ -87,6 +87,12 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
+    public void deleteVote(Review review) {
+         restaurantDao.detelevote(review);
+
+    }
+
+    @Override
     public ArrayList getInfo() {
         return restaurantDao.getInfo();
     }
@@ -198,6 +204,16 @@ public class RestaurantServiceImp implements RestaurantService {
     @Override
     public boolean adminCheck(AdminTK adminTK) {
         return restaurantDao.adminCheck(adminTK);
+    }
+
+    @Override
+    public List<Object> getEnYakin(Double enlem, Double boylam) {
+        return restaurantDao.getEnYakin(enlem, boylam);
+    }
+
+    @Override
+    public List<Object> filter(Filter filter) {
+        return restaurantDao.filter(filter);
     }
 
 
