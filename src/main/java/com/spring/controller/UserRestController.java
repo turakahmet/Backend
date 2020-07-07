@@ -1,13 +1,16 @@
 package com.spring.controller;
 
 import com.spring.dao.UserDAO;
+import com.spring.token.*;
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
+import com.spring.token.ValidationDao;
 import lombok.Setter;
+import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,10 @@ public class UserRestController {
     @Autowired
     UserDAO userDAO;
 
+
+    @Autowired
+    Validation validation;
+
     @Autowired
     Error error;
 
@@ -44,6 +51,7 @@ public class UserRestController {
     {
         try {
             if (!userService.isUserExist(user.getUserEmail())) {
+
 
 
 
@@ -171,11 +179,13 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/checkusercode", method = RequestMethod.GET)
-    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code)   //Kullanıcı güncelleyen endpoint
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
         if (userService.checkUserCode(email, code)) {
             System.out.println("Code: "+code+"");
+
+
             return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
         } else {
             error.setCode(204 );
@@ -212,12 +222,24 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,@RequestParam("token") String token,String password)   //Kullanıcı ekleyen endpoint
     {
+        try{
+            Token myToken = new Token(token,email,password,"All");
+            if(validation.isvalidate(myToken))
+            {
+
+                    List<Object> reviewList = userDAO.getuserreviews(email);
+                return new ResponseEntity<List<Object>>(reviewList,HttpStatus.OK); //
 
 
-        try {
-            return new ResponseEntity<List<Object>>(userDAO.getuserreviews(email), HttpStatus.OK); //
+
+        }
+            else
+                return new ResponseEntity<List<Object>>(HttpStatus.UNAUTHORIZED); //
+
+
+
         } catch (Exception e) {
 
             System.out.print(e.getMessage());
@@ -245,18 +267,34 @@ public class UserRestController {
 
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
     {
+        try{
+            Token myToken = new Token(token,email,password,"User");
+            if(validation.isvalidate(myToken)){
+                String result = userService.changepassword(email,password);
+                if(result.equals("ok"))
+                    return new ResponseEntity<String>(HttpStatus.OK); //
+                else
+                    return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
+            }
+
+            else{
+                return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED); //
+
+            }
 
 
-        try {
-            return new ResponseEntity<String>(userService.changepassword(email,password), HttpStatus.OK); //
-        } catch (Exception e) {
 
-            System.out.print(e.getMessage());
-
-            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED);
         }
+
+        catch(Exception e){
+            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
+
+        }
+
+
+
 
     }
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)

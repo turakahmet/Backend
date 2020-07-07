@@ -3,7 +3,9 @@ package com.spring.dao;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
+import com.spring.token.Validation;
 import lombok.Setter;
+//import lombok.launch.PatchFixesHider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -28,6 +30,9 @@ public class UserDaoimpl implements UserDAO {
     @Setter
     @Autowired
     SessionFactory sessionFactory;
+
+    @Autowired
+    Validation validation;
 
     @Override
     public AppUser insertUser(AppUser user) {
@@ -77,20 +82,33 @@ public class UserDaoimpl implements UserDAO {
 
     @Override
     public CustomUser findUserByEmail(String userEmail) {
+        try{
+            Session session = sessionFactory.openSession();
 
 
-        CustomUser cUser = new CustomUser();
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from AppUser where userEmail =: userEmail");
-        query.setParameter("userEmail", userEmail);
+            CustomUser cUser = new CustomUser();
+            Query query = sessionFactory.getCurrentSession()
+                    .createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail", userEmail);
 
-        AppUser aUser =  (AppUser) query.uniqueResult();
+            AppUser aUser =  (AppUser) query.uniqueResult();
+            session.close();
+            cUser.setUserID(aUser.getUserID());
+            cUser.setUserEmail(aUser.getUserEmail());
+            cUser.setUserName(aUser.getUserName());
+            cUser.setUserSurname(aUser.getUserSurname());
+            cUser.setUserToken(updatetoken(aUser));
 
-        cUser.setUserID(aUser.getUserID());
-        cUser.setUserEmail(aUser.getUserEmail());
-        cUser.setUserName(aUser.getUserName());
-        cUser.setUserSurname(aUser.getUserSurname());
-        return cUser;
+
+            return cUser;
+        }
+
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage() +"EFEE");
+            return null;
+        }
+
 
     }
 
@@ -209,6 +227,7 @@ public class UserDaoimpl implements UserDAO {
             AppUser tempUser = (AppUser) query.uniqueResult();
 
             AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+            upUser.setUserToken(validation.generatetoken());
             upUser.setStatus("active");
             //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
             //neler değişecekse ilgili şeyler altta yapılır.
@@ -281,25 +300,34 @@ public class UserDaoimpl implements UserDAO {
 
         Query query = session.createQuery("select a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
                 "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
-                "a.userType as userType,a.status as status from AppUser a where userEmail =: email ");
-        CustomUser cUser = findUserByEmail(email);
-        System.out.println(cUser.getUserID());
+                "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
 
-        //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
-        Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
-                "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id ORDER BY  reviewDate ASC ");
-        query3.setParameter("id",cUser.getUserID());
+        query.setParameter("email",email);
+        if(query.uniqueResult() !=null){
+            CustomUser cUser = findUserByEmail(email);
+            Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
+                    "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id ORDER BY  reviewDate ASC ");
+            query3.setParameter("id",cUser.getUserID());
 
 
+            System.out.println(cUser.getUserID());
 
 
 
 //        query2.setParameter("email",email);
-        List<Object> reviewList = query3.list();
-        transaction.commit();
+            List<Object> reviewList = query3.list();
+            transaction.commit();
 //        <ListAppUser aUser =  (AppUser) query2.uniqueResult();
 
-        return reviewList;
+            return reviewList;
+        }
+
+        //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
+        else{
+            return null;
+
+        }
+
     }
 
     @Override
@@ -317,6 +345,7 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+
     @Override
     public String changpassword(String email,String password) {
         try {
@@ -325,18 +354,25 @@ public class UserDaoimpl implements UserDAO {
             Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
             query.setParameter("userEmail",email);
 
+            if(query.uniqueResult() != null)
+            {
+                AppUser tempUser = (AppUser) query.uniqueResult();
 
-            AppUser tempUser = (AppUser) query.uniqueResult();
-
-            AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-            upUser.setUserPassword(password);
+                AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+                upUser.setUserPassword(password);
 
 
-            //update işlemi başlar
-            session.update(upUser);
-            tx.commit();
-            session.close();
-            return "ok";
+                //update işlemi başlar
+                session.update(upUser);
+                tx.commit();
+                session.close();
+                return "ok";
+            }
+
+            else
+                return "User does not Exist!!!";
+
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -429,5 +465,16 @@ public class UserDaoimpl implements UserDAO {
 
     }
 
+    public String updatetoken(AppUser appUser){
+        Session session = sessionFactory.getCurrentSession();
+        String newtoken = validation.generatetoken();
 
+        appUser.setUserToken(newtoken);
+
+        session.update(appUser);
+
+        return newtoken;
+
+
+    }
 }
