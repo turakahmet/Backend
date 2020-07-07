@@ -33,6 +33,9 @@ public interface RestaurantService {
 
     void updateVote(Review review);
 
+    void updatedetailvote(Review review);
+
+
     void deleteVote(Review review);
 
 

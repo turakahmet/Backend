@@ -155,9 +155,10 @@ public class RestaurantRestController {
     @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
     public ResponseEntity<String> update(@RequestBody Review review) {
         try {
-            restaurantService.updateVote(review);
-            restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-            return ResponseEntity.ok().body("Vote has been updated successfully.");
+                restaurantService.updateVote(review);
+                restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+                return ResponseEntity.ok().body("Vote has been updated successfully.");
+
         } catch (Exception e) {
 
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
