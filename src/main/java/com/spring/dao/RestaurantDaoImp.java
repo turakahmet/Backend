@@ -683,6 +683,40 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
+    public List<Object> getEnYakin(Double enlem, Double boylam) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createSQLQuery(
+                "select a.restaurantName,a.latitude, a.longitude,  SQRT(POWER((TO_NUMBER(REPLACE(a.latitude, '.',','))-:enlem),2) + POWER((TO_NUMBER(REPLACE(a.longitude, '.',','))-:boylam),2)) as hipo from Restaurant a ORDER BY hipo asc");
+        query.setParameter("enlem", enlem);
+        query.setParameter("boylam", boylam);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object> filter(Filter filter) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = null;
+        if(filter.getCovid19()!=0){
+            query = session.createQuery(
+                    "select new Map(rr.restaurantID as restaurantID,c.cityName as City,t.townName as town, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow)"+
+                            "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review,rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
+            query.getResultList();
+        }else if(filter.getScore4_5()!=0){
+
+        }else if(filter.getReviewPopularity()!=0){
+
+        }else if(filter.getFilters()!=null){
+
+        }
+        List<Object> restaurantList = query.getResultList();
+        return restaurantList;
+    }
+
+    @Override
     public void Create(Restaurant restaurant) {
 
         sessionFactory.getCurrentSession().save(restaurant);

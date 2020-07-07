@@ -2,7 +2,6 @@ package com.spring.service;
 import com.spring.model.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public interface RestaurantService {
@@ -81,5 +80,9 @@ public interface RestaurantService {
     void updateReportSend(long resID, int reportID);
 
     boolean adminCheck(AdminTK adminTK);
+
+    List<Object> getEnYakin(Double enlem, Double boylam);
+
+    List<Object> filter(Filter filter);
 }
 

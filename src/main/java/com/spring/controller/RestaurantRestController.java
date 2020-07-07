@@ -331,9 +331,9 @@ public class RestaurantRestController {
     @RequestMapping(value = "/adminCheck", method = RequestMethod.POST)
     public ResponseEntity<Void> adminCheck(@RequestBody AdminTK adminTK) {
         try {
-            if(restaurantService.adminCheck(adminTK)) {
+            if (restaurantService.adminCheck(adminTK)) {
                 return new ResponseEntity<>(HttpStatus.OK);
-            }else{
+            } else {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
         } catch (Exception e) {
@@ -344,16 +344,50 @@ public class RestaurantRestController {
 
     @RequestMapping(value = "/deletevote", method = RequestMethod.POST)
     public ResponseEntity<String> deletevote(@RequestBody Review review) {
-        try{
+        try {
             restaurantService.deleteVote(review);
             return ResponseEntity.ok().body("Vote has been deleted successfully.");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
         }
 
     }
+
+    //filter services
+    @RequestMapping(value = "/filter", method = RequestMethod.POST)
+    public ResponseEntity<List<Object>> filter(@RequestBody Filter filter) {
+        try {
+
+            return new ResponseEntity<>(restaurantService.filter(filter), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //en yakin service
+    @RequestMapping(value = "/getYakinRestoran", method = RequestMethod.GET)
+    public ResponseEntity<List> getYakinRestoran(@RequestParam("enlem") Double enlem, @RequestParam("boylam") Double boylam) {
+        List<enyakinRestoran> enyakinRestoranList = new ArrayList<>();
+        List<Object> restorant = restaurantService.getEnYakin(enlem, boylam);
+        for (Object o : restorant) {
+            Object[] a = (Object[]) o;
+            enyakinRestoran yakin = new enyakinRestoran();
+            yakin.setIsim((String) a[0]);
+            yakin.setEnlem((String) a[1]);
+            yakin.setBoylam((String) a[2]);
+            yakin.setUzaklik(String.valueOf(a[3]));
+            enyakinRestoranList.add(yakin);
+        }
+        try {
+            return new ResponseEntity<>(enyakinRestoranList, HttpStatus.OK); //
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+
+    }
+
 }
 
 

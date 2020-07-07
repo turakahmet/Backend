@@ -81,4 +81,8 @@ public interface RestaurantDao {
     void updateReportSend(long resID, int reportID);
 
     boolean adminCheck(AdminTK adminTK);
+
+    List<Object> getEnYakin(Double enlem, Double boylam);
+
+    List<Object> filter(Filter filter);
 }
