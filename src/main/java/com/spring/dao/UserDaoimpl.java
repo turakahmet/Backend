@@ -81,7 +81,7 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public CustomUser findUserByEmail(String userEmail) {
+    public CustomUser findUserByEmail(String userEmail,String changestatus) {
         try{
             Session session = sessionFactory.openSession();
 
@@ -97,6 +97,7 @@ public class UserDaoimpl implements UserDAO {
             cUser.setUserEmail(aUser.getUserEmail());
             cUser.setUserName(aUser.getUserName());
             cUser.setUserSurname(aUser.getUserSurname());
+            if(!changestatus.equals("nochange"))
             cUser.setUserToken(updatetoken(aUser));
 
 
@@ -278,7 +279,7 @@ public class UserDaoimpl implements UserDAO {
     public List<Review> getReview(String email) {
         Session session = sessionFactory.openSession();
         CustomUser  cUser = new CustomUser();
-        cUser = findUserByEmail(email);
+        cUser = findUserByEmail(email,"nochange");
         long id = cUser.getUserID();
         Query query = session.createQuery("from Review where user =:id  ");
         query.setParameter("id",id);
@@ -304,7 +305,7 @@ public class UserDaoimpl implements UserDAO {
 
         query.setParameter("email",email);
         if(query.uniqueResult() !=null){
-            CustomUser cUser = findUserByEmail(email);
+            CustomUser cUser = findUserByEmail(email,"nochange");
             Query query3 = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage) from Review  r where user.userID =: id ORDER BY  reviewDate ASC ");
             query3.setParameter("id",cUser.getUserID());
@@ -403,14 +404,14 @@ public class UserDaoimpl implements UserDAO {
         Query query = session.createQuery("select a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
                 "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
                 "a.userType as userType,a.status as status from AppUser a where userEmail =: email");
-        CustomUser cUser = findUserByEmail(email);
+        CustomUser cUser = findUserByEmail(email,"nochange");
         System.out.println(cUser.getUserID());
 
         //TODO:BURADA DAHA SONRA İYİLEŞTİRME YAPICAM.
         if(category.equals("Benzin İstasyonu") || category.equals("AVM") || category.equals("Otel")){
 
             Query general = session.createQuery("select new Map(r.average as average,r.restaurant.restaurantID as restaurantID,r.id as ID,r.reviewDate as date,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
-                    "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category =: category");
+                    "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category =: category ORDER BY  reviewDate ASC");
             general.setParameter("id",cUser.getUserID());
             general.setParameter("category",category);
             List<Object> reviewList = general.list();
@@ -425,7 +426,7 @@ public class UserDaoimpl implements UserDAO {
         else if(category.equals("Restaurant")){
             Query restaurant = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category ='Kafe' " +
-                    "or r.restaurant.category ='Türk Mutfağı' or r.restaurant.category ='Tatlı' or r.restaurant.category ='Bar&Pubs' or r.restaurant.category ='Dünya Mutfağı'");
+                    "or r.restaurant.category ='Türk Mutfağı' or r.restaurant.category ='Tatlı' or r.restaurant.category ='Bar&Pubs' or r.restaurant.category ='Dünya Mutfağı' ORDER BY  reviewDate ASC");
             restaurant.setParameter("id",cUser.getUserID());
             List<Object> reviewList = restaurant.list();
             transaction.commit();
@@ -434,7 +435,7 @@ public class UserDaoimpl implements UserDAO {
         else if(category.equals("Halka Açık")){
             Query public_ = session.createQuery("select new Map(r.average as average,r.reviewDate as date,r.restaurant.restaurantID as restaurantID,r.id  as ID,r.hygieneAverage as hygieneAverage,r.friendlyAverage as friendlyAverage" +
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category ='Spor Salonu' " +
-                    "or r.restaurant.category ='sinema' or r.restaurant.category ='Eğlence Merkezi'");
+                    "or r.restaurant.category ='sinema' or r.restaurant.category ='Eğlence Merkezi' ORDER BY  reviewDate ASC");
             public_.setParameter("id",cUser.getUserID());
             List<Object> reviewList = public_.list();
             transaction.commit();
@@ -447,7 +448,7 @@ public class UserDaoimpl implements UserDAO {
                     "  ,r.restaurant.restaurantName as restaurantName  ,r.restaurant.restaurantImageUrl as restaurantImage,r.restaurant.category as restaurantCategory) from Review  r where user.userID =: id and r.restaurant.category <> 'Kafe'" +
                     "and r.restaurant.category <> 'Türk Mutfağı' and r.restaurant.category <> 'Bar&Pubs' and r.restaurant.category <> 'Dünya Mutfağı'" +
                     "and r.restaurant.category <> 'Otel' and r.restaurant.category <> 'Benzin İstasyonu' and r.restaurant.category <> 'Spor Salonu'" +
-                    "and r.restaurant.category <> 'AVM' and r.restaurant.category <> 'sinema' and r.restaurant.category <> 'Eğlence Merkezi'");
+                    "and r.restaurant.category <> 'AVM' and r.restaurant.category <> 'sinema' and r.restaurant.category <> 'Eğlence Merkezi' ORDER BY  reviewDate ASC ");
             other.setParameter("id",cUser.getUserID());
             List<Object> reviewList = other.list();
             transaction.commit();

@@ -18,7 +18,7 @@ public interface UserService {
     AppUser updateUser(AppUser user);
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);
-    CustomUser findUserByEmail(String userEmail);
+    CustomUser findUserByEmail(String userEmail,String tokenstatus);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);

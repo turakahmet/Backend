@@ -64,7 +64,7 @@ public class UserRestController {
                     user.setCode(mailService.sendMail(user.getUserEmail()));
                      userService.insertUser(user);
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.UNAUTHORIZED);
 
 
 
@@ -118,7 +118,7 @@ public class UserRestController {
     public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-
+            System.out.println("CHEEECK STANDARDDDDDD");
 
         try {
             if (userService.checkStandardCredentials(email, password)) {
@@ -127,11 +127,11 @@ public class UserRestController {
                 if (userService.isUserActive(email)) {
 
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
                 } else {
 
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.UNAUTHORIZED);
 
                 }
 
@@ -162,7 +162,7 @@ public class UserRestController {
         else {
             if(userService.checkUserType(user).equals("google") || userService.checkUserType(user).equals("facebook") )
 
-                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.OK);
             else
             {
                 error.setCode(409);
@@ -201,7 +201,7 @@ public class UserRestController {
 
     {
 
-            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
 
 
 
