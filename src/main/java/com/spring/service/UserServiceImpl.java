@@ -47,10 +47,10 @@ public class UserServiceImpl implements UserService {
         return userDao.listAllUsers();
     }
 
-    @Override
-    public AppUser updateUser(AppUser user) {
-        return userDao.updateUser(user);
-    }
+//    @Override
+//    public AppUser updateUser(AppUser user) {
+//        return userDao.updateUser(user);
+//    }
 
     @Override
     public Boolean isUserExist(String email) {
@@ -94,8 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long getreviewcount(String email) {
-        return userDao.getreviewcount(email);
+    public Long getreviewcount(String email,String password,String token) {
+        return userDao.getreviewcount(email,password,token);
     }
 
     @Override

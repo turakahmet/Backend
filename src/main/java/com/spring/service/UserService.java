@@ -17,7 +17,6 @@ public interface UserService {
     String checkUserType(AppUser user);
     AppUser insertUser(AppUser user);
     List<Object> listAllUsers();
-    AppUser updateUser(AppUser user);
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);
     CustomUser findUserByEmail(String userEmail,String tokenstatus);
@@ -26,7 +25,7 @@ public interface UserService {
     Boolean isUserActive(String email);
     Boolean isAdmin(AdminTK adminTK);
     List<Review> getReview(String email);
-    Long getreviewcount(String email);
+    Long getreviewcount(String email,String password,String token);
     String changepassword(String email,String password);
     List<Object> getcategoryinfo(String email);
     List<Object> getcategorizedreviews(String email,String category);

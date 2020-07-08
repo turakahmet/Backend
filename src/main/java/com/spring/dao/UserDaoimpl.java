@@ -134,34 +134,34 @@ public class UserDaoimpl implements UserDAO {
         }
     }
 
-    @Override
-    public AppUser updateUser(AppUser user) {
-        //Kullanıcının update olacak hali geliyor saedece id aynı
-
-
-        try {
-            Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();
-
-            AppUser upUser = (AppUser) session.get(AppUser.class, user.getUserID()); //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
-            //neler değişecekse ilgili şeyler altta yapılır.
-            upUser.setUserPassword(user.getUserPassword());
-            upUser.setUserName(user.getUserName());
-            upUser.setUserSurname(user.getUserSurname());
-            upUser.setUserEmail(user.getUserEmail());
-
-            //update işlemi başlar
-            session.update(upUser);
-            tx.commit();
-            session.close();
-            return upUser;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
-
-
-    }
+//    @Override
+//    public AppUser updateUser(AppUser user) {
+//        //Kullanıcının update olacak hali geliyor saedece id aynı
+//
+//
+//        try {
+//            Session session = sessionFactory.openSession();
+//            Transaction tx = session.beginTransaction();
+//
+//            AppUser upUser = (AppUser) session.get(AppUser.class, user.getUserID()); //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
+//            //neler değişecekse ilgili şeyler altta yapılır.
+//            upUser.setUserPassword(user.getUserPassword());
+//            upUser.setUserName(user.getUserName());
+//            upUser.setUserSurname(user.getUserSurname());
+//            upUser.setUserEmail(user.getUserEmail());
+//
+//            //update işlemi başlar
+//            session.update(upUser);
+//            tx.commit();
+//            session.close();
+//            return upUser;
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return null;
+//        }
+//
+//
+//    }
 
     @Override
     public Boolean isUserExist(String email) {
@@ -280,9 +280,9 @@ public class UserDaoimpl implements UserDAO {
         Session session = sessionFactory.openSession();
         CustomUser  cUser = new CustomUser();
         cUser = findUserByEmail(email,"nochange");
-        long id = cUser.getUserID();
-        Query query = session.createQuery("from Review where user =:id  ");
-        query.setParameter("id",id);
+        Query query = session.createQuery("select new map(r.id as id,r.question1 as q1,r.question2 as q2,r.question3 as q3,r.question4 as q4,r.question5 as q5,r.question6 as q6," +
+                "r.question7 as q7,r.question8 as a8,r.question9 as q9,r.average as average ,r.hygieneAverage as hygieneavg,r.friendlyAverage  as friendlyavg )from Review r where user.userEmail =:email  ");
+        query.setParameter("email",email);
         List<Review> reviewList = query.list();
 
         return reviewList;
@@ -295,17 +295,17 @@ public class UserDaoimpl implements UserDAO {
     @Override
     public Boolean isadmin(AdminTK adminTK) {
         try{
+
+            int status  = 0;
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
-            if(adminTK ==null)
-                System.out.println("HATA:ADMİNTK NULL ");
 
             Query isAdmin = sessionFactory.getCurrentSession().createQuery("from AdminTK  where adminID  =: id and adminIDName =:" +
                     " name and adminPW =: pw and adminStatus =: status " );
             isAdmin.setParameter("id",adminTK.getAdminID());
             isAdmin.setParameter("name",adminTK.getAdminIDName());
             isAdmin.setParameter("pw",adminTK.getAdminPW());
-            isAdmin.setParameter("status",adminTK.getAdminStatus());
+            isAdmin.setParameter("status",status);
             if(isAdmin.uniqueResult() != null)
                 return true;
             else
@@ -362,7 +362,7 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public Long getreviewcount(String email) {
+    public Long getreviewcount(String email,String password,String token) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
