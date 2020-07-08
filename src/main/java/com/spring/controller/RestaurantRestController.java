@@ -347,6 +347,7 @@ public class RestaurantRestController {
     public ResponseEntity<String> deletevote(@RequestBody Review review) {
         try {
             restaurantService.deleteVote(review);
+            restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
             return ResponseEntity.ok().body("Vote has been deleted successfully.");
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

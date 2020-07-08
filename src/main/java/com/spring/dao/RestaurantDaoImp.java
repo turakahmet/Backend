@@ -374,14 +374,15 @@ public class RestaurantDaoImp implements RestaurantDao {
     public void detelevote(Review review) {
         Session session = sessionFactory.openSession();
         Query query = sessionFactory.getCurrentSession().createQuery("delete from Review where reviewID =: id");
-        query.setParameter("id",review.getReviewID());
-        try{
+        query.setParameter("id", review.getReviewID());
+        try {
             query.executeUpdate();
-        }
-        catch(Exception e){
+            session.close();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
     @Override
     public void createRecord(UserRecords userRecords) {
         sessionFactory.getCurrentSession().save(userRecords);
@@ -560,13 +561,13 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public void reportSend(long resID,long UserID, int reportID) {
+    public void reportSend(long resID, long UserID, int reportID) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Report report = new Report();
-            Restaurant restaurant=new Restaurant();
-            AppUser appUser=new AppUser();
+            Restaurant restaurant = new Restaurant();
+            AppUser appUser = new AppUser();
             restaurant.setRestaurantID(resID);
             appUser.setUserID(UserID);
             report.setRestaurant(restaurant);
@@ -599,7 +600,7 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public boolean isReportExist(long resID,long UserID) {
+    public boolean isReportExist(long resID, long UserID) {
         boolean result = false;
         Query query = sessionFactory.getCurrentSession().createQuery("select r.reportID FROM Report r inner join r.restaurant rr inner join r.user ru WHERE rr.restaurantID = :restaurantID and ru.userID =:userID");
         query.setParameter("restaurantID", resID);
@@ -614,10 +615,6 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
 
-
-
-
-
     @Override
     public void updateReportSend(long resID, int reportID) {
         Session session = sessionFactory.openSession();
@@ -630,27 +627,27 @@ public class RestaurantDaoImp implements RestaurantDao {
 
             switch (reportID) {
                 case 0:
-                    report.setClosedPlace(report.getClosedPlace()+1);
+                    report.setClosedPlace(report.getClosedPlace() + 1);
                     transaction.commit();
                     session.close();
                     break;
                 case 1:
-                    report.setFakePlace(report.getFakePlace()+1);
+                    report.setFakePlace(report.getFakePlace() + 1);
                     transaction.commit();
                     session.close();
                     break;
                 case 2:
-                    report.setWrongLocation(report.getWrongLocation()+1);
+                    report.setWrongLocation(report.getWrongLocation() + 1);
                     transaction.commit();
                     session.close();
                     break;
                 case 3:
-                    report.setWrongInfo(report.getWrongInfo()+1);
+                    report.setWrongInfo(report.getWrongInfo() + 1);
                     transaction.commit();
                     session.close();
                     break;
                 case 4:
-                    report.setWrongScore(report.getWrongScore()+1);
+                    report.setWrongScore(report.getWrongScore() + 1);
                     transaction.commit();
                     session.close();
                     break;
@@ -675,7 +672,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         query.setParameter("adminPW", adminTK.getAdminPW());
         query.setParameter("uniqueID", adminTK.getUniqueID());
         query.setParameter("adminStatus", adminTK.getAdminStatus());
-        if (query.uniqueResult()!=null) {
+        if (query.uniqueResult() != null) {
             result = true;
         } else {
             result = false;
@@ -701,18 +698,18 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Query query = null;
-        if(filter.getCovid19()!=0){
+        if (filter.getCovid19() != 0) {
             query = session.createQuery(
-                    "select new Map(rr.restaurantID as restaurantID,c.cityName as City,t.townName as town, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
-                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow)"+
+                    "select new Map(rr.restaurantID as restaurantID,c.cityName as City,t.townName as town, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl," +
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow)" +
                             "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review,rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
             query.getResultList();
-        }else if(filter.getScore4_5()!=0){
+        } else if (filter.getScore4_5() != 0) {
 
-        }else if(filter.getReviewPopularity()!=0){
+        } else if (filter.getReviewPopularity() != 0) {
 
-        }else if(filter.getFilters()!=null){
+        } else if (filter.getFilters() != null) {
 
         }
         List<Object> restaurantList = query.getResultList();
@@ -767,6 +764,12 @@ public class RestaurantDaoImp implements RestaurantDao {
         query.setParameter("id", restaurantID);
         Long review_count = (Long) query.uniqueResult();
         System.out.print(review_count);
+
+        if (review_count == 0) {
+            friendlyAvg = 0.0;
+            hygieneAvg = 0.0;
+            queryAvg = 0.0;
+        }
 
         Restaurant upRestaurant = (Restaurant) session.get(Restaurant.class, restaurantID);
 
@@ -902,6 +905,21 @@ public class RestaurantDaoImp implements RestaurantDao {
         List<Object> restaurantList = query.getResultList();
         return restaurantList;
     }
+
+//    public void deleteupdate(Review review) {
+//        //puan silme  işlemisonrası restaurant puan güncellemesi
+//        Session session = sessionFactory.openSession();
+//        Transaction transaction = session.beginTransaction();
+//
+//        Query query = sessionFactory.getCurrentSession().createQuery("select r.restaurant.review_count from Review r");
+//
+//        long count = (long) query.uniqueResult();
+//
+//        if (count > 0)
+//            updateRestaurantReview(review.getRestaurant().getRestaurantID());
+//
+//
+//    }
 
 
 }
