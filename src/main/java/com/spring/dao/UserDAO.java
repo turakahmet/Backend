@@ -1,9 +1,11 @@
 package com.spring.dao;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public interface UserDAO {
     AppUser updateUserStatus(String email);
     void changeUserCode(String email,long code);
     List<Review> getReview(String email);
+    Boolean isadmin(AdminTK adminTK);
     List<Object> getuserreviews(String email);
     Long getreviewcount(String email);
     String changpassword(String email,String password);

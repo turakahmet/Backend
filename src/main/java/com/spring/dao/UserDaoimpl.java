@@ -1,5 +1,6 @@
 package com.spring.dao;
 
+import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
@@ -116,17 +117,16 @@ public class UserDaoimpl implements UserDAO {
 
 
     @Override
-    public List<Object> listAllUsers() {
+    public List<Object> listAllUsers( ) {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
-                    "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
-                    "a.userType as userType,a.status as status) from AppUser a");
-            @SuppressWarnings("unchecked")
-            List<Object> userList = query.list();
-            transaction.commit();
-            return userList;
+                Query query = session.createQuery("select new Map(a.userID as userID ,a.userName as userName,a.userSurname as userSurname," +
+                        "a.userEmail as userEmail,a.profilImageID as profilImageID,a.userToken as userToken," +
+                        "a.userType as userType,a.status as status) from AppUser a");
+                List<Object> userList = query.list();
+                transaction.commit();
+                return userList;
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
@@ -288,6 +288,36 @@ public class UserDaoimpl implements UserDAO {
         return reviewList;
 
 
+
+
+    }
+
+    @Override
+    public Boolean isadmin(AdminTK adminTK) {
+        try{
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+            if(adminTK ==null)
+                System.out.println("HATA:ADMİNTK NULL ");
+
+            Query isAdmin = sessionFactory.getCurrentSession().createQuery("from AdminTK  where adminID  =: id and adminIDName =:" +
+                    " name and adminPW =: pw and adminStatus =: status " );
+            isAdmin.setParameter("id",adminTK.getAdminID());
+            isAdmin.setParameter("name",adminTK.getAdminIDName());
+            isAdmin.setParameter("pw",adminTK.getAdminPW());
+            isAdmin.setParameter("status",adminTK.getAdminStatus());
+            if(isAdmin.uniqueResult() != null)
+                return true;
+            else
+                return false;
+        }
+
+        catch(Exception e)
+        {
+
+            System.out.println("HATA: "+e.getMessage());
+            return null;
+        }
 
 
     }

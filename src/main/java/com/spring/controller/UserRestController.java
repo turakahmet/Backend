@@ -1,6 +1,7 @@
 package com.spring.controller;
 
 import com.spring.dao.UserDAO;
+import com.spring.model.AdminTK;
 import com.spring.token.*;
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
@@ -86,11 +87,21 @@ public class UserRestController {
 
 
 
-    @RequestMapping(value = "/listallusers", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllUsers()   //Kullanıcı ekleyen endpoint
+    @RequestMapping(value = "/listallusers", method = RequestMethod.POST)
+    public ResponseEntity<List<Object>> listAllUsers(@RequestBody AdminTK adminTK)   //Kullanıcı ekleyen endpoint
     {
         try {
+            if(userService.isAdmin(adminTK))
             return new ResponseEntity<List<Object>>(userService.listAllUsers(), HttpStatus.OK); //
+
+            else if(!userService.isAdmin(adminTK))
+                return new ResponseEntity<List<Object>>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+            else{
+          return new ResponseEntity<List<Object>>( HttpStatus.SERVICE_UNAVAILABLE); //
+
+            }
+
         } catch (Exception e) {
 
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);

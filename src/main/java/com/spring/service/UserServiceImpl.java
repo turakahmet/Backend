@@ -1,6 +1,7 @@
 package com.spring.service;
 
 import com.spring.dao.UserDAO;
+import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
@@ -80,6 +81,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isUserActive(String email) {
         return userDao.isUserActive(email);
+    }
+
+    @Override
+    public Boolean isAdmin(AdminTK adminTK) {
+        return userDao.isadmin(adminTK);
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.spring.service;
 
+import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
 import com.sun.corba.se.impl.oa.poa.AOMEntry;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public interface UserService {
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
+    Boolean isAdmin(AdminTK adminTK);
     List<Review> getReview(String email);
     Long getreviewcount(String email);
     String changepassword(String email,String password);
