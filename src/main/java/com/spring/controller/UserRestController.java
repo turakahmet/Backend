@@ -1,13 +1,17 @@
 package com.spring.controller;
 
 import com.spring.dao.UserDAO;
+import com.spring.model.AdminTK;
+import com.spring.token.*;
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
+import com.spring.token.ValidationDao;
 import lombok.Setter;
+import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,10 @@ public class UserRestController {
     @Autowired
     UserDAO userDAO;
 
+
+    @Autowired
+    Validation validation;
+
     @Autowired
     Error error;
 
@@ -48,6 +56,7 @@ public class UserRestController {
 
 
 
+
                     user.setStatus("deactive");
 
 
@@ -56,7 +65,7 @@ public class UserRestController {
                     user.setCode(mailService.sendMail(user.getUserEmail()));
                      userService.insertUser(user);
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.UNAUTHORIZED);
 
 
 
@@ -78,11 +87,21 @@ public class UserRestController {
 
 
 
-    @RequestMapping(value = "/listallusers", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllUsers()   //Kullanıcı ekleyen endpoint
+    @RequestMapping(value = "/listallusers", method = RequestMethod.POST)
+    public ResponseEntity<List<Object>> listAllUsers(@RequestBody AdminTK adminTK)   //Kullanıcı ekleyen endpoint
     {
         try {
+            if(userService.isAdmin(adminTK))
             return new ResponseEntity<List<Object>>(userService.listAllUsers(), HttpStatus.OK); //
+
+            else if(!userService.isAdmin(adminTK))
+                return new ResponseEntity<List<Object>>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+            else{
+          return new ResponseEntity<List<Object>>( HttpStatus.SERVICE_UNAVAILABLE); //
+
+            }
+
         } catch (Exception e) {
 
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
@@ -90,27 +109,27 @@ public class UserRestController {
 
     }
 
-    @RequestMapping(value = "/updateuser", method = RequestMethod.POST)
-    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
-
-    {       //kullanıcıyı update ederken komple kullanıcı classını karşılayan bir json gönderin
-        //Ancak idsivtde olan bir id olmalı
-        try {
-            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.OK); //
-
-        } catch (Exception e) {
-            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.NOT_MODIFIED); //
-
-        }
-
-
-    }
+//    @RequestMapping(value = "/updateuser", method = RequestMethod.POST)
+//    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
+//
+//    {       //kullanıcıyı update ederken komple kullanıcı classını karşılayan bir json gönderin
+//        //Ancak idsivtde olan bir id olmalı
+//        try {
+//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.OK); //
+//
+//        } catch (Exception e) {
+//            return new ResponseEntity<AppUser>(userService.updateUser(user), HttpStatus.NOT_MODIFIED); //
+//
+//        }
+//
+//
+//    }
 
     @RequestMapping(value = "/checkstandard", method = RequestMethod.GET)
     public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-
+            System.out.println("CHEEECK STANDARDDDDDD");
 
         try {
             if (userService.checkStandardCredentials(email, password)) {
@@ -119,11 +138,11 @@ public class UserRestController {
                 if (userService.isUserActive(email)) {
 
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
                 } else {
 
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.UNAUTHORIZED);
 
                 }
 
@@ -154,7 +173,7 @@ public class UserRestController {
         else {
             if(userService.checkUserType(user).equals("google") || userService.checkUserType(user).equals("facebook") )
 
-                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.OK);
             else
             {
                 error.setCode(409);
@@ -171,11 +190,13 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/checkusercode", method = RequestMethod.GET)
-    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code)   //Kullanıcı güncelleyen endpoint
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
         if (userService.checkUserCode(email, code)) {
             System.out.println("Code: "+code+"");
+
+
             return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
         } else {
             error.setCode(204 );
@@ -191,17 +212,25 @@ public class UserRestController {
 
     {
 
-            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
 
 
 
     }
 
-    @RequestMapping(value = "/listreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Review>> listreviews(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    @RequestMapping(value = "/listreviews", method = RequestMethod.POST)
+    public ResponseEntity<List<Review>> listreviews(@RequestBody AdminTK adminTK,@RequestParam("email") String email)
     {
         try {
+            if(userService.isAdmin(adminTK))
             return new ResponseEntity<List<Review>>(userService.getReview(email), HttpStatus.OK); //
+
+            else if(!userService.isAdmin(adminTK))
+                return new ResponseEntity<List<Review>>(userService.getReview(email), HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
+            else{
+                return new ResponseEntity<List<Review>>(HttpStatus.SERVICE_UNAVAILABLE);
+            }
+
         } catch (Exception e) {
 
             System.out.print(e.getMessage());
@@ -212,12 +241,24 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,@RequestParam("token") String token,String password)   //Kullanıcı ekleyen endpoint
     {
+        try{
+            Token myToken = new Token(token,email,password,"All");
+            if(validation.isvalidate(myToken))
+            {
+
+                    List<Object> reviewList = userDAO.getuserreviews(email);
+                return new ResponseEntity<List<Object>>(reviewList,HttpStatus.OK); //
 
 
-        try {
-            return new ResponseEntity<List<Object>>(userDAO.getuserreviews(email), HttpStatus.OK); //
+
+        }
+            else
+                return new ResponseEntity<List<Object>>(HttpStatus.UNAUTHORIZED); //
+
+
+
         } catch (Exception e) {
 
             System.out.print(e.getMessage());
@@ -228,12 +269,20 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getreviewcount", method = RequestMethod.GET)
-    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email)
+    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)
     {
 
 
         try {
-            return new ResponseEntity<Long>(userDAO.getreviewcount(email), HttpStatus.OK); //
+            Token myToken = new Token(token,email,password,"all");
+            if(validation.isvalidate(myToken))
+            {
+                return new ResponseEntity<Long>(userDAO.getreviewcount(email,password,token), HttpStatus.OK); //
+            }
+            else
+                return new ResponseEntity<Long>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+
         } catch (Exception e) {
 
             System.out.print(e.getMessage());
@@ -245,39 +294,80 @@ public class UserRestController {
 
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
     {
+        try{
+            Token myToken = new Token(token,email,password,"User");
+            if(validation.isvalidate(myToken)){
+                String result = userService.changepassword(email,password);
+                if(result.equals("ok"))
+                    return new ResponseEntity<String>(HttpStatus.OK); //
+                else
+                    return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
+            }
+
+            else{
+                return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED); //
+
+            }
 
 
-        try {
-            return new ResponseEntity<String>(userService.changepassword(email,password), HttpStatus.OK); //
-        } catch (Exception e) {
 
-            System.out.print(e.getMessage());
-
-            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED);
         }
+
+        catch(Exception e){
+            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
+
+        }
+
+
+
 
     }
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
-    public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)
     {
 
+        try{
+            Token myToken = new Token(token,email,password,"all");
+            if(validation.isvalidate(myToken)){
+                return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
 
+            }
+            else {
+                return new ResponseEntity<Object>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
-            return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
+            }
+        }
+        catch(Exception e){
+            return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED); //
+
+        }
 
 
     }
 
     @RequestMapping(value = "/getcategorizedreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
     {
 
 
+        try{
+            Token myToken = new Token(token,email,password,"all");
+            if(validation.isvalidate(myToken))
+            {
+                return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
 
-        return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
+            }
 
+            else{
+                return new ResponseEntity<List<Object>>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
+            }
+        }
+
+        catch(Exception e){
+            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED); //
+        }
     }
 }

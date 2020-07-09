@@ -1,6 +1,7 @@
 package com.spring.service;
 
 import com.spring.dao.UserDAO;
+import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
@@ -46,10 +47,10 @@ public class UserServiceImpl implements UserService {
         return userDao.listAllUsers();
     }
 
-    @Override
-    public AppUser updateUser(AppUser user) {
-        return userDao.updateUser(user);
-    }
+//    @Override
+//    public AppUser updateUser(AppUser user) {
+//        return userDao.updateUser(user);
+//    }
 
     @Override
     public Boolean isUserExist(String email) {
@@ -62,8 +63,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CustomUser findUserByEmail(String userEmail) {
-        return userDao.findUserByEmail(userEmail);
+    public CustomUser findUserByEmail(String userEmail,String tokenstatus) {
+
+        return userDao.findUserByEmail(userEmail,tokenstatus);
     }
 
     @Override
@@ -82,13 +84,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean isAdmin(AdminTK adminTK) {
+        return userDao.isadmin(adminTK);
+    }
+
+    @Override
     public List<Review> getReview(String email) {
         return userDao.getReview(email);
     }
 
     @Override
-    public Long getreviewcount(String email) {
-        return userDao.getreviewcount(email);
+    public Long getreviewcount(String email,String password,String token) {
+        return userDao.getreviewcount(email,password,token);
     }
 
     @Override

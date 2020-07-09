@@ -36,6 +36,9 @@ public interface RestaurantDao {
 
     void updateVote(Review review);
 
+    void updatedetailvote(Review review);
+
+
     void detelevote(Review review);
 
     void Create(Restaurant restaurant);
