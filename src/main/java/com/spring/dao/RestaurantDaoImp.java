@@ -700,17 +700,43 @@ public class RestaurantDaoImp implements RestaurantDao {
         Query query = null;
         if(filter.getCovid19()!=0){
             query = session.createQuery(
-                    "select new Map(rr.restaurantID as restaurantID,c.cityName as City,t.townName as town, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
+                    "select new Map(rr.restaurantID as restaurantID, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow)"+
-                            "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review,rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)"+
+                            "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review,"+
+                            "rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
             query.getResultList();
         }else if(filter.getScore4_5()!=0){
-
+            query = session.createQuery(
+                    "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)"+
+                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.average_review >= 4.5").setMaxResults(20);
+            query.getResultList();
         }else if(filter.getReviewPopularity()!=0){
-
+            query = session.createQuery(
+                    "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)"+
+                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t order by rr.review_count desc").setMaxResults(20);
+            query.getResultList();
         }else if(filter.getFilters()!=null){
-
+            query = session.createQuery(
+                    "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl," +
+                            "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
+                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose, rr.review_count as review_count)" +
+                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where category IN :category and average_revıew >=:score " +
+                            "order by case when :sort=0 then rr.average_review else 0 end asc, " +
+                            "case when :sort=1 then rr.review_count else 0 end desc," +
+                            "case when :sort=2 then rr.average_review else  0 end desc," +
+                            "case when :sort=3 then rr.average_review else 0 end asc," +
+                            "case when :sort=4 then rr.hygiene_review else 0 end desc," +
+                            "case when :sort=5 then rr.friendly_review else 0 end desc ").setMaxResults(20);
+            query.setParameter("sort", filter.getFilters().getSort());
+            query.setParameterList("category", filter.getFilters().getCategory());
+            query.setParameter("score", filter.getFilters().getPoint());
+            //query.setParameter("distance", filter.getFilters().getDistance());// burası user konum aldıktan sonra enlem boylam farkına göre değişecek where ifadesine eklenecek
+            query.getResultList();
         }
         List<Object> restaurantList = query.getResultList();
         return restaurantList;

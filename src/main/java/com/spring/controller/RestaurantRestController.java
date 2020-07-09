@@ -364,7 +364,6 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-
     //en yakin service
     @RequestMapping(value = "/getYakinRestoran", method = RequestMethod.GET)
     public ResponseEntity<List> getYakinRestoran(@RequestParam("enlem") Double enlem, @RequestParam("boylam") Double boylam) {
