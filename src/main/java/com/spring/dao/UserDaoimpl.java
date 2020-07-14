@@ -98,6 +98,7 @@ public class UserDaoimpl implements UserDAO {
             cUser.setUserEmail(aUser.getUserEmail());
             cUser.setUserName(aUser.getUserName());
             cUser.setUserSurname(aUser.getUserSurname());
+            cUser.setProfilImageID(aUser.getProfilImageID());
             if(!changestatus.equals("nochange"))
             cUser.setUserToken(updatetoken(aUser));
 
@@ -244,6 +245,38 @@ public class UserDaoimpl implements UserDAO {
         }
     }
 
+    @Override
+    public String changeusername(String email, String userName) {
+
+        try{
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser   where userEmail =:email");
+            query.setParameter("email",email);
+
+
+
+                AppUser tempUser = (AppUser) query.uniqueResult();
+
+                AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+                upUser.setUserName(userName);
+
+
+                //update işlemi başlar
+                session.update(upUser);
+                transaction.commit();
+                session.close();
+                return "ok";
+
+        }
+        catch(Exception e){
+
+            System.out.println("HATAAA:"+e.getMessage());
+            return null;
+        }
+
+
+    }
 
 
     @Override

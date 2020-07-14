@@ -11,6 +11,7 @@ import com.spring.service.MailService;
 import com.spring.service.UserService;
 import com.spring.token.ValidationDao;
 import lombok.Setter;
+import org.hibernate.annotations.common.util.impl.Log;
 import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -348,7 +349,31 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getcategorizedreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
+        public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
+        {
+
+
+            try{
+                Token myToken = new Token(token,email,password,"all");
+                if(validation.isvalidate(myToken))
+                {
+                    return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
+
+                }
+
+                else{
+                    return new ResponseEntity<List<Object>>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+                }
+            }
+
+            catch(Exception e){
+                return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED); //
+            }
+    }
+
+    @RequestMapping(value = "/changeusername", method = RequestMethod.GET)
+    public ResponseEntity<String> changeusername(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token,@RequestParam("username") String username)   //Kullanıcı ekleyen endpoint
     {
 
 
@@ -356,18 +381,20 @@ public class UserRestController {
             Token myToken = new Token(token,email,password,"all");
             if(validation.isvalidate(myToken))
             {
-                return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
+                return new ResponseEntity<String>(userService.changeusername(email,username),HttpStatus.OK); //
 
             }
 
             else{
-                return new ResponseEntity<List<Object>>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+                return new ResponseEntity<String>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
             }
         }
 
         catch(Exception e){
-            return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED); //
+
+
+            return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE); //
         }
     }
 }

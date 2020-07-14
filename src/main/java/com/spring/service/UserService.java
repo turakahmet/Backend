@@ -25,6 +25,7 @@ public interface UserService {
     Boolean isUserActive(String email);
     Boolean isAdmin(AdminTK adminTK);
     List<Review> getReview(String email);
+    String changeusername(String email,String userName);
     Long getreviewcount(String email,String password,String token);
     String changepassword(String email,String password);
     List<Object> getcategoryinfo(String email);

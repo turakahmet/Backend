@@ -25,6 +25,7 @@ public interface UserDAO {
     Boolean isUserActive(String email);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
+    String changeusername(String email,String userName);
     void changeUserCode(String email,long code);
     List<Review> getReview(String email);
     Boolean isadmin(AdminTK adminTK);

@@ -94,6 +94,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String changeusername(String email, String userName) {
+        return userDao.changeusername(email,userName);
+    }
+
+    @Override
     public Long getreviewcount(String email,String password,String token) {
         return userDao.getreviewcount(email,password,token);
     }
