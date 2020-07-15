@@ -63,7 +63,8 @@ public class UserRecords {
     @Column
     private String longitude;
 
+    @Lob
     @Column
-    private String restaurantImageUrl;
+    private byte[] restaurantImageUrl;
 
 }

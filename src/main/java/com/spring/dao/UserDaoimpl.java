@@ -333,12 +333,12 @@ public class UserDaoimpl implements UserDAO {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
 
-            Query isAdmin = sessionFactory.getCurrentSession().createQuery("from AdminTK  where adminID  =: id and adminIDName =:" +
+            Query isAdmin = sessionFactory.getCurrentSession().createQuery("from AdminTK  where uniqueID  =: uniqueID and adminIDName =:" +
                     " name and adminPW =: pw and adminStatus =: status " );
-            isAdmin.setParameter("id",adminTK.getAdminID());
+            isAdmin.setParameter("uniqueID",adminTK.getUniqueID());
             isAdmin.setParameter("name",adminTK.getAdminIDName());
             isAdmin.setParameter("pw",adminTK.getAdminPW());
-            isAdmin.setParameter("status",status);
+            isAdmin.setParameter("status",adminTK.getAdminStatus());
             if(isAdmin.uniqueResult() != null)
                 return true;
             else

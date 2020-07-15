@@ -78,6 +78,10 @@ public class Restaurant {
     @Column
     private String restaurantImageUrl;
 
+    @Lob
+    @Column
+    private byte[] restaurantImageBlob;
+
     //@JsonIgnoreProperties("cityID")
     @ManyToOne
     @JoinColumn(name = "cityID")

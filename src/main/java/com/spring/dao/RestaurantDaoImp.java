@@ -183,7 +183,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose, " +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
                             "r.latitude as rLatitude,r.longitude as rLongitude,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c where r.category like concat('%',:category,'%')").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("category", category);
@@ -428,7 +428,7 @@ public class RestaurantDaoImp implements RestaurantDao {
             record.setCuisines(restaurant.getCuisines());
             record.setLatitude(restaurant.getLatitude());
             record.setLongitude(restaurant.getLongitude());
-            record.setRestaurantImageUrl(restaurant.getRestaurantImageUrl());
+            record.setRestaurantImageBlob(restaurant.getRestaurantImageBlob());
             session.save(record);
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -725,7 +725,7 @@ public class RestaurantDaoImp implements RestaurantDao {
                     "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
                             "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose, rr.review_count as review_count)" +
-                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where category IN :category and average_revıew >=:score " +
+                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.category IN :category and rr.average_review >=:score " +
                             "order by case when :sort=0 then rr.average_review else 0 end asc, " +
                             "case when :sort=1 then rr.review_count else 0 end desc," +
                             "case when :sort=2 then rr.average_review else  0 end desc," +
