@@ -30,8 +30,8 @@ public interface UserDAO {
     List<Review> getReview(String email);
     Boolean isadmin(AdminTK adminTK);
     List<Object> getuserreviews(String email);
-    Long getreviewcount(String email,String password,String token);
-    String changpassword(String email,String password);
+    Long getreviewcount(String email,String password);
+    String changpassword(String email,String password,String newpw);
     List<Object> getcategoryinfo(String email);
     List<Object> getcategorizedreviews(String email,String category);
 

@@ -43,8 +43,9 @@ public class AppUser   {
     @Column(nullable = false)
     private String userType;
 
+    @Lob
     @Column
-    private String profilImageID;
+    private byte[] profilImageID;
 
     @Column
     private String status;

@@ -99,13 +99,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long getreviewcount(String email,String password,String token) {
-        return userDao.getreviewcount(email,password,token);
+    public Long getreviewcount(String email,String password) {
+        return userDao.getreviewcount(email,password);
     }
 
     @Override
-    public String changepassword(String email,String password) {
-        return userDao.changpassword(email,password);
+    public String changepassword(String email,String password,String newpw) {
+        return userDao.changpassword(email,password,newpw);
     }
 
     @Override

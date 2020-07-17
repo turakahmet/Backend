@@ -12,14 +12,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Token {
-    String token;
     String email;
     String password;
     String type;
 
 
-    public Token(String token, String email, String password, String type){
-        this.token=token;
+    public Token(String email, String password, String type){
         this.email = email;
         this.password = password;
         this.type=type;

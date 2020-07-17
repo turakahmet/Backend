@@ -14,7 +14,7 @@ public class CustomUser {
     private String userSurname;
     private String userToken;
     private String userEmail;
-    private String profilImageID;
+    private byte[] profilImageID;
 
 
 }

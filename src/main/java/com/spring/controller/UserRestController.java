@@ -88,7 +88,7 @@ public class UserRestController {
 
 
 
-    @RequestMapping(value = "/listallusers", method = RequestMethod.POST)
+    @RequestMapping(value = "/listallusers", method = RequestMethod.POST)  //Bunu Kaldır
     public ResponseEntity<List<Object>> listAllUsers(@RequestBody AdminTK adminTK)   //Kullanıcı ekleyen endpoint
     {
         try {
@@ -134,10 +134,12 @@ public class UserRestController {
 
         try {
             if (userService.checkStandardCredentials(email, password)) {
+                System.out.println("CHEEECK STANDARDDDDDD TRUE");
 
 
                 if (userService.isUserActive(email)) {
 
+                    System.out.println("İS ACTİVE TRUE");
 
                     return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
                 } else {
@@ -194,17 +196,26 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-        if (userService.checkUserCode(email, code)) {
-            System.out.println("Code: "+code+"");
+        Token myToken = new Token(email,password,"");
+        if(validation.isvalidate(myToken)){
+            if (userService.checkUserCode(email, code)) {
+                System.out.println("Code: "+code+"");
 
 
-            return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
-        } else {
-            error.setCode(204 );
-            error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
+                return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
+            } else {
+                error.setCode(204 );
+                error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
+                return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+
+            }
+        }
+
+        else{
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
 
         }
+
 
 
     }
@@ -242,10 +253,10 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,@RequestParam("token") String token,String password)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,String password)   //Kullanıcı ekleyen endpoint
     {
         try{
-            Token myToken = new Token(token,email,password,"All");
+            Token myToken = new Token(email,password,"");
             if(validation.isvalidate(myToken))
             {
 
@@ -270,15 +281,15 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getreviewcount", method = RequestMethod.GET)
-    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)
+    public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email,@RequestParam("password") String password)
     {
 
 
         try {
-            Token myToken = new Token(token,email,password,"all");
+            Token myToken = new Token(email,password,"all");
             if(validation.isvalidate(myToken))
             {
-                return new ResponseEntity<Long>(userDAO.getreviewcount(email,password,token), HttpStatus.OK); //
+                return new ResponseEntity<Long>(userDAO.getreviewcount(email,password), HttpStatus.OK); //
             }
             else
                 return new ResponseEntity<Long>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
@@ -295,22 +306,26 @@ public class UserRestController {
 
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<String> changepassword(@RequestParam("email") String email,@RequestParam("password") String password,
+                                                 @RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
     {
         try{
-            Token myToken = new Token(token,email,password,"User");
-            if(validation.isvalidate(myToken)){
-                String result = userService.changepassword(email,password);
-                if(result.equals("ok"))
-                    return new ResponseEntity<String>(HttpStatus.OK); //
+                Token token = new Token(email,password,"");
+                if(validation.isvalidate(token)){
+
+                    String result = userService.changepassword(email,password,newpw);
+                    if(result.equals("ok"))
+                        return new ResponseEntity<String>("OK",HttpStatus.OK);
+                    else{
+                        return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+                    }
+                }
+
                 else
-                    return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
-            }
+                    return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED); //
 
-            else{
-                return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED); //
 
-            }
+
 
 
 
@@ -326,11 +341,11 @@ public class UserRestController {
 
     }
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
-    public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token)
+    public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email,@RequestParam("password") String password)
     {
 
         try{
-            Token myToken = new Token(token,email,password,"all");
+            Token myToken = new Token(email,password,"all");
             if(validation.isvalidate(myToken)){
                 return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
 
@@ -349,12 +364,12 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getcategorizedreviews", method = RequestMethod.GET)
-        public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password,@RequestParam("token") String token)   //Kullanıcı ekleyen endpoint
+        public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
         {
 
 
             try{
-                Token myToken = new Token(token,email,password,"all");
+                Token myToken = new Token(email,password,"");
                 if(validation.isvalidate(myToken))
                 {
                     return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
@@ -373,12 +388,12 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/changeusername", method = RequestMethod.GET)
-    public ResponseEntity<String> changeusername(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("token") String token,@RequestParam("username") String username)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<String> changeusername(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("username") String username)   //Kullanıcı ekleyen endpoint
     {
 
 
         try{
-            Token myToken = new Token(token,email,password,"all");
+            Token myToken = new Token(email,password,"");
             if(validation.isvalidate(myToken))
             {
                 return new ResponseEntity<String>(userService.changeusername(email,username),HttpStatus.OK); //

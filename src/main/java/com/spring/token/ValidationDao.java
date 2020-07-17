@@ -1,5 +1,6 @@
 package com.spring.token;
 
+import com.spring.model.Review;
 import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,30 +28,22 @@ public class ValidationDao implements  Validation {
         try{
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
-            if(token.type.equals("newtoken")){
+
+
                 Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: email  and userPassword =: password ");
                 query.setParameter("email",token.getEmail());
-                query.setParameter("password",token.getPassword());
-                if(query.uniqueResult() != null)
-                    return true;
-                else {
-                    System.out.println("---------------ELSEDE");
-                    return false;
-                }
-            }
-            else{
-                Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: email and userToken =:token and userPassword =: password ");
-                query.setParameter("email",token.getEmail());
-                query.setParameter("token",token.getToken());
                 query.setParameter("password",token.getPassword());
 
                 if(query.uniqueResult() != null)
                     return true;
                 else {
                     System.out.println("---------------ELSEDE");
+                    System.out.println(token.email);
+                    System.out.println(token.password);
+
                     return false;
                 }
-            }
+
 
 
 
@@ -60,6 +53,27 @@ public class ValidationDao implements  Validation {
             return null;
         }
 
+    }
+
+    @Override
+    public Boolean isValidateAction(Review review,String email,String password) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from Review where user.userEmail=:email and user.userPassword=:password and reviewID =:reviewid");
+        query.setParameter("email",email);
+        query.setParameter("password",password);
+        query.setParameter("reviewid",review.getReviewID());
+        if(query.uniqueResult() != null)
+            return true;
+        else{
+            System.out.println("---------------ELSEDE");
+            return false;
+
+
+        }
     }
 
     @Override

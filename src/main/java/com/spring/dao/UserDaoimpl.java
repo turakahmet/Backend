@@ -59,7 +59,7 @@ public class UserDaoimpl implements UserDAO {
 
 
         Query query = sessionFactory.getCurrentSession().
-                createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword");
+                createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword ");
         query.setParameter("userEmail", userEmail);
         query.setParameter("userPassword", password);
 
@@ -99,8 +99,6 @@ public class UserDaoimpl implements UserDAO {
             cUser.setUserName(aUser.getUserName());
             cUser.setUserSurname(aUser.getUserSurname());
             cUser.setProfilImageID(aUser.getProfilImageID());
-            if(!changestatus.equals("nochange"))
-            cUser.setUserToken(updatetoken(aUser));
 
 
             return cUser;
@@ -203,7 +201,7 @@ public class UserDaoimpl implements UserDAO {
     @Override
     public Boolean checkUserCode(String email, long code) {
         Query query = sessionFactory.getCurrentSession()
-                .createQuery("from AppUser  where userEmail =: userEmail and code=:code");
+                .createQuery("from AppUser  where userEmail =: userEmail and code=:code ");
         query.setParameter("userEmail",email);
         query.setParameter("code",code);
         if(query.uniqueResult()!=null){
@@ -229,7 +227,6 @@ public class UserDaoimpl implements UserDAO {
             AppUser tempUser = (AppUser) query.uniqueResult();
 
             AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-            upUser.setUserToken(validation.generatetoken());
             upUser.setStatus("active");
             //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
             //neler değişecekse ilgili şeyler altta yapılır.
@@ -238,6 +235,7 @@ public class UserDaoimpl implements UserDAO {
             session.update(upUser);
             tx.commit();
             session.close();
+            upUser.setUserPassword(null);
             return upUser;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -395,7 +393,7 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public Long getreviewcount(String email,String password,String token) {
+    public Long getreviewcount(String email,String password) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
@@ -411,19 +409,21 @@ public class UserDaoimpl implements UserDAO {
 
 
     @Override
-    public String changpassword(String email,String password) {
+    public String changpassword(String email,String password,String newpw) {
         try {
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();
-            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail");
+            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail =: userEmail and userPassword=: password ");
             query.setParameter("userEmail",email);
+            query.setParameter("password",password);
+
 
             if(query.uniqueResult() != null)
             {
                 AppUser tempUser = (AppUser) query.uniqueResult();
 
                 AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-                upUser.setUserPassword(password);
+                upUser.setUserPassword(newpw);
 
 
                 //update işlemi başlar
@@ -433,8 +433,11 @@ public class UserDaoimpl implements UserDAO {
                 return "ok";
             }
 
-            else
+            else {
+                System.out.println("NO UNİQUE RESULT");
                 return "User does not Exist!!!";
+
+            }
 
 
         } catch (Exception e) {
@@ -528,17 +531,17 @@ public class UserDaoimpl implements UserDAO {
 //        <ListAppUser aUser =  (AppUser) query2.uniqueResult();
 
     }
-
-    public String updatetoken(AppUser appUser){
-        Session session = sessionFactory.getCurrentSession();
-        String newtoken = validation.generatetoken();
-
-        appUser.setUserToken(newtoken);
-
-        session.update(appUser);
-
-        return newtoken;
-
-
-    }
+//
+//    public String updatetoken(AppUser appUser){
+//        Session session = sessionFactory.getCurrentSession();
+//        String newtoken = validation.generatetoken();
+//
+//        appUser.setUserToken(newtoken);
+//
+//        session.update(appUser);
+//
+//        return newtoken;
+//
+//
+//    }
 }
