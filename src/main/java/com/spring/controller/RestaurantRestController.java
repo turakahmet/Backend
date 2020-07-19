@@ -8,12 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.token.Token;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.spring.token.*;
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantRestController {
@@ -22,7 +23,8 @@ public class RestaurantRestController {
     @Autowired
     private RestaurantService restaurantService;
 
-
+    @Autowired
+    Validation validation;
     //add new context
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public ResponseEntity<Void> createRestaurant(@RequestBody Restaurant restaurant) {
@@ -153,11 +155,19 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
-    public ResponseEntity<String> update(@RequestBody Review review) {
+    public ResponseEntity<String> update(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
         try {
-            restaurantService.updateVote(review);
-            restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-            return ResponseEntity.ok().body("Vote has been updated successfully.");
+                if(validation.isValidateAction(review,email,password)){
+                    restaurantService.updateVote(review);
+
+                    restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+                    return ResponseEntity.ok().body("Vote has been updated successfully.");
+                }
+
+
+            else
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         } catch (Exception e) {
 
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -343,10 +353,19 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deletevote", method = RequestMethod.POST)
-    public ResponseEntity<String> deletevote(@RequestBody Review review) {
+    public ResponseEntity<String> deletevote(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
         try {
-            restaurantService.deleteVote(review);
-            return ResponseEntity.ok().body("Vote has been deleted successfully.");
+
+           if(validation.isValidateAction(review,email,password)){
+
+               restaurantService.deleteVote(review);
+               restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+               return ResponseEntity.ok().body("Vote has been deleted successfully.");
+           }
+            else
+               return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
@@ -364,7 +383,6 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
-
     //en yakin service
     @RequestMapping(value = "/getYakinRestoran", method = RequestMethod.GET)
     public ResponseEntity<List> getYakinRestoran(@RequestParam("enlem") Double enlem, @RequestParam("boylam") Double boylam) {
@@ -389,6 +407,3 @@ public class RestaurantRestController {
     }
 
 }
-
-
-

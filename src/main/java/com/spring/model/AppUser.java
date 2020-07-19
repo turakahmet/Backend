@@ -38,14 +38,14 @@ public class AppUser   {
     @Column(length = 30)
     private String userPassword;
 
-    @Column(unique = true, nullable = false)
     private String userToken;
 
     @Column(nullable = false)
     private String userType;
 
+    @Lob
     @Column
-    private String profilImageID;
+    private byte[] profilImageID;
 
     @Column
     private String status;
