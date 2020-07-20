@@ -18,14 +18,14 @@ public interface UserDAO {
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;
     boolean checkStandardCredentials(String userEmail, String password);
     boolean checkGoogleCredentials(AppUser user);
-    CustomUser findUserByEmail(String userEmail,String changestatus);
+    CustomUser findUserByEmail(String userEmail);
     List<Object> listAllUsers();//Bütün kullanıcıları listeler
 //    AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);
     Boolean isUserActive(String email);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
-    String changeusername(String email,String userName);
+    String changeusername(String email,String userName,byte[] newpp);
     void changeUserCode(String email,long code);
     List<Review> getReview(String email);
     Boolean isadmin(AdminTK adminTK);
@@ -34,6 +34,9 @@ public interface UserDAO {
     String changpassword(String email,String password,String newpw);
     List<Object> getcategoryinfo(String email);
     List<Object> getcategorizedreviews(String email,String category);
+    Boolean insertpwcode(String email,String code);
+    Boolean setpassword(String email,String newpw,String token);
+
 
 
 

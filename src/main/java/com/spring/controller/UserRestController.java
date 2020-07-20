@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.Multipart;
 import java.util.List;
 
 /**
@@ -387,21 +388,20 @@ public class UserRestController {
             }
     }
 
-    @RequestMapping(value = "/changeusername", method = RequestMethod.GET)
-    public ResponseEntity<String> changeusername(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("username") String username)   //Kullanıcı ekleyen endpoint
+    @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
+    public ResponseEntity<String> changeusername(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
 
 
         try{
-            Token myToken = new Token(email,password,"");
+            Token myToken = new Token(user.getUserEmail(),user.getUserPassword(),"");
             if(validation.isvalidate(myToken))
             {
-                return new ResponseEntity<String>(userService.changeusername(email,username),HttpStatus.OK); //
-
+                return new ResponseEntity<String>(userService.changeusername(user.getUserEmail(),"efe",user.getProfilImageID()),HttpStatus.OK); //
             }
 
             else{
-                return new ResponseEntity<String>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+                return new ResponseEntity<String>("err",HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
             }
         }
@@ -409,7 +409,75 @@ public class UserRestController {
         catch(Exception e){
 
 
-            return new ResponseEntity<String>(HttpStatus.SERVICE_UNAVAILABLE); //
+            return new ResponseEntity<String>("err",HttpStatus.SERVICE_UNAVAILABLE); //
+        }
+    }
+    @RequestMapping(value = "/resetpassword", method = RequestMethod.GET)
+    public ResponseEntity<Void> passwordreset(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
+    {
+
+
+        try{
+            if(userService.isUserExist(email))
+            {
+
+                if(userService.isUserActive(email)){
+                    if(mailService.resetpassword(email))
+                    return new ResponseEntity<Void>(HttpStatus.OK); //
+                    else
+                        return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE);
+
+
+                }
+                else
+                    return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED); //
+
+
+            }
+            else{
+                return new ResponseEntity<Void>(HttpStatus.NOT_FOUND); //
+
+            }
+
+
+        }
+
+        catch(Exception e){
+
+
+            return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
+        }
+    }
+
+    @RequestMapping(value = "/setpassword", method = RequestMethod.GET)
+    public ResponseEntity<Void> setpassword(@RequestParam("email") String email,@RequestParam("token") String token,@RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
+    {
+
+
+        try {
+            if (validation.isValidateRequest(email, token)) {
+                 if(userService.setpassword(email,newpw,token)){
+                     return new ResponseEntity<Void>(HttpStatus.OK); //
+
+                 }
+             else
+                return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
+
+
+        }
+
+            else{
+                return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED); //
+
+            }
+
+
+        }
+
+        catch(Exception e){
+
+
+            return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
         }
     }
 }

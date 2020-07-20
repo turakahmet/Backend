@@ -77,6 +77,24 @@ public class ValidationDao implements  Validation {
     }
 
     @Override
+    public Boolean isValidateRequest(String email, String token) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and resetCode=:token ");
+        query.setParameter("email",email);
+        query.setParameter("token",token);
+        if(query.uniqueResult() != null)
+            return true;
+        else{
+            System.out.println("---------------ELSEDE");
+            return false;
+
+
+        }
+    }
+
+    @Override
     public String generatetoken() {
         System.out.println("CALISTIIIIIII");
         char[] chars = "abcdefghij1234567klmnopqrstuvwxyz".toCharArray();

@@ -9,7 +9,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 public interface Validation {
      Boolean isvalidate(Token token);
     Boolean isValidateAction(Review review,String email,String password);
-
+    Boolean isValidateRequest(String email,String token);
     String generatetoken();
     }
 

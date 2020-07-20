@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public CustomUser findUserByEmail(String userEmail,String tokenstatus) {
 
-        return userDao.findUserByEmail(userEmail,tokenstatus);
+        return userDao.findUserByEmail(userEmail);
     }
 
     @Override
@@ -94,8 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changeusername(String email, String userName) {
-        return userDao.changeusername(email,userName);
+    public String changeusername(String email, String userName,byte[] newpp) {
+        return userDao.changeusername(email,userName,newpp);
     }
 
     @Override
@@ -114,8 +114,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean insertpwcode(String email,String code) {
+      return   userDao.insertpwcode(email,code);
+    }
+
+    @Override
     public List<Object> getcategorizedreviews(String email, String category) {
       return  userDao.getcategorizedreviews(email,category);
+    }
+
+    @Override
+    public Boolean setpassword(String email, String newpw, String token) {
+        return userDao.setpassword(email,newpw,token);
     }
 
 
