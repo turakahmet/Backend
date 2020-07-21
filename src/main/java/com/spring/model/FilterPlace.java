@@ -14,4 +14,5 @@ public class FilterPlace {
     private List<String> category;
     private double point;
     private int distance;
+    private String currentCityName;
 }

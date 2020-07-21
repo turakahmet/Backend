@@ -725,7 +725,7 @@ public class RestaurantDaoImp implements RestaurantDao {
                     "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
                             "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose, rr.review_count as review_count)" +
-                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.category IN :category and rr.average_review >=:score " +
+                            "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.category IN :category and rr.average_review >=:score and c.cityName=:currentCityName " +
                             "order by case when :sort=0 then rr.average_review else 0 end asc, " +
                             "case when :sort=1 then rr.review_count else 0 end desc," +
                             "case when :sort=2 then rr.average_review else  0 end desc," +
@@ -735,7 +735,7 @@ public class RestaurantDaoImp implements RestaurantDao {
             query.setParameter("sort", filter.getFilters().getSort());
             query.setParameterList("category", filter.getFilters().getCategory());
             query.setParameter("score", filter.getFilters().getPoint());
-            //query.setParameter("distance", filter.getFilters().getDistance());// burası user konum aldıktan sonra enlem boylam farkına göre değişecek where ifadesine eklenecek
+            query.setParameter("currentCityName", filter.getFilters().getCurrentCityName());// burası user konum aldıktan sonra enlem boylam farkına göre değişecek where ifadesine eklenecek
             query.getResultList();
         }
         List<Object> restaurantList = query.getResultList();
