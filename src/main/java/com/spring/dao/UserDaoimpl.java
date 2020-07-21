@@ -245,22 +245,23 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
-    public String changeusername(String email, String userName,byte[] newpp) {
+    public String changeusername(AppUser user) {
 
         try{
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             Query query = sessionFactory.getCurrentSession().createQuery("from AppUser   where userEmail =:email");
-            query.setParameter("email",email);
+            query.setParameter("email",user.getUserEmail());
 
 
 
                 AppUser tempUser = (AppUser) query.uniqueResult();
 
                 AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-                upUser.setUserName(userName);
-            if(newpp!= null){
-            upUser.setProfilImageID(newpp);
+            if(user.getUserName()!=null)
+                upUser.setUserName(user.getUserName());
+            if(user.getProfilImageID()!= null){
+            upUser.setProfilImageID(user.getProfilImageID());
             }
 
 

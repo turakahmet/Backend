@@ -94,8 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changeusername(String email, String userName,byte[] newpp) {
-        return userDao.changeusername(email,userName,newpp);
+    public String changeusername(AppUser user) {
+        return userDao.changeusername(user);
     }
 
     @Override

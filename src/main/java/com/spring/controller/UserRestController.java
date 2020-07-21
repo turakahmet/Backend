@@ -154,14 +154,14 @@ public class UserRestController {
             {
                 error.setCode(404);
                 error.setFeedback("Parolanızı veya email adresinizi yanlış girdiniz.");
-                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
 
             }
         } catch (Exception e) {
 
             error.setCode(405);
             error.setFeedback("Something went wrong");
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         }
 
 
@@ -391,13 +391,11 @@ public class UserRestController {
     @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
     public ResponseEntity<String> changeusername(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
-
-
         try{
             Token myToken = new Token(user.getUserEmail(),user.getUserPassword(),"");
             if(validation.isvalidate(myToken))
             {
-                return new ResponseEntity<String>(userService.changeusername(user.getUserEmail(),"efe",user.getProfilImageID()),HttpStatus.OK); //
+                return new ResponseEntity<String>(userService.changeusername(user),HttpStatus.OK); //
             }
 
             else{
