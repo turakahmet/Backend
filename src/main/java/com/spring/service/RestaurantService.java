@@ -12,7 +12,7 @@ public interface RestaurantService {
 
     List<Object> findByName(String name,int page);
 
-    List<Object> findByCity(String city,int page);
+    List<Object> findByCity(String city,String category,int page);
 
     List<Object> findByTown(String town,int page);
 

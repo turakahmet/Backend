@@ -37,8 +37,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findByCity(String city, int page) {
-        return restaurantDao.findByCity(city,page);
+    public List<Object> findByCity(String city,String category,int page) {
+        return restaurantDao.findByCity(city,category,page);
     }
 
     @Override

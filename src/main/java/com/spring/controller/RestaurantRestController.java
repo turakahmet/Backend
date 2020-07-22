@@ -89,9 +89,9 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/findRestaurantbyCity", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestParam("city") String city, @RequestParam("page") int page) {
+    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestParam("city") String city,@RequestParam("category")String category, @RequestParam("page") int page) {
         try {
-            return new ResponseEntity<>(restaurantService.findByCity(city, page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findByCity(city,category, page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
