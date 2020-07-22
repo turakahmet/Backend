@@ -38,6 +38,7 @@ public class AppUser   {
     @Column(length = 30)
     private String userPassword;
 
+    @Column
     private String userToken;
 
     @Column(nullable = false)
