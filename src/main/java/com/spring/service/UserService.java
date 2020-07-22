@@ -19,11 +19,12 @@ public interface UserService {
     List<Object> listAllUsers();
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);
-    CustomUser findUserByEmail(String userEmail,String tokenstatus);
+    CustomUser findUserByEmail(String userEmail);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
     Boolean isAdmin(AdminTK adminTK);
+    String getusertype(String email);
     List<Review> getReview(String email);
     String changeusername(AppUser user);
     Long getreviewcount(String email,String password);

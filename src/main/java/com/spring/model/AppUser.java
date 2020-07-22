@@ -56,6 +56,9 @@ public class AppUser   {
     @Column
     private String resetCode;
 
+    @Column
+    private String idToken;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> review;
 

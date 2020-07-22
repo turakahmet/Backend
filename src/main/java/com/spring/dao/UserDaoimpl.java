@@ -82,6 +82,25 @@ public class UserDaoimpl implements UserDAO {
     }
 
     @Override
+    public String getusertype(String email) {
+        String result;
+        try{
+            Query query = sessionFactory.getCurrentSession().
+                    createQuery("select userType from AppUser where userEmail=:userEmail");
+            query.setParameter("userEmail", email);
+
+            result = (String) query.getSingleResult();
+            return result;
+        }
+        catch(Exception e){
+
+            return "wrong";
+
+        }
+
+    }
+
+    @Override
     public CustomUser findUserByEmail(String userEmail) {
         try{
             Session session = sessionFactory.openSession();
@@ -400,13 +419,33 @@ public class UserDaoimpl implements UserDAO {
 
     @Override
     public Long getreviewcount(String email,String password) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
-        query.setParameter("email",email);
+        if(getusertype(email).equals("google")){
+            System.out.println("GOOGLE USER COUNT REQUEST");
+            if(validation.isValidateGoogle(email,password)){
+                System.out.println("GOOGLE USER COUNT REQUEST VALİDATED");
+
+                Session session = sessionFactory.openSession();
+                Transaction transaction = session.beginTransaction();
+                Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
+                query.setParameter("email",email);
+                return (Long) query.getSingleResult();
 
 
-        return (Long) query.getSingleResult();
+            }
+            else
+                return null;
+        }
+
+        else{
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery("select COUNT(*)  from Review where user.userEmail =: email  ");
+            query.setParameter("email",email);
+
+
+            return (Long) query.getSingleResult();
+        }
+
 
 
 

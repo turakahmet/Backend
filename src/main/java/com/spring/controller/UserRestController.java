@@ -54,11 +54,6 @@ public class UserRestController {
     {
         try {
             if (!userService.isUserExist(user.getUserEmail())) {
-
-
-
-
-
                     user.setStatus("deactive");
 
 
@@ -67,7 +62,7 @@ public class UserRestController {
                     user.setCode(mailService.sendMail(user.getUserEmail()));
                      userService.insertUser(user);
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
 
 
 
@@ -142,11 +137,11 @@ public class UserRestController {
 
                     System.out.println("İS ACTİVE TRUE");
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
                 } else {
 
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
 
                 }
 
@@ -171,18 +166,21 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
 
     {
+        user.setUserPassword("YNGUP_default_");
         if (!userService.isUserExist(user.getUserEmail())){
 
             return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);        }
         else {
-            if(userService.checkUserType(user).equals("google") || userService.checkUserType(user).equals("facebook") )
+            if(userService.getusertype(user.getUserEmail()).equals("google") || userService.getusertype(user.getUserEmail()).equals("facebook") )
 
-                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail(),""), HttpStatus.OK);
+            {
+                System.out.println("USERTYPE GOOGLE VEYA FACEBOOKTOR.");
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+            }
             else
             {
-                error.setCode(409);
-                error.setFeedback("Bu adrese kayıtlı kullanıcı zaten var.");
-                return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+
+                return new ResponseEntity<String>(HttpStatus.CONFLICT);
             }
         }
 
@@ -225,7 +223,7 @@ public class UserRestController {
 
     {
 
-            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email,""), HttpStatus.OK);
+            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
 
 
 
@@ -254,19 +252,24 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,String password)   //Kullanıcı ekleyen endpoint
+    public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
     {
-        try{
+        if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
+            List<Object> reviewList = userDAO.getuserreviews(email);
+            return new ResponseEntity<List<Object>>(reviewList, HttpStatus.OK); //
+        }
+        else{
+            try{
             Token myToken = new Token(email,password,"");
             if(validation.isvalidate(myToken))
             {
 
-                    List<Object> reviewList = userDAO.getuserreviews(email);
+                List<Object> reviewList = userDAO.getuserreviews(email);
                 return new ResponseEntity<List<Object>>(reviewList,HttpStatus.OK); //
 
 
 
-        }
+            }
             else
                 return new ResponseEntity<List<Object>>(HttpStatus.UNAUTHORIZED); //
 
@@ -277,31 +280,37 @@ public class UserRestController {
             System.out.print(e.getMessage());
 
             return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED);
-        }
+        }}
+
 
     }
 
     @RequestMapping(value = "/getreviewcount", method = RequestMethod.GET)
     public ResponseEntity<Long> getreviewcount(@RequestParam("email") String email,@RequestParam("password") String password)
     {
-
-
-        try {
-            Token myToken = new Token(email,password,"all");
-            if(validation.isvalidate(myToken))
-            {
+            if(validation.isValidateGoogle(email,password)){
                 return new ResponseEntity<Long>(userDAO.getreviewcount(email,password), HttpStatus.OK); //
+
             }
-            else
-                return new ResponseEntity<Long>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+            else{
+                try {
+                    Token myToken = new Token(email,password,"all");
+                    if(validation.isvalidate(myToken))
+                    {
+                        return new ResponseEntity<Long>(userDAO.getreviewcount(email,password), HttpStatus.OK); //
+                    }
+                    else
+                        return new ResponseEntity<Long>( HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
 
-        } catch (Exception e) {
+                } catch (Exception e) {
 
-            System.out.print(e.getMessage());
+                    System.out.print(e.getMessage());
 
-            return new ResponseEntity<Long>(HttpStatus.NOT_MODIFIED);
-        }
+                    return new ResponseEntity<Long>(HttpStatus.NOT_MODIFIED);
+                }
+            }
+
 
     }
 
@@ -344,22 +353,28 @@ public class UserRestController {
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
     public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email,@RequestParam("password") String password)
     {
+        if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
+            List<Object> reviewList = userDAO.getuserreviews(email);
+            return new ResponseEntity<Object>(userService.getcategoryinfo(email), HttpStatus.OK); //
+        }
+        else{
+            try{
+                Token myToken = new Token(email,password,"all");
+                if(validation.isvalidate(myToken)){
+                    return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
 
-        try{
-            Token myToken = new Token(email,password,"all");
-            if(validation.isvalidate(myToken)){
-                return new ResponseEntity<Object>(userService.getcategoryinfo(email),HttpStatus.OK); //
+                }
+                else {
+                    return new ResponseEntity<Object>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
 
+                }
             }
-            else {
-                return new ResponseEntity<Object>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+            catch(Exception e){
+                return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED); //
 
             }
         }
-        catch(Exception e){
-            return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED); //
 
-        }
 
 
     }
@@ -368,24 +383,31 @@ public class UserRestController {
         public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
         {
 
+            if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
+                List<Object> reviewList = userDAO.getuserreviews(email);
+                return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category), HttpStatus.OK); //
+            }
+            else{
+                try{
+                    Token myToken = new Token(email,password,"");
+                    if(validation.isvalidate(myToken))
+                    {
+                        return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
 
-            try{
-                Token myToken = new Token(email,password,"");
-                if(validation.isvalidate(myToken))
-                {
-                    return new ResponseEntity<List<Object>>(userService.getcategorizedreviews(email,category),HttpStatus.OK); //
+                    }
 
+                    else{
+                        return new ResponseEntity<List<Object>>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+                    }
                 }
 
-                else{
-                    return new ResponseEntity<List<Object>>(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
-
+                catch(Exception e){
+                    return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED); //
                 }
             }
 
-            catch(Exception e){
-                return new ResponseEntity<List<Object>>(HttpStatus.NOT_MODIFIED); //
-            }
+
     }
 
     @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
