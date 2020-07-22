@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CustomUser findUserByEmail(String userEmail,String tokenstatus) {
+    public CustomUser findUserByEmail(String userEmail) {
 
         return userDao.findUserByEmail(userEmail);
     }
@@ -86,6 +86,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean isAdmin(AdminTK adminTK) {
         return userDao.isadmin(adminTK);
+    }
+
+    @Override
+    public String getusertype(String email) {
+        return  userDao.getusertype(email);
     }
 
     @Override

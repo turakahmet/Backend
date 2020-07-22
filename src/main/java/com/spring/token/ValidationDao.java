@@ -95,6 +95,43 @@ public class ValidationDao implements  Validation {
     }
 
     @Override
+    public Boolean isValidateGoogle(String email, String idToken) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and userToken=:token ");
+        query.setParameter("email", email);
+        query.setParameter("token", idToken);
+        if (query.uniqueResult() != null)
+            return true;
+        else {
+            System.out.println("---------------ELSEDE");
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean isValidateGoogleAction(Review review, String email, String token) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+
+
+
+        Query query = sessionFactory.getCurrentSession().createQuery("from Review where user.userEmail=:email and user.userToken=:token and reviewID =:reviewid");
+        query.setParameter("email",email);
+        query.setParameter("token",token);
+        query.setParameter("reviewid",review.getReviewID());
+        if(query.uniqueResult() != null)
+            return true;
+        else{
+            System.out.println("---------------ELSEDE");
+            return false;
+
+
+        }
+    }
+
+    @Override
     public String generatetoken() {
         System.out.println("CALISTIIIIIII");
         char[] chars = "abcdefghij1234567klmnopqrstuvwxyz".toCharArray();

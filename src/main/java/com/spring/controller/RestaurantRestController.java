@@ -2,6 +2,7 @@ package com.spring.controller;
 
 import com.spring.model.*;
 import com.spring.service.RestaurantService;
+import com.spring.service.UserService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +23,10 @@ public class RestaurantRestController {
     @Setter
     @Autowired
     private RestaurantService restaurantService;
+
+    @Setter
+    @Autowired
+    private UserService userService;
 
     @Autowired
     Validation validation;
@@ -156,7 +161,15 @@ public class RestaurantRestController {
 
     @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
     public ResponseEntity<String> update(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
-        try {
+
+        if(userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review,email,password)){
+            restaurantService.updateVote(review);
+            restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+            return ResponseEntity.ok().body("Vote has been updated successfully.");
+        }
+
+        else{
+            try {
                 if(validation.isValidateAction(review,email,password)){
                     restaurantService.updateVote(review);
 
@@ -165,13 +178,17 @@ public class RestaurantRestController {
                 }
 
 
-            else
+                else
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        } catch (Exception e) {
+            } catch (Exception e) {
 
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            }
         }
+
+
+
 
     }
 
@@ -354,22 +371,32 @@ public class RestaurantRestController {
 
     @RequestMapping(value = "/deletevote", method = RequestMethod.POST)
     public ResponseEntity<String> deletevote(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
-        try {
 
-           if(validation.isValidateAction(review,email,password)){
-
-               restaurantService.deleteVote(review);
-               restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-               return ResponseEntity.ok().body("Vote has been deleted successfully.");
-           }
-            else
-               return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-
+        if(userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review,email,password)){
+            restaurantService.deleteVote(review);
+            restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+            return ResponseEntity.ok().body("Vote has been deleted successfully.");
         }
+        else{
+            try {
+
+                if(validation.isValidateAction(review,email,password)){
+
+                    restaurantService.deleteVote(review);
+                    restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+                    return ResponseEntity.ok().body("Vote has been deleted successfully.");
+                }
+                else
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+            }
+        }
+
+
 
     }
 

@@ -18,6 +18,7 @@ public interface UserDAO {
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;
     boolean checkStandardCredentials(String userEmail, String password);
     boolean checkGoogleCredentials(AppUser user);
+    String getusertype(String email);
     CustomUser findUserByEmail(String userEmail);
     List<Object> listAllUsers();//Bütün kullanıcıları listeler
 //    AppUser updateUser(AppUser user); //Kullanıcı günceller
