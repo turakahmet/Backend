@@ -100,7 +100,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category)" +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category,r.restaurantImageBlob as restaurantImageBlob)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c where c.cityName =:city and r.category=:category").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("city", city);
             query.setParameter("category",category);

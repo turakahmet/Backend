@@ -316,7 +316,7 @@ public class UserDaoimpl implements UserDAO {
             AppUser tempUser = (AppUser) query.uniqueResult();
 
             AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-            upUser.setCode(0);
+            upUser.setCode(0L);
             //idyi burda yakalayıp bu idde klon kullanıcı oluşuyor.
             //neler değişecekse ilgili şeyler altta yapılır.
 

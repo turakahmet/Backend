@@ -69,10 +69,10 @@ public class Restaurant {
     @ColumnDefault("0")
     private double friendly_review;
 
-    @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private Set<Review> review;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private Set<Report> reports;
 
     @Column

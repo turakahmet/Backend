@@ -23,13 +23,13 @@ public class City {
     @Column
     private String cityName;
 
-    @OneToMany(mappedBy = "cityID", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "cityID", cascade =  CascadeType.ALL)
     private Set<Town> towns;
 
-    @OneToMany(mappedBy = "cityID", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "cityID", cascade = CascadeType.ALL)
     private Set<Restaurant> rCityID;
 
-    @OneToMany(mappedBy = "cityID", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "cityID", cascade = CascadeType.ALL )
     private Set<UserRecords> uCityID;
 
 }

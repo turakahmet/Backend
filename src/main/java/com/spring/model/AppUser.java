@@ -24,6 +24,7 @@ public class AppUser   {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private long userID;
     //cinli dosya comment satırı
     @Column
@@ -52,7 +53,7 @@ public class AppUser   {
     private String status;
 
     @Column
-    private long code;
+    private Long code;
 
     @Column
     private String resetCode;
@@ -60,10 +61,10 @@ public class AppUser   {
     @Column
     private String idToken;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Review> review;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Report> reports;
 
 }
