@@ -500,4 +500,26 @@ public class UserRestController {
             return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
         }
     }
+
+    @RequestMapping(value = "/isuserexist", method = RequestMethod.GET)
+    public ResponseEntity<?> isuserexist(@RequestParam ("email") String email)   //Kullanıcı ekleyen endpoint
+    {
+        try {
+
+            if(userDAO.isUserExist(email))
+            {
+                return new ResponseEntity<String>("true",HttpStatus.OK); //
+
+            }
+            else{
+                return new ResponseEntity<String>("false",HttpStatus.UNAUTHORIZED); //
+
+            }
+
+        }
+        catch(Exception e){
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_MODIFIED); //
+
+        }
+    }
 }
