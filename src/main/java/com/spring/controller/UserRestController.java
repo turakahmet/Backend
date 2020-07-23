@@ -77,7 +77,7 @@ public class UserRestController {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<AppUser>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_MODIFIED);
         }
 
     }
