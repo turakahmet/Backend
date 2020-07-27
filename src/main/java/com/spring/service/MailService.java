@@ -28,18 +28,24 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public long sendMail(String userEmail){
-            System.out.println("Mail service");
+    public long sendMail(String userEmail,String password){
+        System.out.println("Mail service");
+        long code = (long) Math.floor(Math.random() * 899999L) + 100000L;
+        String url = "http://100numaram-env.eba-4s2ppuff.eu-central-1.elasticbeanstalk.com/verification?email="+userEmail+"&code="+code+"&password="+password;
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        String htmlMsg = "<p><h3>Üyeliğinizi tamamlamak   için Lütfen Linke Tıklayınız:</h3><p><a href='"+url+"'>"+"link"+"</a>";
+        try {
+            helper.setText(htmlMsg, true); // Use this or above line.
+            helper.setTo(userEmail);
+            helper.setSubject("Üyelik Tamamlama");
+            helper.setFrom("teamoftarnet@gmail.com");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
-            long code = (long) Math.floor(Math.random() * 899999L) + 100000L;
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setFrom("teamoftarnet@gmail.com");
-            email.setTo(userEmail);
-            email.setSubject("Üyelik Onay");
-            email.setText("üyeliği tamamlamak için gereken kod: "+code);
-
-            mailSender.send(email);
-            return code;
+        mailSender.send(mimeMessage);
+        return code;
 
 
 
@@ -56,7 +62,7 @@ public class MailService {
             salt.append(SALTCHARS.charAt(index));
         }
         String saltStr = salt.toString();
-        url = "http://10.0.3.248:8095/resetpassword?email="+email+"&token="+saltStr;
+        url = "http://100numaram-env.eba-4s2ppuff.eu-central-1.elasticbeanstalk.com/resetpassword?email="+email+"&token="+saltStr;
         url.toLowerCase();
         saltStr.toLowerCase();
         System.out.println(url);

@@ -59,7 +59,7 @@ public class UserRestController {
 
                     error.setFeedback("Giriş Yaparken tek kullanımlık kod mail adresinize gönderildi.");
                     error.setCode(200);
-                    user.setCode(mailService.sendMail(user.getUserEmail()));
+                    user.setCode(mailService.sendMail(user.getUserEmail(),user.getUserPassword()));
                      userService.insertUser(user);
 
                     return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
@@ -195,23 +195,29 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-        Token myToken = new Token(email,password,"");
-        if(validation.isvalidate(myToken)){
-            if (userService.checkUserCode(email, code)) {
-                System.out.println("Code: "+code+"");
+        try{
+            Token myToken = new Token(email,password,"");
+            if(validation.isvalidate(myToken)){
+                if (userService.checkUserCode(email, code)) {
+                    System.out.println("Code: "+code+"");
 
 
-                return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
-            } else {
-                error.setCode(204 );
-                error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
+                    return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
+                } else {
+                    error.setCode(204 );
+                    error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
+                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+
+                }
+            }
+
+            else{
                 return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
 
             }
         }
-
-        else{
-            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
 
         }
 
@@ -518,7 +524,7 @@ public class UserRestController {
 
         }
         catch(Exception e){
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_MODIFIED); //
+            return new ResponseEntity<String>(e.getMessage().toString(),HttpStatus.NOT_MODIFIED); //
 
         }
     }

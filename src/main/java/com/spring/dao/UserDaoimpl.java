@@ -57,13 +57,10 @@ public class UserDaoimpl implements UserDAO {
     @Override
     public boolean checkStandardCredentials(String userEmail, String password) {
 
-
-        Query query = sessionFactory.getCurrentSession().
-                createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword ");
+        System.out.println("CheckStandard credentials");
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword ");
         query.setParameter("userEmail", userEmail);
         query.setParameter("userPassword", password);
-
-
 
         if (query.uniqueResult() != null) {
             return true;
@@ -193,8 +190,8 @@ public class UserDaoimpl implements UserDAO {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return null;
+
         }
 
 
