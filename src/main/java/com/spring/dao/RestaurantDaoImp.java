@@ -499,7 +499,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl, r.restaurantImageBlob as restaurantImageBlob, concat(t.townName,',',c.cityName) as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) " +
                             "from Restaurant r inner join r.townID t inner join t.cityID c where lower(r.restaurantName) like lower(concat('%',:restName,'%')) " +
                             "and t.townName= :townName").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
