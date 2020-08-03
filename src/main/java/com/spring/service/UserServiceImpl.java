@@ -89,6 +89,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean sendmail(String email) {
+       return  userDao.sendmail(email);
+    }
+
+    @Override
     public String getusertype(String email) {
         return  userDao.getusertype(email);
     }

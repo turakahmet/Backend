@@ -528,4 +528,33 @@ public class UserRestController {
 
         }
     }
+
+
+
+
+    @RequestMapping(value = "/sendmail", method = RequestMethod.GET)
+    public ResponseEntity<?> sendmail(@RequestParam ("email") String email)
+    {
+        try {
+
+            if(userDAO.isUserExist(email) && !userDAO.getusertype(email).equals("google") && !userDAO.isUserActive(email))
+            {
+                return new ResponseEntity<String>("true",HttpStatus.OK); //
+
+            }
+            else if (userDAO.getusertype(email).equals("google") || userDAO.isUserActive(email)){
+                return new ResponseEntity<String>("false",HttpStatus.UNAUTHORIZED); //
+
+            }
+            else {
+                return new ResponseEntity<String>("false",HttpStatus.NOT_FOUND); //
+
+            }
+
+        }
+        catch(Exception e){
+            return new ResponseEntity<String>(e.getMessage().toString(),HttpStatus.NOT_MODIFIED); //
+
+        }
+    }
 }

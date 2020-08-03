@@ -4,6 +4,7 @@ import com.spring.model.AdminTK;
 import com.spring.model.AppUser;
 import com.spring.model.CustomUser;
 import com.spring.model.Review;
+import com.spring.service.MailService;
 import com.spring.token.Validation;
 import lombok.Setter;
 //import lombok.launch.PatchFixesHider;
@@ -27,6 +28,8 @@ import java.util.List;
 @Transactional
 @Repository
 public class UserDaoimpl implements UserDAO {
+    @Autowired
+    MailService mailService;
 
     @Setter
     @Autowired
@@ -257,6 +260,30 @@ public class UserDaoimpl implements UserDAO {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public Boolean sendmail(String email) {
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();
+
+
+            Query query = sessionFactory.getCurrentSession()
+                    .createQuery("from AppUser where userEmail =: userEmail");
+            query.setParameter("userEmail", email);
+
+            AppUser aUser = (AppUser) query.uniqueResult();
+            aUser.setCode(mailService.sendMail(email,aUser.getUserPassword()));
+            session.update(aUser);
+            tx.commit();
+            session.close();
+            return true;
+
+        }
+        catch (Exception e){
+            return false;
         }
     }
 

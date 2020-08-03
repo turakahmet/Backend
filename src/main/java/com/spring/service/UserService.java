@@ -24,6 +24,7 @@ public interface UserService {
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
     Boolean isAdmin(AdminTK adminTK);
+    Boolean sendmail(String email);
     String getusertype(String email);
     List<Review> getReview(String email);
     String changeusername(AppUser user);
