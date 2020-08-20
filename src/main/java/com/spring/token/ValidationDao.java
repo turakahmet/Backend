@@ -99,13 +99,13 @@ public class ValidationDao implements  Validation {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
 
-        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and userToken=:token ");
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and idToken=:token ");
         query.setParameter("email", email);
         query.setParameter("token", idToken);
-        if (query.uniqueResult() != null)
+        if (query.getResultList().size() > 0 )
             return true;
         else {
-            System.out.println("---------------ELSEDE");
+            System.out.println("---------------ELSEDE:"+query.getResultList().size());
             return false;
         }
     }
@@ -117,14 +117,21 @@ public class ValidationDao implements  Validation {
 
 
 
-        Query query = sessionFactory.getCurrentSession().createQuery("from Review where user.userEmail=:email and user.userToken=:token and reviewID =:reviewid");
+        Query query = sessionFactory.getCurrentSession().createQuery("from Review where user.userEmail=:email and user.idToken=:token and reviewID =:reviewid");
         query.setParameter("email",email);
         query.setParameter("token",token);
         query.setParameter("reviewid",review.getReviewID());
-        if(query.uniqueResult() != null)
+        if(query.getResultList().size() > 0)
             return true;
         else{
             System.out.println("---------------ELSEDE");
+            System.out.println(email);
+            System.out.println(token);
+            System.out.println(review.getReviewID());
+            System.out.println(review.getRestaurant().getRestaurantID());
+            System.out.println(review.getUser().getUserID());
+            System.out.println("---------------ELSEDE");
+
             return false;
 
 

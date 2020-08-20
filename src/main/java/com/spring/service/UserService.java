@@ -16,6 +16,7 @@ import java.util.List;
 public interface UserService {
     String checkUserType(AppUser user);
     AppUser insertUser(AppUser user);
+    Boolean isAdminId(String uniqueId);
     List<Object> listAllUsers();
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);

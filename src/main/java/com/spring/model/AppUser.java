@@ -4,6 +4,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,7 +59,7 @@ public class AppUser   {
     @Column
     private String resetCode;
 
-    @Column
+    @Column(length = 3000)
     private String idToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

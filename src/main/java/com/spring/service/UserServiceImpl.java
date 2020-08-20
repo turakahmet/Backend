@@ -43,6 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean isAdminId(String uniqueId) {
+       return userDao.isAdminId(uniqueId);
+    }
+
+    @Override
     public List<Object> listAllUsers() {
         return userDao.listAllUsers();
     }

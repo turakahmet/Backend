@@ -47,9 +47,10 @@ public interface RestaurantDao {
 
     void updateRestaurantReview(long restaurantID);
 
-    void Delete(long id);
+    void Delete(long id,String uniqueId);
 
     void deleteAllRestaurant();
+
 
     boolean isRestaurantExist(Restaurant restaurant);
 

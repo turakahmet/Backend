@@ -813,7 +813,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
 
     @Override
-    public void Delete(long id) {
+    public void Delete(long id,String uniqueId) {
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("delete FROM  Restaurant  where restaurantID=:id");
         query.setParameter("id", id);
@@ -830,6 +830,7 @@ public class RestaurantDaoImp implements RestaurantDao {
             System.out.print(e.getMessage()); //catche girerse exceptionu gösterir.
         }
     }
+
 
     @Override
     public boolean isRestaurantExist(Restaurant restaurant) {

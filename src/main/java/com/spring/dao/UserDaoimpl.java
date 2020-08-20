@@ -85,6 +85,8 @@ public class UserDaoimpl implements UserDAO {
     public String getusertype(String email) {
         String result;
         try{
+
+            System.out.println("EMAİL!!!:"+email);
             Query query = sessionFactory.getCurrentSession().
                     createQuery("select userType from AppUser where userEmail=:userEmail");
             query.setParameter("userEmail", email);
@@ -94,7 +96,8 @@ public class UserDaoimpl implements UserDAO {
         }
         catch(Exception e){
 
-            return "wrong";
+             e.printStackTrace();
+            return e.getMessage();
 
         }
 
@@ -283,7 +286,12 @@ public class UserDaoimpl implements UserDAO {
 
         }
         catch (Exception e){
-            return false;
+            System.out.println("CATCH!!!:"+e.getMessage());
+            //Catche giriyor sessionlarla alakalı problem var. Burası fixlenmeli
+
+        }
+        finally {
+            return true;
         }
     }
 
@@ -293,19 +301,16 @@ public class UserDaoimpl implements UserDAO {
         try{
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
-            Query query = sessionFactory.getCurrentSession().createQuery("from AppUser   where userEmail =:email");
-            query.setParameter("email",user.getUserEmail());
-
-
-
+            if(getusertype(user.getUserEmail()).equals("google")){
+                Query query = sessionFactory.getCurrentSession().createQuery("from AppUser   where userEmail =:email");
+                query.setParameter("email",user.getUserEmail());
                 AppUser tempUser = (AppUser) query.uniqueResult();
 
                 AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
-            if(user.getUserName()!=null)
-                upUser.setUserName(user.getUserName());
-            if(user.getProfilImageID()!= null){
-            upUser.setProfilImageID(user.getProfilImageID());
-            }
+
+                if(user.getProfilImageID()!= null){
+                    upUser.setProfilImageID(user.getProfilImageID());
+                }
 
 
 
@@ -314,6 +319,33 @@ public class UserDaoimpl implements UserDAO {
                 transaction.commit();
                 session.close();
                 return "ok";
+
+            }
+            else{
+                Query query = sessionFactory.getCurrentSession().createQuery("from AppUser   where userEmail =:email");
+                query.setParameter("email",user.getUserEmail());
+
+
+
+                AppUser tempUser = (AppUser) query.uniqueResult();
+
+                AppUser upUser = (AppUser) session.get(AppUser.class, tempUser.getUserID());
+                if(user.getUserName()!=null)
+                    upUser.setUserName(user.getUserName());
+                if(user.getProfilImageID()!= null){
+                    upUser.setProfilImageID(user.getProfilImageID());
+                }
+
+
+
+                //update işlemi başlar
+                session.update(upUser);
+                transaction.commit();
+                session.close();
+                return "ok";
+
+            }
+
 
         }
         catch(Exception e){
@@ -667,6 +699,19 @@ public class UserDaoimpl implements UserDAO {
             return false;
         }
     }
+    @Override
+    public Boolean isAdminId(String uniqueId) {
+        Session session = sessionFactory.openSession();
+        Transaction tx  = session.beginTransaction();
+        Query query = sessionFactory.getCurrentSession().createQuery("from AdminTK   where uniqueID=:uniqueId");
+        query.setParameter("uniqueId",uniqueId);
+
+
+
+
+        return query.getResultList().size()>0 ? true : false;
+    }
+
 }
 
 

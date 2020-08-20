@@ -24,6 +24,8 @@ public interface UserDAO {
 //    AppUser updateUser(AppUser user); //Kullanıcı günceller
     Boolean isUserExist(String email);
     Boolean isUserActive(String email);
+    Boolean isAdminId(String uniqueId);
+
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean sendmail(String email);

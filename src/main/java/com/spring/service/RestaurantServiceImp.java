@@ -15,8 +15,9 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Autowired
     private RestaurantDao restaurantDao;
-    public void setRestaurantDAO(RestaurantDao restaurantDao){
-        this.restaurantDao=restaurantDao;
+
+    public void setRestaurantDAO(RestaurantDao restaurantDao) {
+        this.restaurantDao = restaurantDao;
     }
 
 
@@ -33,27 +34,27 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public List<Object> findByName(String name, int page) {
-        return restaurantDao.findByName(name,page);
+        return restaurantDao.findByName(name, page);
     }
 
     @Override
-    public List<Object> findByCity(String city,String category,int page) {
-        return restaurantDao.findByCity(city,category,page);
+    public List<Object> findByCity(String city, String category, int page) {
+        return restaurantDao.findByCity(city, category, page);
     }
 
     @Override
     public List<Object> findByTown(String town, int page) {
-        return restaurantDao.findByTown(town,page);
+        return restaurantDao.findByTown(town, page);
     }
 
     @Override
     public List<Object> votedRestaurantList(long id, int page) {
-        return restaurantDao.votedRestaurantList(id,page);
+        return restaurantDao.votedRestaurantList(id, page);
     }
 
     @Override
     public List<Object> findAllbyCategory(String category, int page) {
-        return restaurantDao.findAllbyCategory(category,page);
+        return restaurantDao.findAllbyCategory(category, page);
     }
 
     @Override
@@ -62,7 +63,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public ArrayList<Town> getTown(String cityName) { return restaurantDao.getTown(cityName);
+    public ArrayList<Town> getTown(String cityName) {
+        return restaurantDao.getTown(cityName);
     }
 
 
@@ -83,7 +85,7 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void updateVote(Review review) {
-         restaurantDao.updateVote(review);
+        restaurantDao.updateVote(review);
     }
 
     @Override
@@ -95,7 +97,7 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void deleteVote(Review review) {
-         restaurantDao.detelevote(review);
+        restaurantDao.detelevote(review);
 
     }
 
@@ -135,19 +137,15 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public void Delete(long id) {
-        restaurantDao.Delete(id);
+    public void Delete(long id, String uniqueId) {
+        restaurantDao.Delete(id, uniqueId);
 
     }
 
-    @Override
-    public void deleteAllRestaurant() {
-        restaurantDao.deleteAllRestaurant();
-    }
 
     @Override
-    public List<Object> getTopRated(int page,String type) {
-        return restaurantDao.getTopRated(page,type);
+    public List<Object> getTopRated(int page, String type) {
+        return restaurantDao.getTopRated(page, type);
     }
 
     @Override
@@ -161,8 +159,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public boolean isVoteExist(long userID,long restaurantID) {
-        return restaurantDao.isVoteExist(userID,restaurantID);
+    public boolean isVoteExist(long userID, long restaurantID) {
+        return restaurantDao.isVoteExist(userID, restaurantID);
     }
 
     @Override
@@ -171,31 +169,34 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public ArrayList<Object> fastPoint(long ResID,double point) {
+    public ArrayList<Object> fastPoint(long ResID, double point) {
         return restaurantDao.fastPoint(ResID, point);
     }
-///
+
+    ///
     @Override
     public void fastPointSend(long resID, long userID, double point) {
-         restaurantDao.fastPointSend(resID,userID,point);
+        restaurantDao.fastPointSend(resID, userID, point);
     }
-    @Override
-    public List<Object> findAllSourceRestaurant(String name, String townName,int page){
-        return restaurantDao.findAllSourceRestaurant(name,townName,page);}
 
     @Override
-    public ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID) {
-        return restaurantDao.compareResults(oldValueHygiene,oldValueCleaning,ResID);
+    public List<Object> findAllSourceRestaurant(String name, String townName, int page) {
+        return restaurantDao.findAllSourceRestaurant(name, townName, page);
+    }
+
+    @Override
+    public ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning, long ResID) {
+        return restaurantDao.compareResults(oldValueHygiene, oldValueCleaning, ResID);
     }
 
     @Override
     public void arrowPointSend(long resID, int cleaningArrow, int hygieneArrow) {
-        restaurantDao.arrowPointSend(resID,cleaningArrow,hygieneArrow);
+        restaurantDao.arrowPointSend(resID, cleaningArrow, hygieneArrow);
     }
 
     @Override
-    public void reportSend(long resID,long UserID, int reportID) {
-        restaurantDao.reportSend(resID,UserID,reportID);
+    public void reportSend(long resID, long UserID, int reportID) {
+        restaurantDao.reportSend(resID, UserID, reportID);
     }
 
     @Override
@@ -205,7 +206,7 @@ public class RestaurantServiceImp implements RestaurantService {
 
     @Override
     public void updateReportSend(long resID, int reportID) {
-        restaurantDao.updateReportSend(resID,reportID);
+        restaurantDao.updateReportSend(resID, reportID);
     }
 
     @Override

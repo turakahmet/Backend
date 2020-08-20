@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.Token;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,10 +41,15 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deletebyId", method = RequestMethod.GET)
-    public ResponseEntity<Void> delete(@RequestParam("id") long id) {
+    public ResponseEntity<Void> delete(@RequestParam("id") long id,@RequestParam ("uniqueid") String uniqueId) {
 
-        restaurantService.Delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(userService.isAdminId(uniqueId)){
+            restaurantService.Delete(id,uniqueId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 
     }
 
@@ -254,14 +260,23 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deleteRecord", method = RequestMethod.POST)
-    public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId) {
-        try {
-            restaurantService.deleteRecordId(recordId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId,@RequestParam("uniqueid") String uniqueId) {
+
+
+        if(userService.isAdminId(uniqueId)){
+            try {
+                restaurantService.deleteRecordId(recordId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+
+            }
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         }
+
     }
 
     @RequestMapping(value = "/saveRecord", method = RequestMethod.POST)
@@ -358,6 +373,8 @@ public class RestaurantRestController {
     @RequestMapping(value = "/adminCheck", method = RequestMethod.POST)
     public ResponseEntity<Void> adminCheck(@RequestBody AdminTK adminTK) {
         try {
+//            String ipAddress = ((WebAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getRemoteAddress();
+
             if (restaurantService.adminCheck(adminTK)) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {

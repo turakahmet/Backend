@@ -53,9 +53,8 @@ public interface RestaurantService {
 
     void Update(Restaurant restaurant);
 
-    void Delete(long id);
+    void Delete(long id,String uniqueId);
 
-    void deleteAllRestaurant();
 
     List<Object> getTopRated(int page,String type);
     boolean isRestaurantExist(Restaurant restaurant);

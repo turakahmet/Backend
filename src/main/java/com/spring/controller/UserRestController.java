@@ -126,38 +126,48 @@ public class UserRestController {
     public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-            System.out.println("CHEEECK STANDARDDDDDD");
-
-        try {
-            if (userService.checkStandardCredentials(email, password)) {
-                System.out.println("CHEEECK STANDARDDDDDD TRUE");
-
-
-                if (userService.isUserActive(email)) {
-
-                    System.out.println("İS ACTİVE TRUE");
-
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
-                } else {
-
-
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
-
-                }
-
-            } else
+            if(!userService.getusertype(email).equals("standard"))
             {
-                error.setCode(404);
-                error.setFeedback("Parolanızı veya email adresinizi yanlış girdiniz.");
-                return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
+                error.setCode(406);
+                error.setFeedback("Lütfen google hesabınız ile giriş yapınız.");
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_ACCEPTABLE);
 
             }
-        } catch (Exception e) {
 
-            error.setCode(405);
-            error.setFeedback("Something went wrong");
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        }
+
+        else{
+                try {
+                    if (userService.checkStandardCredentials(email, password)) {
+                        System.out.println("CHEEECK STANDARDDDDDD TRUE");
+
+
+                        if (userService.isUserActive(email)) {
+
+                            System.out.println("İS ACTİVE TRUE");
+
+                            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                        } else {
+
+                            userService.sendmail(email);
+                            return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
+
+                        }
+
+                    } else
+                    {
+                        error.setCode(404);
+                        error.setFeedback("Parolanızı veya email adresinizi yanlış girdiniz.");
+                        return new ResponseEntity<Error>(error, HttpStatus.NOT_MODIFIED);
+
+                    }
+                } catch (Exception e) {
+
+                    error.setCode(405);
+                    error.setFeedback("Something went wrong");
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+                }
+            }
+
 
 
     }
@@ -225,11 +235,16 @@ public class UserRestController {
 
     }
     @RequestMapping(value = "/getuserid", method = RequestMethod.GET)
-    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email)   //Kullanıcı güncelleyen endpoint
+    public ResponseEntity<?> checkGoogle(@RequestParam("email") String email,@RequestParam("googleid") String googleId)   //Kullanıcı güncelleyen endpoint
 
     {
-
+            if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,googleId))
             return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+        else
+            {
+                return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
+
+            }
 
 
 
@@ -419,17 +434,26 @@ public class UserRestController {
     @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
     public ResponseEntity<String> changeusername(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
+        System.out.println(userService.getusertype(user.getUserEmail()));
         try{
-            Token myToken = new Token(user.getUserEmail(),user.getUserPassword(),"");
-            if(validation.isvalidate(myToken))
-            {
+            if(userService.getusertype(user.getUserEmail()).equals("google")){
+                System.out.println("girdi");
                 return new ResponseEntity<String>(userService.changeusername(user),HttpStatus.OK); //
             }
 
             else{
-                return new ResponseEntity<String>("err",HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+                Token myToken = new Token(user.getUserEmail(),user.getUserPassword(),"");
+                if(validation.isvalidate(myToken))
+                {
+                    return new ResponseEntity<String>(userService.changeusername(user),HttpStatus.OK); //
+                }
 
+                else{
+                    return new ResponseEntity<String>("err",HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
+
+                }
             }
+
         }
 
         catch(Exception e){
@@ -539,7 +563,7 @@ public class UserRestController {
 
             if(userDAO.isUserExist(email) && !userDAO.getusertype(email).equals("google") && !userDAO.isUserActive(email))
             {
-                return new ResponseEntity<String>("true",HttpStatus.OK); //
+                return new ResponseEntity<>(userService.sendmail(email),HttpStatus.OK); //
 
             }
             else if (userDAO.getusertype(email).equals("google") || userDAO.isUserActive(email)){
