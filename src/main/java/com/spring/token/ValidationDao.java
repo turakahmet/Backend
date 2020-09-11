@@ -150,4 +150,27 @@ public class ValidationDao implements  Validation {
         }
         return sb.toString();
     }
+
+    @Override
+    public Boolean votevalidator(long id, String email, String password) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and userPassword=:password and userID =:id");
+        query.setParameter("email", email);
+        query.setParameter("password", password);
+        query.setParameter("id", id);
+
+
+        return query.getResultList().size() > 0 ? true:false;
+
+    }
+
+    @Override
+    public Boolean votevalidatorforgoogle(long id, String email, String token) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:email and idToken=:token and userID =:id");
+        query.setParameter("email", email);
+        query.setParameter("token", token);
+        query.setParameter("id", id);
+
+
+        return query.getResultList().size() > 0 ? true:false;
+    }
 }

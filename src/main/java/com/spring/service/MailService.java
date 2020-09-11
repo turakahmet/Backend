@@ -71,12 +71,12 @@ public class MailService {
             System.out.println("KOD YERLEŞTİRME BAŞARILI");
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<p><h3>Parolanızı Sıfırlamak  için Lütfen Linke Tıklayınız:</h3><p><a href='"+url+"'>"+"link"+"</a>";
+        String htmlMsg = "<p><h3>Parolanızı Sıfırlamak  için Lütfen Linke Tıklayınız:</h3><p><a href='"+url+"'>"+"</a>";
         try {
             helper.setText(htmlMsg, true); // Use this or above line.
             helper.setTo(email);
             helper.setSubject("Parolanızı Sıfırlama");
-            helper.setFrom("teamoftarnet@gmail.com");
+            helper.setFrom("numaramyuz@gmail.com");
         } catch (MessagingException e) {
             e.printStackTrace();
         }

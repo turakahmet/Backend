@@ -2,6 +2,8 @@ package com.spring.controller;
 
 import com.spring.dao.UserDAO;
 import com.spring.model.AdminTK;
+import com.spring.requestenum.RequestDescriptions;
+import com.spring.service.LogService;
 import com.spring.token.*;
 import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
@@ -17,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.Multipart;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -37,6 +42,8 @@ public class UserRestController {
     @Autowired
     UserDAO userDAO;
 
+    @Autowired
+    LogService logService;
 
     @Autowired
     Validation validation;
@@ -53,6 +60,7 @@ public class UserRestController {
     public ResponseEntity<?> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
         try {
+
             if (!userService.isUserExist(user.getUserEmail())) {
                     user.setStatus("deactive");
 
@@ -61,8 +69,10 @@ public class UserRestController {
                     error.setCode(200);
                     user.setCode(mailService.sendMail(user.getUserEmail(),user.getUserPassword()));
                      userService.insertUser(user);
+                logService.savelog(new com.spring.model.Log(RequestDescriptions.NEWACCOUNT.getText(),getUserIP()));
 
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
+
+                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
 
 
 
@@ -126,7 +136,9 @@ public class UserRestController {
     public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
-            if(!userService.getusertype(email).equals("standard"))
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.STANDARDLOGIN.getText(),getUserIP()));
+
+        if(!userService.getusertype(email).equals("standard"))
             {
                 error.setCode(406);
                 error.setFeedback("Lütfen google hesabınız ile giriş yapınız.");
@@ -176,6 +188,8 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
 
     {
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.GOOGLELOGIN.getText(),getUserIP()));
+
         user.setUserPassword("YNGUP_default_");
         if (!userService.isUserExist(user.getUserEmail())){
 
@@ -205,6 +219,8 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
 
     {
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.CHECKCODE.getText(),getUserIP()));
+
         try{
             Token myToken = new Token(email,password,"");
             if(validation.isvalidate(myToken)){
@@ -238,7 +254,9 @@ public class UserRestController {
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email,@RequestParam("googleid") String googleId)   //Kullanıcı güncelleyen endpoint
 
     {
-            if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,googleId))
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.GETUSERID.getText(),getUserIP()));
+
+        if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,googleId))
             return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
         else
             {
@@ -254,6 +272,10 @@ public class UserRestController {
     public ResponseEntity<List<Review>> listreviews(@RequestBody AdminTK adminTK,@RequestParam("email") String email)
     {
         try {
+
+            logService.savelog(new com.spring.model.Log(RequestDescriptions.LISTREVIEWS.getText(),getUserIP()));
+
+
             if(userService.isAdmin(adminTK))
             return new ResponseEntity<List<Review>>(userService.getReview(email), HttpStatus.OK); //
 
@@ -275,6 +297,9 @@ public class UserRestController {
     @RequestMapping(value = "/getuserreviews", method = RequestMethod.GET)
     public ResponseEntity<List<Object>> getuserreviews(@RequestParam("email") String email,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
     {
+
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.GETUSERREVIEWS.getText(),getUserIP()));
+
         if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
             List<Object> reviewList = userDAO.getuserreviews(email);
             return new ResponseEntity<List<Object>>(reviewList, HttpStatus.OK); //
@@ -341,7 +366,11 @@ public class UserRestController {
                                                  @RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
     {
         try{
-                Token token = new Token(email,password,"");
+
+
+            logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEPASSWORD.getText(),getUserIP()));
+
+            Token token = new Token(email,password,"");
                 if(validation.isvalidate(token)){
 
                     String result = userService.changepassword(email,password,newpw);
@@ -374,6 +403,9 @@ public class UserRestController {
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
     public ResponseEntity<Object> getcategoryinfo(@RequestParam("email") String email,@RequestParam("password") String password)
     {
+
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.CATEGORYINFO.getText(),getUserIP()));
+
         if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
             List<Object> reviewList = userDAO.getuserreviews(email);
             return new ResponseEntity<Object>(userService.getcategoryinfo(email), HttpStatus.OK); //
@@ -403,6 +435,8 @@ public class UserRestController {
     @RequestMapping(value = "/getcategorizedreviews", method = RequestMethod.GET)
         public ResponseEntity<List<Object>> getcategorizedreviews(@RequestParam("email") String email,@RequestParam("category") String category,@RequestParam("password") String password)   //Kullanıcı ekleyen endpoint
         {
+            logService.savelog(new com.spring.model.Log(RequestDescriptions.CATEGORIZEDREVIEW.getText(),getUserIP()));
+
 
             if(userService.getusertype(email).equals("google") && validation.isValidateGoogle(email,password)){
                 List<Object> reviewList = userDAO.getuserreviews(email);
@@ -434,6 +468,10 @@ public class UserRestController {
     @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
     public ResponseEntity<String> changeusername(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
     {
+
+
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEUSERNAME.getText(),getUserIP()));
+
         System.out.println(userService.getusertype(user.getUserEmail()));
         try{
             if(userService.getusertype(user.getUserEmail()).equals("google")){
@@ -465,6 +503,9 @@ public class UserRestController {
     @RequestMapping(value = "/resetpassword", method = RequestMethod.GET)
     public ResponseEntity<Void> passwordreset(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
     {
+
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.RESETPASSWORD.getText(),getUserIP()));
+
 
 
         try{
@@ -503,6 +544,7 @@ public class UserRestController {
     public ResponseEntity<Void> setpassword(@RequestParam("email") String email,@RequestParam("token") String token,@RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
     {
 
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.SETPASSWORD.getText(),getUserIP()));
 
         try {
             if (validation.isValidateRequest(email, token)) {
@@ -561,6 +603,9 @@ public class UserRestController {
     {
         try {
 
+            logService.savelog(new com.spring.model.Log(RequestDescriptions.SENDMAIL.getText(),getUserIP()));
+
+
             if(userDAO.isUserExist(email) && !userDAO.getusertype(email).equals("google") && !userDAO.isUserActive(email))
             {
                 return new ResponseEntity<>(userService.sendmail(email),HttpStatus.OK); //
@@ -580,5 +625,13 @@ public class UserRestController {
             return new ResponseEntity<String>(e.getMessage().toString(),HttpStatus.NOT_MODIFIED); //
 
         }
+    }
+
+    public String getUserIP()
+    {
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        return request.getRemoteAddr();
     }
 }

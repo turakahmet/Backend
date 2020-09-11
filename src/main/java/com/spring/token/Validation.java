@@ -13,5 +13,9 @@ public interface Validation {
     Boolean isValidateGoogle(String email,String token);
     Boolean isValidateGoogleAction(Review review,String email,String token);
     String generatetoken();
+
+
+    Boolean votevalidator(long id,String email,String password);
+    Boolean votevalidatorforgoogle(long id,String email,String token);
     }
 
