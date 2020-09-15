@@ -217,7 +217,6 @@ public class UserRestController {
 
     @RequestMapping(value = "/checkusercode", method = RequestMethod.GET)
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code,@RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
-
     {
         logService.savelog(new com.spring.model.Log(RequestDescriptions.CHECKCODE.getText(),getUserIP()));
 
@@ -246,9 +245,6 @@ public class UserRestController {
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
 
         }
-
-
-
     }
     @RequestMapping(value = "/getuserid", method = RequestMethod.GET)
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email,@RequestParam("googleid") String googleId)   //Kullanıcı güncelleyen endpoint
