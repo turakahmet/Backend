@@ -2,7 +2,6 @@ package com.spring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import oracle.sql.BLOB;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

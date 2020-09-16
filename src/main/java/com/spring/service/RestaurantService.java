@@ -12,7 +12,7 @@ public interface RestaurantService {
 
     List<Object> findByName(String name,int page);
 
-    List<Object> findByCity(String city,int page);
+    List<Object> findByCity(String city,String category,int page);
 
     List<Object> findByTown(String town,int page);
 
@@ -53,9 +53,8 @@ public interface RestaurantService {
 
     void Update(Restaurant restaurant);
 
-    void Delete(long id);
+    void Delete(long id,String uniqueId);
 
-    void deleteAllRestaurant();
 
     List<Object> getTopRated(int page,String type);
     boolean isRestaurantExist(Restaurant restaurant);

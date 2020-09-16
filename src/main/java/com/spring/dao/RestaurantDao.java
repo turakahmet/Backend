@@ -14,7 +14,7 @@ public interface RestaurantDao {
 
     List<Object> findByName(String name,int page);
 
-    List<Object> findByCity(String city, int page);
+    List<Object> findByCity(String city,String category, int page);
 
     List<Object> findByTown(String town,int page);
 
@@ -47,9 +47,10 @@ public interface RestaurantDao {
 
     void updateRestaurantReview(long restaurantID);
 
-    void Delete(long id);
+    void Delete(long id,String uniqueId);
 
     void deleteAllRestaurant();
+
 
     boolean isRestaurantExist(Restaurant restaurant);
 

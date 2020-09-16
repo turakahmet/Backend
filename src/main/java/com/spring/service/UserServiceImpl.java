@@ -43,6 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean isAdminId(String uniqueId) {
+       return userDao.isAdminId(uniqueId);
+    }
+
+    @Override
     public List<Object> listAllUsers() {
         return userDao.listAllUsers();
     }
@@ -63,9 +68,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CustomUser findUserByEmail(String userEmail,String tokenstatus) {
+    public CustomUser findUserByEmail(String userEmail) {
 
-        return userDao.findUserByEmail(userEmail,tokenstatus);
+        return userDao.findUserByEmail(userEmail);
     }
 
     @Override
@@ -89,13 +94,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean sendmail(String email) {
+       return  userDao.sendmail(email);
+    }
+
+    @Override
+    public String getusertype(String email) {
+        return  userDao.getusertype(email);
+    }
+
+    @Override
     public List<Review> getReview(String email) {
         return userDao.getReview(email);
     }
 
     @Override
-    public String changeusername(String email, String userName) {
-        return userDao.changeusername(email,userName);
+    public String changeusername(AppUser user) {
+        return userDao.changeusername(user);
     }
 
     @Override
@@ -114,8 +129,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean insertpwcode(String email,String code) {
+      return   userDao.insertpwcode(email,code);
+    }
+
+    @Override
     public List<Object> getcategorizedreviews(String email, String category) {
       return  userDao.getcategorizedreviews(email,category);
+    }
+
+    @Override
+    public Boolean setpassword(String email, String newpw, String token) {
+        return userDao.setpassword(email,newpw,token);
     }
 
 

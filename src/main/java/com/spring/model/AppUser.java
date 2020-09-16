@@ -4,6 +4,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ public class AppUser   {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private long userID;
     //cinli dosya comment satırı
     @Column
@@ -38,6 +40,7 @@ public class AppUser   {
     @Column(length = 30)
     private String userPassword;
 
+    @Column
     private String userToken;
 
     @Column(nullable = false)
@@ -51,12 +54,18 @@ public class AppUser   {
     private String status;
 
     @Column
-    private long code;
+    private Long code;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @Column
+    private String resetCode;
+
+    @Column(length = 3000)
+    private String idToken;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Review> review;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Report> reports;
 
 }

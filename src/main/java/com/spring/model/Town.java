@@ -30,10 +30,10 @@ public class Town {
     @JoinColumn(name = "cityID")
     private City cityID;
 
-    @OneToMany(mappedBy = "townID", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "townID", cascade =  CascadeType.ALL)
     private Set<Restaurant> rTownID;
 
-    @OneToMany(mappedBy = "townID", cascade = { CascadeType.ALL },orphanRemoval = true)
+    @OneToMany(mappedBy = "townID", cascade =  CascadeType.ALL)
     private Set<UserRecords> uTownID;
 
 

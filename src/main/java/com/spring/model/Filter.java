@@ -8,7 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Filter {
-    private double covid19;
+    private double virus;
     private double score4_5;
     private int reviewPopularity;
     private FilterPlace filters;

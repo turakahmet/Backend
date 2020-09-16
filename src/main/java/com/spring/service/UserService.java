@@ -16,21 +16,25 @@ import java.util.List;
 public interface UserService {
     String checkUserType(AppUser user);
     AppUser insertUser(AppUser user);
+    Boolean isAdminId(String uniqueId);
     List<Object> listAllUsers();
     Boolean isUserExist(String email);
     boolean checkStandardCredentials(String userEmail,String password);
-    CustomUser findUserByEmail(String userEmail,String tokenstatus);
+    CustomUser findUserByEmail(String userEmail);
     Boolean checkUserCode(String email,long code);
     AppUser updateUserStatus(String email);
     Boolean isUserActive(String email);
     Boolean isAdmin(AdminTK adminTK);
+    Boolean sendmail(String email);
+    String getusertype(String email);
     List<Review> getReview(String email);
-    String changeusername(String email,String userName);
+    String changeusername(AppUser user);
     Long getreviewcount(String email,String password);
     String changepassword(String email,String password,String newpw);
     List<Object> getcategoryinfo(String email);
+    Boolean insertpwcode(String email,String code);
     List<Object> getcategorizedreviews(String email,String category);
-
+    Boolean setpassword(String email,String newpw,String token);
 
 
 
