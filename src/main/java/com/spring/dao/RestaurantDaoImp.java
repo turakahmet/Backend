@@ -699,7 +699,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Query query = null;
-        if(filter.getCovid19()!=0){
+        if(filter.getVirus()!=0){
             query = session.createQuery(
                     "select new Map(rr.restaurantID as restaurantID, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl,"+
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude,"+

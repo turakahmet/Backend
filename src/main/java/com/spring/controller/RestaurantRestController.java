@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.spring.token.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -26,7 +27,7 @@ public class RestaurantRestController {
 
     @Setter
     @Autowired
-     private  LogService logService;
+    private LogService logService;
 
     @Setter
     @Autowired
@@ -38,6 +39,7 @@ public class RestaurantRestController {
 
     @Autowired
     Validation validation;
+
     //add new context
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public ResponseEntity<Void> createRestaurant(@RequestBody Restaurant restaurant) {
@@ -48,13 +50,12 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deletebyId", method = RequestMethod.GET)
-    public ResponseEntity<Void> delete(@RequestParam("id") long id,@RequestParam ("uniqueid") String uniqueId) {
+    public ResponseEntity<Void> delete(@RequestParam("id") long id, @RequestParam("uniqueid") String uniqueId) {
 
-        if(userService.isAdminId(uniqueId)){
-            restaurantService.Delete(id,uniqueId);
+        if (userService.isAdminId(uniqueId)) {
+            restaurantService.Delete(id, uniqueId);
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else
+        } else
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 
@@ -68,52 +69,18 @@ public class RestaurantRestController {
         return null;
     }
 
-
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
-    public ResponseEntity<String> voteRest(@RequestBody Review review) {
-
-
-        logService.savelog(new com.spring.model.Log(RequestDescriptions.VOTERESTAURANT.getText(),getUserIP()));
-
-
-
-        if(userService.getusertype(review.getUser().getUserEmail()).equals("standard") && validation.votevalidator(review.getUser().getUserID(),review.getUser().getUserEmail(),review.getUser().getUserPassword()))
-        {
-
-            try {
-
-                if (!restaurantService.isVoteExist(review.getUser().getUserID(), review.getRestaurant().getRestaurantID())) {
-                    restaurantService.voteRestaurant(review);
-                    restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-                    return new ResponseEntity<>("Inserted", HttpStatus.OK);
-                } else
-                    return new ResponseEntity<>("Vote already exist", HttpStatus.CONFLICT);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Something went wrong.", HttpStatus.NOT_MODIFIED);
-            }
+    public ResponseEntity<String> voteRestaurant(@RequestBody Review review) {
+        try {
+            if (!restaurantService.isVoteExist(review.getUser().getUserID(), review.getRestaurant().getRestaurantID())) {
+                restaurantService.voteRestaurant(review);
+                restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
+                return new ResponseEntity<>("Inserted", HttpStatus.OK);
+            } else
+                return new ResponseEntity<>("Vote already exist", HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Something went wrong.", HttpStatus.NOT_MODIFIED);
         }
-       else if(userService.getusertype(review.getUser().getUserEmail()).equals("google") && validation.votevalidatorforgoogle(review.getUser().getUserID(),review.getUser().getUserEmail(),review.getUser().getUserPassword()))
-        {
-
-            try {
-
-                if (!restaurantService.isVoteExist(review.getUser().getUserID(), review.getRestaurant().getRestaurantID())) {
-                    restaurantService.voteRestaurant(review);
-                    restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-                    return new ResponseEntity<>("Inserted", HttpStatus.OK);
-                } else
-                    return new ResponseEntity<>("Vote already exist", HttpStatus.CONFLICT);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Something went wrong.", HttpStatus.NOT_MODIFIED);
-            }
-        }
-
-        else{
-            return new ResponseEntity<>("Something went wrong.", HttpStatus.UNAUTHORIZED);
-
-        }
-
-
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -137,9 +104,9 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/findRestaurantbyCity", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestParam("city") String city,@RequestParam("category")String category, @RequestParam("page") int page) {
+    public ResponseEntity<List<Object>> findRestaurantbyCity(@RequestParam("city") String city, @RequestParam("category") String category, @RequestParam("page") int page) {
         try {
-            return new ResponseEntity<>(restaurantService.findByCity(city,category, page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findByCity(city, category, page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -203,28 +170,23 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
-    public ResponseEntity<String> update(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
+    public ResponseEntity<String> update(@RequestBody Review review, @RequestParam("email") String email, @RequestParam("password") String password) {
 
 
-        logService.savelog(new com.spring.model.Log(RequestDescriptions.UPDATEVOTE.getText(),getUserIP()));
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.UPDATEVOTE.getText(), getUserIP()));
 
-        if(userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review,email,password)){
+        if (userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review, email, password)) {
             restaurantService.updateVote(review);
             restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
             return ResponseEntity.ok().body("Vote has been updated successfully.");
-        }
-
-        else{
+        } else {
             try {
-                if(validation.isValidateAction(review,email,password)){
+                if (validation.isValidateAction(review, email, password)) {
                     restaurantService.updateVote(review);
 
                     restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
                     return ResponseEntity.ok().body("Vote has been updated successfully.");
-                }
-
-
-                else
+                } else
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
             } catch (Exception e) {
@@ -234,8 +196,6 @@ public class RestaurantRestController {
         }
 
 
-
-
     }
 
     //get userID and restaurantID service
@@ -243,13 +203,13 @@ public class RestaurantRestController {
     public ResponseEntity<?> getInfo() {
         try {
 
-            logService.savelog(new Log(RequestDescriptions.INFOADMIN.getText(),getUserIP()));
-            System.out.println("IP:"+getUserIP());
+            logService.savelog(new Log(RequestDescriptions.INFOADMIN.getText(), getUserIP()));
+            System.out.println("IP:" + getUserIP());
 
             return new ResponseEntity<ArrayList>(restaurantService.getInfo(), HttpStatus.OK); //
         } catch (Exception e) {
-            System.out.println("Exception:"+e.getMessage());
-            return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_MODIFIED);
+            System.out.println("Exception:" + e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_MODIFIED);
         }
 
     }
@@ -272,7 +232,7 @@ public class RestaurantRestController {
 
 
         try {
-            logService.savelog(new Log(RequestDescriptions.GETRECORD.getText(),getUserIP()));
+            logService.savelog(new Log(RequestDescriptions.GETRECORD.getText(), getUserIP()));
 
             restaurantService.createRecord(userRecords);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -310,10 +270,10 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deleteRecord", method = RequestMethod.POST)
-    public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId,@RequestParam("uniqueid") String uniqueId) {
+    public ResponseEntity<Void> deleteRecord(@RequestParam("recordId") long recordId, @RequestParam("uniqueid") String uniqueId) {
 
 
-        if(userService.isAdminId(uniqueId)){
+        if (userService.isAdminId(uniqueId)) {
             try {
                 restaurantService.deleteRecordId(recordId);
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -321,8 +281,7 @@ public class RestaurantRestController {
                 return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
             }
-        }
-        else{
+        } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         }
@@ -332,7 +291,7 @@ public class RestaurantRestController {
     @RequestMapping(value = "/saveRecord", method = RequestMethod.POST)
     public ResponseEntity<Void> saveRecord(@RequestBody Restaurant restaurant) {
         try {
-            logService.savelog(new Log(RequestDescriptions.SAVERECORD.getText(),getUserIP()));
+            logService.savelog(new Log(RequestDescriptions.SAVERECORD.getText(), getUserIP()));
 
             restaurantService.saveRecord(restaurant);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -437,23 +396,21 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/deletevote", method = RequestMethod.POST)
-    public ResponseEntity<String> deletevote(@RequestBody Review review,@RequestParam("email") String email,@RequestParam("password") String password) {
+    public ResponseEntity<String> deletevote(@RequestBody Review review, @RequestParam("email") String email, @RequestParam("password") String password) {
 
-        if(userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review,email,password)){
+        if (userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review, email, password)) {
             restaurantService.deleteVote(review);
             restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
             return ResponseEntity.ok().body("Vote has been deleted successfully.");
-        }
-        else{
+        } else {
             try {
 
-                if(validation.isValidateAction(review,email,password)){
+                if (validation.isValidateAction(review, email, password)) {
 
                     restaurantService.deleteVote(review);
                     restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
                     return ResponseEntity.ok().body("Vote has been deleted successfully.");
-                }
-                else
+                } else
                     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 
@@ -462,7 +419,6 @@ public class RestaurantRestController {
 
             }
         }
-
 
 
     }
@@ -477,6 +433,7 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
     //en yakin service
     @RequestMapping(value = "/getYakinRestoran", method = RequestMethod.GET)
     public ResponseEntity<List> getYakinRestoran(@RequestParam("enlem") Double enlem, @RequestParam("boylam") Double boylam) {
@@ -501,8 +458,7 @@ public class RestaurantRestController {
     }
 
 
-    public String getUserIP()
-    {
+    public String getUserIP() {
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attr.getRequest();
