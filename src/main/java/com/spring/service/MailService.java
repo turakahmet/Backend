@@ -39,7 +39,7 @@ public class MailService {
             helper.setText(htmlMsg, true); // Use this or above line.
             helper.setTo(userEmail);
             helper.setSubject("Üyelik Tamamlama");
-            helper.setFrom("teamoftarnet@gmail.com");
+            helper.setFrom("numaramyuz@gmail.com");
         } catch (MessagingException e) {
             e.printStackTrace();
         }
