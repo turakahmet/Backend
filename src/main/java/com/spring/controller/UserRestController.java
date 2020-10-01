@@ -26,9 +26,7 @@ import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-/**
- * Created by egulocak on 8.04.2020.
- */
+
 
 
 @RestController

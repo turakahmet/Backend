@@ -8,9 +8,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
-/**
- * Created by bdurmusoglu on 24.06.2020.
- */
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter

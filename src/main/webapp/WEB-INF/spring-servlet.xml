@@ -49,6 +49,10 @@
                 <prop key="hibernate.hbm2ddl.import_files">init.sql</prop>
                 <prop key="hibernate.dialect.storage_engine">innodb</prop>
                 <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <prop key="hibernate.c3p0.min_size">5</prop>
+                <prop key="hibernate.c3p0.max_size">20</prop>
+                <prop key="hibernate.c3p0.timeout">300</prop>
+
             </props>
         </property>
         <property value="com.spring.model" name="packagesToScan"/>

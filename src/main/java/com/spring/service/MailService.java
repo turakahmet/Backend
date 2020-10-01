@@ -15,9 +15,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
-/**
- * Created by egulocak on 16.04.2020.
- */
 
 @Service
 public class MailService {

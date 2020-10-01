@@ -41,7 +41,7 @@ public interface RestaurantService {
 
     ArrayList getInfo();
 
-    List<Object> findAllRestaurant(int page);
+    List<Object> findAllRestaurant(int page,String cityName,String townName);
 
     List<Object> findAllRestaurantAdmin(int page);
 
@@ -53,7 +53,7 @@ public interface RestaurantService {
 
     void Update(Restaurant restaurant);
 
-    void Delete(long id,String uniqueId);
+    void Delete(long id);
 
 
     List<Object> getTopRated(int page,String type);
@@ -69,7 +69,7 @@ public interface RestaurantService {
 
     void fastPointSend(long resID, long userID, double point);
 
-    List<Object> findAllSourceRestaurant(String name, String townName,int page);
+    List<Object> findAllSourceRestaurant(String name, String townName,String cityName,int page);
 
     ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID);
 
@@ -86,5 +86,13 @@ public interface RestaurantService {
     List<Object> getEnYakin(Double enlem, Double boylam);
 
     List<Object> filter(Filter filter);
+
+    Boolean sendDeviceToken(String token);
+
+    List<Object> getRandomPlaces(int page);
+
+    Boolean sendNewEvent(String token);
+
+    Boolean getDeviceEventStatus(String token);
 }
 

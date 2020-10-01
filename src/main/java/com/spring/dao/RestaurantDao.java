@@ -20,7 +20,7 @@ public interface RestaurantDao {
 
     List<Object> votedRestaurantList(long id,int page);
 
-    List<Object> findAllRestaurant(int page);
+    List<Object> findAllRestaurant(int page, String cityName, String townName);
 
     List<Object> findAllbyCategory(String category,int page);
 
@@ -47,7 +47,7 @@ public interface RestaurantDao {
 
     void updateRestaurantReview(long restaurantID);
 
-    void Delete(long id,String uniqueId);
+    void Delete(long id);
 
     void deleteAllRestaurant();
 
@@ -72,7 +72,7 @@ public interface RestaurantDao {
 
     void fastPointSend(long resID, long userID, double point);
 
-    List<Object> findAllSourceRestaurant(String name, String townName,int page);
+    List<Object> findAllSourceRestaurant(String name, String townName,String cityName, int page);
 
     ArrayList<String> compareResults(double oldValueHygiene, double oldValueCleaning,long ResID);
 
@@ -89,4 +89,12 @@ public interface RestaurantDao {
     List<Object> getEnYakin(Double enlem, Double boylam);
 
     List<Object> filter(Filter filter);
+
+    boolean sendDeviceToken(String token);
+
+    List<Object> getRandomPlaces(int page);
+
+    Boolean sendNewEvent(String token);
+
+    Boolean getDeviceEventStatus(String token);
 }

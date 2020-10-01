@@ -1,8 +1,6 @@
 package com.spring.requestenum;
 
-/**
- * Created by egulocak on 26.08.2020.
- */
+
 public enum sizes {
 
     SIGNLOGIN(20),  //size for signup,login,vote

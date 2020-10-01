@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 
-/**
- * Created by egulocak on 26.08.2020.
- */
+
 
 @WebFilter("/user/*")
 @Component

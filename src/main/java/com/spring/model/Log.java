@@ -8,9 +8,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
-/**
- * Created by egulocak on 21.08.2020.
- */
 @Entity
 @Data
 @Table

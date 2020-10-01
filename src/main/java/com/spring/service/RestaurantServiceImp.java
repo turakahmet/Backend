@@ -107,8 +107,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findAllRestaurant(int page) {
-        return restaurantDao.findAllRestaurant(page);
+    public List<Object> findAllRestaurant(int page, String cityName,String townName) {
+        return restaurantDao.findAllRestaurant(page,cityName,townName);
     }
 
     @Override
@@ -137,8 +137,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public void Delete(long id, String uniqueId) {
-        restaurantDao.Delete(id, uniqueId);
+    public void Delete(long id) {
+        restaurantDao.Delete(id);
 
     }
 
@@ -180,8 +180,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findAllSourceRestaurant(String name, String townName, int page) {
-        return restaurantDao.findAllSourceRestaurant(name, townName, page);
+    public List<Object> findAllSourceRestaurant(String name, String townName, String cityName, int page) {
+        return restaurantDao.findAllSourceRestaurant(name, townName,cityName, page);
     }
 
     @Override
@@ -222,6 +222,26 @@ public class RestaurantServiceImp implements RestaurantService {
     @Override
     public List<Object> filter(Filter filter) {
         return restaurantDao.filter(filter);
+    }
+
+    @Override
+    public Boolean sendDeviceToken(String token) {
+         return restaurantDao.sendDeviceToken(token);
+    }
+
+    @Override
+    public List<Object> getRandomPlaces(int page) {
+        return restaurantDao.getRandomPlaces(page);
+    }
+
+    @Override
+    public Boolean sendNewEvent(String token) {
+        return restaurantDao.sendNewEvent(token);
+    }
+
+    @Override
+    public Boolean getDeviceEventStatus(String token) {
+        return restaurantDao.getDeviceEventStatus(token);
     }
 
 

@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-/**
- * Created by egulocak on 21.08.2020.
- */
+
 
 
 @Service

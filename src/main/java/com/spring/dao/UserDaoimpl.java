@@ -21,9 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by egulocak on 8.04.2020.
- */
 
 @Transactional
 @Repository

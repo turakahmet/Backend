@@ -16,9 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by egulocak on 21.08.2020.
- */
+
 
 @Transactional
 @Repository

@@ -1,8 +1,5 @@
 package com.spring.Filter;
 
-/**
- * Created by egulocak on 21.08.2020.
- */
 
 import com.spring.dao.LogDao;
 import com.spring.model.AppUser;

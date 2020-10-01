@@ -10,9 +10,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by egulocak on 8.04.2020.
- */
+
 public interface UserDAO {
 
     AppUser insertUser(AppUser user); //Bütün Kullanıcı tiplerini kaydeden fonksiyon;

@@ -11,9 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by bdurmusoglu on 6.04.2020.
- */
 
 @Setter
 @Getter

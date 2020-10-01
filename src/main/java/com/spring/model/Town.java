@@ -6,10 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-/**
- * Created by bdurmusoglu on 25.05.2020.
- */
-
 @Setter
 @Getter
 @Entity

@@ -22,9 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by egulocak on 18.08.2020.
- */
+
 @RestController
 @RequestMapping("/")
 public class MainController

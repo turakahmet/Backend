@@ -5,9 +5,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.*;
 import javax.servlet.Filter;
 
-/**
- * Created by egulocak on 26.08.2020.
- */
+
 public class MyWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 

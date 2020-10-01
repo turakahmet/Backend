@@ -13,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
-/**
- * Created by egulocak on 6.07.2020.
- */
+
 @Repository
 @Transactional
 public class ValidationDao implements  Validation {

@@ -1,9 +1,5 @@
 package com.spring.model;
 
-/**
- * Created by bdurmusoglu on 6.04.2020.
- */
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

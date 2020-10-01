@@ -53,7 +53,7 @@ public class RestaurantRestController {
     public ResponseEntity<Void> delete(@RequestParam("id") long id, @RequestParam("uniqueid") String uniqueId) {
 
         if (userService.isAdminId(uniqueId)) {
-            restaurantService.Delete(id, uniqueId);
+            restaurantService.Delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -122,9 +122,18 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/allRestaurants", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllRestaurants(@RequestParam("page") int page) {
+        public ResponseEntity<List<Object>> listAllRestaurants(@RequestParam("page") int page, @RequestParam("cityName") String cityName, @RequestParam("townName") String townName) {
         try {
-            return new ResponseEntity<>(restaurantService.findAllRestaurant(page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findAllRestaurant(page,cityName,townName), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/getRandomPlaces", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getRandomPlaces(@RequestParam("page") int page) {
+        try {
+            return new ResponseEntity<>(restaurantService.getRandomPlaces(page), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -203,7 +212,7 @@ public class RestaurantRestController {
     public ResponseEntity<?> getInfo() {
         try {
 
-            logService.savelog(new Log(RequestDescriptions.INFOADMIN.getText(), getUserIP()));
+//            logService.savelog(new Log(RequestDescriptions.INFOADMIN.getText(), getUserIP()));
             System.out.println("IP:" + getUserIP());
 
             return new ResponseEntity<ArrayList>(restaurantService.getInfo(), HttpStatus.OK); //
@@ -333,9 +342,9 @@ public class RestaurantRestController {
     ////
     //search controller
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> findbyNameTown(@RequestParam("name") String name, @RequestParam("town") String townName, @RequestParam("page") int page) {
+    public ResponseEntity<List<Object>> findbyNameTown(@RequestParam("name") String name, @RequestParam("town") String townName, @RequestParam("city") String cityName, @RequestParam("page") int page) {
         try {
-            return new ResponseEntity<>(restaurantService.findAllSourceRestaurant(name, townName, page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findAllSourceRestaurant(name, townName,cityName, page), HttpStatus.OK); //
         } catch (Exception e) {
 
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -465,4 +474,32 @@ public class RestaurantRestController {
         return request.getRemoteAddr();
     }
 
+    //cihaz token alma ilk girişte mesaj basmak için
+    @RequestMapping(value = "/sendDeviceToken", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> sendDeviceToken(@RequestParam("token") String token) {
+        try {
+            return new ResponseEntity<Boolean>(restaurantService.sendDeviceToken(token),HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //cihaza event bidaha gösterme ekranı basmak için
+    @RequestMapping(value = "/sendNewEvent", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> sendNewEvent(@RequestParam("token") String token) {
+        try {
+            return new ResponseEntity<Boolean>(restaurantService.sendNewEvent(token),HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/getDeviceEventStatus", method = RequestMethod.GET)
+    public ResponseEntity<Boolean> getDeviceEventStatus(@RequestParam("token") String token) {
+        try {
+            return new ResponseEntity<Boolean>(restaurantService.getDeviceEventStatus(token),HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 }
