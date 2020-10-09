@@ -62,7 +62,7 @@ public class UserLoginFilter implements javax.servlet.Filter {
         }
 
 
-      else   if(req.getRequestURL().toString().endsWith("/checkstandard"))
+      else if(req.getRequestURL().toString().endsWith("/checkstandard"))
         {
             //Günde tek ip maks istek sayısı 100
 

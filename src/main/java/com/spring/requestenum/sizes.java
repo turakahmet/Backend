@@ -6,7 +6,7 @@ public enum sizes {
     SIGNLOGIN(20),  //size for signup,login,vote
     credentialschange(5), //size for changing password,reset new password,set password or mail request per day
     VOTE(50),
-    LOGINS(150);
+    LOGINS(100);// bir ip den 1 günde atılabilecek istek sayısı
 
 
 

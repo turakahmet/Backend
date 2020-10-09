@@ -56,21 +56,13 @@ public class UserDaoimpl implements UserDAO {
 
     @Override
     public boolean checkStandardCredentials(String userEmail, String password) {
-
-        System.out.println("CheckStandard credentials");
-        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword ");
+        Query query = sessionFactory.getCurrentSession().createQuery("from AppUser where userEmail=:userEmail and userPassword =: userPassword and userType='standard' ");
         query.setParameter("userEmail", userEmail);
         query.setParameter("userPassword", password);
-
         if (query.uniqueResult() != null) {
             return true;
         } else
             return false;
-
-
-        //ToDo hangisi yanlıssa onu de bildiren bir  query vs yazılabilir.
-
-
     }
 
     @Override
