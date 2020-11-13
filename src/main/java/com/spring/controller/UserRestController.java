@@ -1,14 +1,11 @@
 package com.spring.controller;
 
 import com.spring.dao.UserDAO;
-import com.spring.model.AdminTK;
+import com.spring.model.*;
 import com.spring.requestenum.RequestDescriptions;
 import com.spring.service.LogService;
 import com.spring.token.*;
-import com.spring.model.AppUser;
 import com.spring.feedbacks.Error;
-import com.spring.model.CustomUser;
-import com.spring.model.Review;
 import com.spring.service.MailService;
 import com.spring.service.UserService;
 import lombok.Setter;
@@ -20,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -48,35 +46,24 @@ public class UserRestController {
     MailService mailService;
 
 
-    @RequestMapping(value = "/user/checkstandardinsertuser", method = RequestMethod.POST)
-    public ResponseEntity<?> insertUser(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
-    {
+    @RequestMapping(value = "/insertUser", method = RequestMethod.POST)
+    public ResponseEntity<Void> insertUser(@RequestBody AppUser user) {
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.NEWACCOUNT.getText(), getUserIP()));
         try {
-
-            if (!userService.isUserExist(user.getUserEmail())) {
-                user.setStatus("deactive");
-
-
-                error.setFeedback("Giriş Yaparken tek kullanımlık kod mail adresinize gönderildi.");
-                error.setCode(200);
-                user.setCode(mailService.sendMail(user.getUserEmail(), user.getUserPassword()));
+            if (userService.isUserExist(user.getUserEmail())) {
+                if (user.getUserType().equals("standard")) {
+                    user.setStatus("passive");
+                    user.setCode(mailService.sendMail(user.getUserEmail(), user.getUserPassword()));
+                } else {
+                    user.setStatus("active");
+                }
                 userService.insertUser(user);
-                logService.savelog(new com.spring.model.Log(RequestDescriptions.NEWACCOUNT.getText(), getUserIP()));
-
-
-                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.UNAUTHORIZED);
-
-
+                return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
-                error.setCode(409);
-                error.setFeedback("Bu email ile kayıtlı kullanıcı zaten var.");
-                return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
-
-
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
 
     }
@@ -121,23 +108,27 @@ public class UserRestController {
 //    }
 
     @RequestMapping(value = "/checkstandard", method = RequestMethod.GET)
-    public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
+    public ResponseEntity<?> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("userType") String userType)   //Kullanıcı güncelleyen endpoint
 
     {
         logService.savelog(new com.spring.model.Log(RequestDescriptions.STANDARDLOGIN.getText(), getUserIP()));
 
         try {
-            if (userService.checkStandardCredentials(email, password)) {
-                if (userService.isUserActive(email)) {
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
-                } else {
-                    userService.sendmail(email);
-                    return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.UNAUTHORIZED);
-                }
+            if (!userService.isUserExist(email) || !userType.equals("standard")) {
+                if (userService.checkStandardCredentials(email, password)) {
+                    if (userService.isUserActive(email)) {
+                        return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
+                    } else {
+                        userService.sendmail(email);
+                        return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.NOT_MODIFIED);
+                    }
 
+                } else {
+                    error.setFeedback("fail login, wrong id or pw");
+                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+                }
             } else {
-                error.setFeedback("fail login, wrong id or pw");
-                return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             error.setFeedback("Something went wrong");
@@ -146,55 +137,43 @@ public class UserRestController {
     }
 
 
-    @RequestMapping(value = "/checkgoogle", method = RequestMethod.POST)
-    public ResponseEntity<?> checkGoogle(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
-
-    {
-        logService.savelog(new com.spring.model.Log(RequestDescriptions.GOOGLELOGIN.getText(), getUserIP()));
-
-        user.setUserPassword("YNGUP_default_");
-        if (!userService.isUserExist(user.getUserEmail())) {
-
-            return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);
-        } else {
-            if (userService.getusertype(user.getUserEmail()).equals("google") || userService.getusertype(user.getUserEmail()).equals("facebook")) {
-                System.out.println("USERTYPE GOOGLE VEYA FACEBOOKTOR.");
-                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
-            } else {
-
-                return new ResponseEntity<String>(HttpStatus.CONFLICT);
-            }
-        }
-
-
-    }
+//    @RequestMapping(value = "/checkgoogle", method = RequestMethod.POST)
+//    public ResponseEntity<?> checkGoogle(@RequestBody AppUser user)   //Kullanıcı güncelleyen endpoint
+//
+//    {
+//        logService.savelog(new com.spring.model.Log(RequestDescriptions.GOOGLELOGIN.getText(), getUserIP()));
+//
+//        user.setUserPassword("YNGUP_default_");
+//        if (!userService.isUserExist(user.getUserEmail())) {
+//
+//            return new ResponseEntity<AppUser>(userService.insertUser(user), HttpStatus.OK);
+//        } else {
+//            if (userService.getusertype(user.getUserEmail()).equals("google") || userService.getusertype(user.getUserEmail()).equals("facebook")) {
+//                System.out.println("USERTYPE GOOGLE VEYA FACEBOOKTOR.");
+//                return new ResponseEntity<CustomUser>(userService.findUserByEmail(user.getUserEmail()), HttpStatus.OK);
+//            } else {
+//
+//                return new ResponseEntity<String>(HttpStatus.CONFLICT);
+//            }
+//        }
+//
+//
+//    }
 
     @RequestMapping(value = "/checkusercode", method = RequestMethod.GET)
     public ResponseEntity<?> checkGoogle(@RequestParam("email") String email, @RequestParam("code") long code, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
     {
         logService.savelog(new com.spring.model.Log(RequestDescriptions.CHECKCODE.getText(), getUserIP()));
-
         try {
-            Token myToken = new Token(email, password, "");
-            if (validation.isvalidate(myToken)) {
-                if (userService.checkUserCode(email, code)) {
-                    System.out.println("Code: " + code + "");
-
-
-                    return new ResponseEntity<AppUser>(userService.updateUserStatus(email), HttpStatus.OK);
-                } else {
-                    error.setCode(204);
-                    error.setFeedback("Girmiş olduğunuz kod geçerli değil.");
-                    return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
-
-                }
+            if (userService.checkUserCode(email, code)) {
+                return new ResponseEntity<>("Hesabınız Başarıyla Aktifleştirildi\nYour Account Has Been Successfully Activated", HttpStatus.OK);
             } else {
-                return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
-
+                error.setCode(204);
+                error.setFeedback("Girmiş olduğunuz kod geçerli değil.\nThe code you entered is not valid.");
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-
         }
     }
 
@@ -298,34 +277,33 @@ public class UserRestController {
     }
 
 
-    @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-    public ResponseEntity<String> changepassword(@RequestParam("email") String email, @RequestParam("password") String password,
-                                                 @RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
-    {
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> changePassword(@RequestParam("email") String email, @RequestParam("password") String password,
+                                                  @RequestParam("newPassword") String newPassword) {
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEPASSWORD.getText(), getUserIP()));
         try {
-
-
-            logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEPASSWORD.getText(), getUserIP()));
-
-            Token token = new Token(email, password, "");
-            if (validation.isvalidate(token)) {
-
-                String result = userService.changepassword(email, password, newpw);
-                if (result.equals("ok"))
-                    return new ResponseEntity<String>("OK", HttpStatus.OK);
-                else {
-                    return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-                }
-            } else
-                return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED); //
-
+            if (userService.changePassword(email, password, newPassword))
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
         } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED); //
-
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
+    @RequestMapping(value = "/supportMessage", method = RequestMethod.POST)
+    public ResponseEntity<Void> supportMessage(@RequestParam("email") String email, @RequestParam("body") String body) {
+        logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEPASSWORD.getText(), getUserIP()));
+        try {
+            if (userService.supportMessage(email, body))
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/getcategoryinfo", method = RequestMethod.GET)
@@ -382,93 +360,45 @@ public class UserRestController {
 
     }
 
-    @RequestMapping(value = "/changeusername", method = RequestMethod.POST)
-    public ResponseEntity<String> changeusername(@RequestBody AppUser user)   //Kullanıcı ekleyen endpoint
-    {
-
-
+    @RequestMapping(value = "/changeUserName", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> changeUserName(@RequestParam("email") String email, @RequestParam("name") String name) {
         logService.savelog(new com.spring.model.Log(RequestDescriptions.CHANGEUSERNAME.getText(), getUserIP()));
-
-        System.out.println(userService.getusertype(user.getUserEmail()));
         try {
-            if (userService.getusertype(user.getUserEmail()).equals("google")) {
-                System.out.println("girdi");
-                return new ResponseEntity<String>(userService.changeusername(user), HttpStatus.OK); //
+            if (userService.changeUserName(email, name)) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
             } else {
-                Token myToken = new Token(user.getUserEmail(), user.getUserPassword(), "");
-                if (validation.isvalidate(myToken)) {
-                    return new ResponseEntity<String>(userService.changeusername(user), HttpStatus.OK); //
-                } else {
-                    return new ResponseEntity<String>("err", HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS); //
-
-                }
+                return new ResponseEntity<>(false, HttpStatus.NOT_MODIFIED);
             }
-
         } catch (Exception e) {
-
-
-            return new ResponseEntity<String>("err", HttpStatus.SERVICE_UNAVAILABLE); //
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
     }
 
-    @RequestMapping(value = "/resetpassword", method = RequestMethod.GET)
-    public ResponseEntity<Void> passwordreset(@RequestParam("email") String email)   //Kullanıcı ekleyen endpoint
-    {
-
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
+    public ResponseEntity<Void> resetPassword(@RequestParam("email") String email) {
         logService.savelog(new com.spring.model.Log(RequestDescriptions.RESETPASSWORD.getText(), getUserIP()));
-
-
         try {
-            if (userService.isUserExist(email)) {
-
-                if (userService.isUserActive(email)) {
-                    if (mailService.resetpassword(email))
-                        return new ResponseEntity<Void>(HttpStatus.OK); //
-                    else
-                        return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE);
-
-
-                } else
-                    return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED); //
-
-
-            } else {
-                return new ResponseEntity<Void>(HttpStatus.NOT_FOUND); //
-
-            }
-
-
+            if (userService.resetPassword(email)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         } catch (Exception e) {
-
-
-            return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @RequestMapping(value = "/setpassword", method = RequestMethod.GET)
-    public ResponseEntity<Void> setpassword(@RequestParam("email") String email, @RequestParam("token") String token, @RequestParam("newpw") String newpw)   //Kullanıcı ekleyen endpoint
+
+
+    @RequestMapping(value = "/newPassword", method = RequestMethod.GET)
+    public ResponseEntity<Void> newPassword(@RequestParam("email") String email, @RequestParam("newPassword") String newPassword)   //Kullanıcı ekleyen endpoint
     {
-
-        logService.savelog(new com.spring.model.Log(RequestDescriptions.SETPASSWORD.getText(), getUserIP()));
-
         try {
-            if (validation.isValidateRequest(email, token)) {
-                if (userService.setpassword(email, newpw, token)) {
-                    return new ResponseEntity<Void>(HttpStatus.OK); //
-
-                } else
-                    return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
-
-
-            } else {
-                return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED); //
-
-            }
-
-
-        } catch (Exception e) {
-
-
+            if (userService.newPassword(email, newPassword)) {
+                return new ResponseEntity<Void>(HttpStatus.OK); //
+            } else
+                return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
+        }
+        catch (Exception e) {
             return new ResponseEntity<Void>(HttpStatus.SERVICE_UNAVAILABLE); //
         }
     }
@@ -496,24 +426,14 @@ public class UserRestController {
     @RequestMapping(value = "/sendmail", method = RequestMethod.GET)
     public ResponseEntity<?> sendmail(@RequestParam("email") String email) {
         try {
-
             logService.savelog(new com.spring.model.Log(RequestDescriptions.SENDMAIL.getText(), getUserIP()));
-
-
-            if (userDAO.isUserExist(email) && !userDAO.getusertype(email).equals("google") && !userDAO.isUserActive(email)) {
+            if (!userDAO.isUserActive(email)) {
                 return new ResponseEntity<>(userService.sendmail(email), HttpStatus.OK); //
-
-            } else if (userDAO.getusertype(email).equals("google") || userDAO.isUserActive(email)) {
-                return new ResponseEntity<String>("false", HttpStatus.UNAUTHORIZED); //
-
             } else {
                 return new ResponseEntity<String>("false", HttpStatus.NOT_FOUND); //
-
             }
-
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.NOT_MODIFIED); //
-
         }
     }
 
@@ -525,14 +445,59 @@ public class UserRestController {
     }
 
     //burdan sonrası değişti
-//    @RequestMapping(value = "/loginCheckStandard", method = RequestMethod.GET)
-//    public ResponseEntity<Boolean> checkStandard(@RequestParam("email") String email, @RequestParam("password") String password)   //Kullanıcı güncelleyen endpoint
-//    {
-//        if(userService.checkStandardCredentials(email, password)){
-//            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<Boolean>(false, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
+    @RequestMapping(value = "/changeUserImage", method = RequestMethod.POST)
+    public ResponseEntity<Void> changeUserImage(@RequestBody AppUser user) {
+        if (userService.changeUserImage(user.getUserID(), user.getProfilImageID(), user.getCoverImage())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //getProfileImage
+    @RequestMapping(value = "/getProfileImage", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getProfileImage(@RequestParam("userID") long userID) {
+        return new ResponseEntity<>(userService.getProfileImage(userID), HttpStatus.OK);
+    }
+
+    //getCoverImage
+    @RequestMapping(value = "/getCoverImage", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getCoverImage(@RequestParam("userID") long userID) {
+        return new ResponseEntity<>(userService.getCoverImage(userID), HttpStatus.OK);
+    }
+
+    //getUserPoints
+    @RequestMapping(value = "/getUserPoints", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Restaurant>> getUserPoints(@RequestParam("userID") long userID, @RequestParam("page") int page) {
+        return new ResponseEntity<>(userService.getUserPoints(userID, page), HttpStatus.OK);
+    }
+
+    //getUserPlace
+    @RequestMapping(value = "/getUserPlace", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Restaurant>> getUserPlace(@RequestParam("userID") long userID, @RequestParam("page") int page) {
+        return new ResponseEntity<>(userService.getUserPlace(userID, page), HttpStatus.OK);
+    }
+
+    //getUserFavorite
+    @RequestMapping(value = "/getUserFavorite", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Restaurant>> getUserFavorite(@RequestParam("userID") long userID, @RequestParam("page") int page) {
+        return new ResponseEntity<>(userService.getUserFavorite(userID, page), HttpStatus.OK);
+    }
+
+    //getUserSubCategory
+    @RequestMapping(value = "/getUserSubCategory", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Restaurant>> getUserFavorite(@RequestParam("userID") long userID, @RequestParam("category") int category, @RequestParam("page") int page) {
+        return new ResponseEntity<>(userService.getUserSubCategory(userID, category, page), HttpStatus.OK);
+    }
+
+    //getTopUserList
+    @RequestMapping(value = "/getTopUserList", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getTopUserList() {
+        try {
+            return new ResponseEntity<List<Object>>(userService.getTopUserList(), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 
 }

@@ -53,8 +53,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findAllbyCategory(String category, int page) {
-        return restaurantDao.findAllbyCategory(category, page);
+    public List<Object> findAllbyCategory(String category, int page ,double enlem, double boylam) {
+        return restaurantDao.findAllbyCategory(category, page,enlem,boylam);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public List<Object> findAllRestaurant(int page, String cityName,String townName) {
-        return restaurantDao.findAllRestaurant(page,cityName,townName);
+    public List<Object> findAllRestaurant(int page ,double enlem, double boylam) {
+        return restaurantDao.findAllRestaurant(page,enlem,boylam);
     }
 
     @Override
@@ -164,8 +164,8 @@ public class RestaurantServiceImp implements RestaurantService {
     }
 
     @Override
-    public void saveRecord(Restaurant restaurant) {
-        restaurantDao.saveRecord(restaurant);
+    public void saveRecord(Restaurant restaurant, long resID, long userID) {
+        restaurantDao.saveRecord(restaurant,resID,userID);
     }
 
     @Override
@@ -244,5 +244,18 @@ public class RestaurantServiceImp implements RestaurantService {
         return restaurantDao.getDeviceEventStatus(token);
     }
 
+    @Override
+    public List<Long> getUserSummary(long userID) {
+        return restaurantDao.getUserSummary(userID);
+    }
 
+    @Override
+    public Boolean deleteLog(DeletePlaceLog deletePlaceLog) {
+        return restaurantDao.deleteLog(deletePlaceLog);
+    }
+
+    @Override
+    public List<Object> sharePlace(long resID) {
+        return restaurantDao.sharePlace(resID);
+    }
 }

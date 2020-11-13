@@ -54,25 +54,18 @@ public class MainController
             Token myToken = new Token(email,password,"");
             if(validation.isvalidate(myToken)){
                 if (userService.checkUserCode(email, code)) {
-                    System.out.println("Code: "+code+"");
-
-
                     return "Hesabınız Başarıyla Aktifleştirildi";
                 } else {
                     error.setCode(204 );
                     return "Girmiş olduğunuz kod geçerli değil";
-
                 }
             }
-
             else{
                 return "İzinsiz İşlem";
-
             }
         }
         catch(Exception e){
             return "Servis Kullanılamıyor";
-
         }
     }
 

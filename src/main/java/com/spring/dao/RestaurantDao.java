@@ -20,9 +20,9 @@ public interface RestaurantDao {
 
     List<Object> votedRestaurantList(long id,int page);
 
-    List<Object> findAllRestaurant(int page, String cityName, String townName);
+    List<Object> findAllRestaurant(int page,double enlem, double boylam);
 
-    List<Object> findAllbyCategory(String category,int page);
+    List<Object> findAllbyCategory(String category,int page,double enlem, double boylam);
 
     ArrayList<City> getCity();
 
@@ -66,7 +66,7 @@ public interface RestaurantDao {
 
     List<Object> findAllRestaurantAdmin(int page);
 
-    void saveRecord(Restaurant restaurant);
+    void saveRecord(Restaurant restaurant,long resID, long userID);
 
     ArrayList<Object> fastPoint(long ResID, double point);
 
@@ -97,4 +97,10 @@ public interface RestaurantDao {
     Boolean sendNewEvent(String token);
 
     Boolean getDeviceEventStatus(String token);
+
+    List<Long> getUserSummary(long userID);
+
+    Boolean deleteLog(DeletePlaceLog deletePlaceLog);
+
+    List<Object> sharePlace(long resID);
 }

@@ -64,6 +64,12 @@ public class UserRecords {
 
     @Lob
     @Column
-    private byte[] restaurantImageUrl;
+    private byte[] restaurantImageBlob;
+
+    @Column
+    private String restaurantImageUrl;
+
+    @ColumnDefault("0")
+    private int status;
 
 }

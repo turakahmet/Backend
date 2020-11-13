@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -61,13 +62,6 @@ public class RestaurantRestController {
 
     }
 
-    // deleteAllRestaurants
-    @RequestMapping(value = "/deleteAllRestaurants", method = RequestMethod.GET)
-    public ResponseEntity<Void> deleteAllRestaurants()   //Bütün restorantları silen endpoint
-    {
-
-        return null;
-    }
 
     @RequestMapping(value = "/voteRestaurant", method = RequestMethod.POST)
     public ResponseEntity<String> voteRestaurant(@RequestBody Review review) {
@@ -122,9 +116,9 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/allRestaurants", method = RequestMethod.GET)
-        public ResponseEntity<List<Object>> listAllRestaurants(@RequestParam("page") int page, @RequestParam("cityName") String cityName, @RequestParam("townName") String townName) {
+    public ResponseEntity<List<Object>> listAllRestaurants(@RequestParam("page") int page, @RequestParam("enlem") double enlem, @RequestParam("boylam") double boylam) {
         try {
-            return new ResponseEntity<>(restaurantService.findAllRestaurant(page,cityName,townName), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findAllRestaurant(page, enlem, boylam), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -178,30 +172,19 @@ public class RestaurantRestController {
         }
     }
 
-    @RequestMapping(value = "/updatevote", method = RequestMethod.POST)
-    public ResponseEntity<String> update(@RequestBody Review review, @RequestParam("email") String email, @RequestParam("password") String password) {
+    @RequestMapping(value = "/updateVote", method = RequestMethod.POST)
+    public ResponseEntity<String> update(@RequestBody Review review) {
 
 
         logService.savelog(new com.spring.model.Log(RequestDescriptions.UPDATEVOTE.getText(), getUserIP()));
 
-        if (userService.getusertype(email).equals("google") && validation.isValidateGoogleAction(review, email, password)) {
+        if (review != null) {
             restaurantService.updateVote(review);
             restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-            return ResponseEntity.ok().body("Vote has been updated successfully.");
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            try {
-                if (validation.isValidateAction(review, email, password)) {
-                    restaurantService.updateVote(review);
 
-                    restaurantService.updateRestaurantReview(review.getRestaurant().getRestaurantID());
-                    return ResponseEntity.ok().body("Vote has been updated successfully.");
-                } else
-                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-            } catch (Exception e) {
-
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
 
@@ -252,9 +235,10 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/allbycategory", method = RequestMethod.GET)
-    public ResponseEntity<List<Object>> listAllbyCategory(@RequestParam("category") String category, @RequestParam("page") int page) {
+    public ResponseEntity<List<Object>> listAllbyCategory(@RequestParam("category") String category, @RequestParam("page") int page,
+                                                          @RequestParam("enlem") double enlem, @RequestParam("boylam") double boylam) {
         try {
-            return new ResponseEntity<>(restaurantService.findAllbyCategory(category, page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findAllbyCategory(category, page, enlem, boylam), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -298,12 +282,15 @@ public class RestaurantRestController {
     }
 
     @RequestMapping(value = "/saveRecord", method = RequestMethod.POST)
-    public ResponseEntity<Void> saveRecord(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Void> saveRecord(@RequestBody Restaurant restaurant, @RequestParam("uniqueid") String uniqueId, @RequestParam("ResID") long ResID, @RequestParam("UserID") long UserID) {
         try {
             logService.savelog(new Log(RequestDescriptions.SAVERECORD.getText(), getUserIP()));
-
-            restaurantService.saveRecord(restaurant);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            if (userService.isAdminId(uniqueId)) {
+                restaurantService.saveRecord(restaurant, ResID, UserID);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
@@ -344,7 +331,7 @@ public class RestaurantRestController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ResponseEntity<List<Object>> findbyNameTown(@RequestParam("name") String name, @RequestParam("town") String townName, @RequestParam("city") String cityName, @RequestParam("page") int page) {
         try {
-            return new ResponseEntity<>(restaurantService.findAllSourceRestaurant(name, townName,cityName, page), HttpStatus.OK); //
+            return new ResponseEntity<>(restaurantService.findAllSourceRestaurant(name, townName, cityName, page), HttpStatus.OK); //
         } catch (Exception e) {
 
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -478,7 +465,7 @@ public class RestaurantRestController {
     @RequestMapping(value = "/sendDeviceToken", method = RequestMethod.POST)
     public ResponseEntity<Boolean> sendDeviceToken(@RequestParam("token") String token) {
         try {
-            return new ResponseEntity<Boolean>(restaurantService.sendDeviceToken(token),HttpStatus.OK); //
+            return new ResponseEntity<Boolean>(restaurantService.sendDeviceToken(token), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -488,7 +475,7 @@ public class RestaurantRestController {
     @RequestMapping(value = "/sendNewEvent", method = RequestMethod.POST)
     public ResponseEntity<Boolean> sendNewEvent(@RequestParam("token") String token) {
         try {
-            return new ResponseEntity<Boolean>(restaurantService.sendNewEvent(token),HttpStatus.OK); //
+            return new ResponseEntity<Boolean>(restaurantService.sendNewEvent(token), HttpStatus.OK); //
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
@@ -497,7 +484,96 @@ public class RestaurantRestController {
     @RequestMapping(value = "/getDeviceEventStatus", method = RequestMethod.GET)
     public ResponseEntity<Boolean> getDeviceEventStatus(@RequestParam("token") String token) {
         try {
-            return new ResponseEntity<Boolean>(restaurantService.getDeviceEventStatus(token),HttpStatus.OK); //
+            return new ResponseEntity<Boolean>(restaurantService.getDeviceEventStatus(token), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+    //user ekranı total score,fav,place sayısı
+
+    @RequestMapping(value = "/getUserSummary", method = RequestMethod.GET)
+    public ResponseEntity<List<Long>> getDeviceEventStatus(@RequestParam("userID") long UserID) {
+        try {
+            return new ResponseEntity<>(restaurantService.getUserSummary(UserID), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //setFavorite place
+    @RequestMapping(value = "/setFavoriteRes", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> setFavoriteRes(@RequestBody FavoritePlace favoritePlace) {
+        try {
+            if (userService.setFavoriteRes(favoritePlace))
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(false, HttpStatus.NOT_MODIFIED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        }
+    }
+
+    //removeFavorite place
+    @RequestMapping(value = "/removeFavorite", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> removeFavorite(@RequestBody FavoritePlace favoritePlace) {
+        try {
+            if (userService.removeFavorite(favoritePlace))
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //deleteLog add
+    @RequestMapping(value = "/deleteLog", method = RequestMethod.POST)
+    public ResponseEntity<Void> deleteLog(@RequestBody DeletePlaceLog deletePlaceLog, @RequestParam("uniqueID") String uniqueID) {
+        try {
+            if (userService.isAdminId(uniqueID)) {
+                if (restaurantService.deleteLog(deletePlaceLog))
+                    return new ResponseEntity<>(HttpStatus.OK);
+                else
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //deleteLog add
+    @RequestMapping(value = "/sharePlace", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> sharePlace(@RequestParam("resID") long resID) {
+        try {
+            return new ResponseEntity<>(restaurantService.sharePlace(resID), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //delete place
+    @RequestMapping(value = "/deleteMyPlace", method = RequestMethod.GET)
+    public ResponseEntity<Boolean> deleteMyPlace(@RequestParam("resID") long resID,@RequestParam("userID") long userID) {
+        try {
+            if (userService.deleteMyPlace(resID,userID))
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    //invalid place
+    @RequestMapping(value = "/invalidPlace", method = RequestMethod.GET)
+    public ResponseEntity<Boolean> invalidPlace(@RequestParam("resID") long resID,@RequestParam("userID") long userID,@RequestParam("timingValue") String timingValue) {
+        try {
+            if (userService.invalidPlace(resID,userID,timingValue)) //userplace db de placestatus 1 ise invalidplace dir. 0 ise aktif
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }

@@ -45,7 +45,7 @@ public class UserLoginFilter implements javax.servlet.Filter {
         System.out.println("Starting a transaction for req: " + req.getRequestURI());
 
 
-        if (req.getRequestURL().toString().endsWith("/insertuser")) {
+        if (req.getRequestURL().toString().endsWith("/insertUser")) {
 
             //Günde tek ip maks istek sayısı 10
 
@@ -148,6 +148,13 @@ public class UserLoginFilter implements javax.servlet.Filter {
             }
             else{
                 System.out.println("setpassword Request cannot pass from Filter");
+                ((HttpServletResponse) servletResponse).setStatus(403);
+            }
+        }else if(req.getRequestURL().toString().endsWith("/supportMessage")){
+            if(logService.getrecordcount(LocalDate.now(),req.getRemoteAddr(),RequestDescriptions.SUPPORT.getText())){
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
+            else{
                 ((HttpServletResponse) servletResponse).setStatus(403);
             }
         }

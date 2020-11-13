@@ -13,6 +13,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 
@@ -31,11 +33,11 @@ public class MailService {
         String url = "http://100numaram-env.eba-4s2ppuff.eu-central-1.elasticbeanstalk.com/verification?email="+userEmail+"&code="+code+"&password="+password;
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<p><h3>Üyeliğinizi tamamlamak   için Lütfen Linke Tıklayınız:</h3><p><a href='"+url+"'>"+"link"+"</a>";
+        String htmlMsg = "<p><h3>100 numaram<br>Üyeliğinizi tamamlamak için lütfen linke Tıklayınız yada Aktivasyon kodunuzu uygulamaya yazıp onaylayın<br>Aktivasyon kodu:</h3><h3>"+code+"<br></h3><p><br><a href='"+url+"'>"+"aktivasyon için buraya TIKLA"+"</a>";
         try {
             helper.setText(htmlMsg, true); // Use this or above line.
             helper.setTo(userEmail);
-            helper.setSubject("Üyelik Tamamlama");
+            helper.setSubject("100 Numaram Üyelik Tamamlama");
             helper.setFrom("numaramyuz@gmail.com");
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -49,42 +51,51 @@ public class MailService {
     }
 
     public Boolean resetpassword(String email){
-
-
-        String url;
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
-        while (salt.length() < 100) { // length of the random string.
+        while (salt.length() < 6) { // length of the random string.
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index));
         }
         String saltStr = salt.toString();
-        url = "http://100numaram-env.eba-4s2ppuff.eu-central-1.elasticbeanstalk.com/resetpassword?email="+email+"&token="+saltStr;
-        url.toLowerCase();
-        saltStr.toLowerCase();
-        System.out.println(url);
-        if(userService.insertpwcode(email,saltStr))
-            System.out.println("KOD YERLEŞTİRME BAŞARILI");
+        String url;
+        url = "http://100numaram-env.eba-4s2ppuff.eu-central-1.elasticbeanstalk.com/setPassword?email="+email+"&code="+saltStr;
+        if(userService.newPassword(email,saltStr)) {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            String htmlMsg = "<p><h3>Tek kullanımlık şifre ile giriş yapabilirsiniz.<br>Şifrenizi e-mail adresinizle giriş yaptıktan sonra ayarlar bölümü şifre değiştir bölümünden değiştirebilirsiniz," +
+                    "<br>Şifre:"+saltStr+"</h3><p>";
+            try {
+                helper.setText(htmlMsg, true); // Use this or above line.
+                helper.setTo(email);
+                helper.setSubject("100 Numaram Şifre Sıfırlama");
+                helper.setFrom("numaramyuz@gmail.com");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            mailSender.send(mimeMessage);
+            return true;
+        }else{
+            return false;
+        }
+
+
+
+    }
+
+    public Boolean supportMessage(String email, String body){
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<p><h3>Parolanızı Sıfırlamak  için Lütfen Linke Tıklayınız:</h3><p><a href='"+url+"'>"+"</a>";
         try {
-            helper.setText(htmlMsg, true); // Use this or above line.
-            helper.setTo(email);
-            helper.setSubject("Parolanızı Sıfırlama");
-            helper.setFrom("numaramyuz@gmail.com");
+            helper.setText(body, true);
+            helper.setTo("numaramyuz@gmail.com");
+            helper.setSubject("Talep ve Öneri Mesajı ");
+            helper.setFrom(email);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
         mailSender.send(mimeMessage);
-
-
-
         return true;
     }
-
-
-
 }

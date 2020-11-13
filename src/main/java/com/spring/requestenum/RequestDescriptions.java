@@ -18,12 +18,13 @@ public enum RequestDescriptions {
     CATEGORIZEDREVIEW("categorizedreview"),
     CHANGEUSERNAME("changeusername"),
     RESETPASSWORD("resetpassword"),
-    SETPASSWORD("setpassword"),
+    SETPASSWORD("setPassword"),
     SENDMAIL("sendmail"),
     VOTERESTAURANT("voterestaurant"),
     UPDATEVOTE("updatevote"),
     GETRECORD("getrecord"),
-    SAVERECORD("saverecord");
+    SAVERECORD("saverecord"),
+    SUPPORT("supportMessage");
 
 
     private String text;

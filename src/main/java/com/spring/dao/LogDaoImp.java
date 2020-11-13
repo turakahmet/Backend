@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Transactional
 @Repository
 public class LogDaoImp implements LogDao {
 
     int size = 0;
-
 
 
     @Setter
@@ -48,16 +46,15 @@ public class LogDaoImp implements LogDao {
     }
 
     @Override
-    public Boolean getrecordcount(LocalDate localDate,String remoteIp, String action) {
+    public Boolean getrecordcount(LocalDate localDate, String remoteIp, String action) {
         setSize(action);
 
 
-            Log log = new Log();
+        Log log = new Log();
         Query query = sessionFactory.getCurrentSession().createQuery(" from Log where requestIp =: remoteip  and requestDesc=:action   ");
         query.setParameter("remoteip", remoteIp);
         query.setParameter("action", action);
-        query.setMaxResults(size+1);
-
+        query.setMaxResults(size + 1);
 
 
         System.out.println("REQUESTIP: " + remoteIp);
@@ -75,17 +72,19 @@ public class LogDaoImp implements LogDao {
     }
 
     public void setSize(String action) {
-        if(action.equals(RequestDescriptions.NEWACCOUNT.getText())  || action.equals(RequestDescriptions.SENDMAIL.getText())
-        || action.equals(RequestDescriptions.SETPASSWORD.getText()) || action.equals(RequestDescriptions.VOTERESTAURANT.getText())
-        || action.equals(RequestDescriptions.UPDATEVOTE.getText()) || action.equals(RequestDescriptions.GETRECORD.getText())
-                || action.equals(RequestDescriptions.SAVERECORD.getText()) )
-            this.size= sizes.SIGNLOGIN.getSize();
+        if (action.equals(RequestDescriptions.NEWACCOUNT.getText()) || action.equals(RequestDescriptions.SENDMAIL.getText())
+                || action.equals(RequestDescriptions.SETPASSWORD.getText()) || action.equals(RequestDescriptions.VOTERESTAURANT.getText())
+                || action.equals(RequestDescriptions.UPDATEVOTE.getText()) || action.equals(RequestDescriptions.GETRECORD.getText())
+                || action.equals(RequestDescriptions.SAVERECORD.getText()))
+            this.size = sizes.SIGNLOGIN.getSize();
 
 
         else if (action.equals(RequestDescriptions.STANDARDLOGIN.getText()) || action.equals(RequestDescriptions.GOOGLELOGIN))
-            this.size =sizes.LOGINS.getSize();
+            this.size = sizes.LOGINS.getSize();
+        else if (action.equals(RequestDescriptions.SUPPORT.getText()))
+            this.size = sizes.SUPPORT.getSize();
         else
-            this.size=sizes.credentialschange.getSize();
+            this.size = sizes.credentialschange.getSize();
     }
 
 

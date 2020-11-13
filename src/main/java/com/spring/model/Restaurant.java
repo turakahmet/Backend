@@ -96,4 +96,7 @@ public class Restaurant {
     @ColumnDefault("1")
     private int CleaningArrow;
 
+    @ColumnDefault("0")
+    private int status;
+
 }

@@ -57,9 +57,6 @@ public class ValidationDao implements  Validation {
     public Boolean isValidateAction(Review review,String email,String password) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-
-
-
         Query query = sessionFactory.getCurrentSession().createQuery("from Review where user.userEmail=:email and user.userPassword=:password and reviewID =:reviewid");
         query.setParameter("email",email);
         query.setParameter("password",password);

@@ -24,7 +24,7 @@ public class AppUser   {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private long userID;
-    //cinli dosya comment satırı
+
     @Column
     private String userName;
 
@@ -46,6 +46,13 @@ public class AppUser   {
     @Lob
     @Column
     private byte[] profilImageID;
+
+    @Lob
+    @Column
+    private byte[] coverImage;
+
+    @Column
+    private String userImageUrl;
 
     @Column
     private String status;

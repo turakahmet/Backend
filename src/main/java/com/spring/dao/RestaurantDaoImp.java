@@ -56,7 +56,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.status as status,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
                             "r.latitude as rLatitude,r.longitude as rLongitude) from Restaurant r inner join r.townID t inner join t.cityID c where r.restaurantID =:id ");
             query.setParameter("id", id);
             Object restaurant = query.uniqueResult();
@@ -75,7 +75,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review) " +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review) " +
                             "from Restaurant r inner join r.townID t inner join t.cityID c where lower(r.restaurantName) like lower(concat('%',:restName,'%'))").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("restName", name);
             List<Object> restaurantList = query.getResultList();
@@ -96,7 +96,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category,r.restaurantImageBlob as restaurantImageBlob)" +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category,r.restaurantImageBlob as restaurantImageBlob)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c where c.cityName =:city and r.category=:category").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("city", city);
             query.setParameter("category", category);
@@ -118,7 +118,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review)" +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c where t.townName =:town").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("town", town);
             List<Object> restaurantList = query.getResultList();
@@ -138,7 +138,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
-                    "select new Map(r.reviewID as reviewID,rr.restaurantName as restaurantName,rr.restaurantID as restaurantID,rr.average_review as reviewScore,concat(t.townName,',',c.cityName) as localityVerbose,rr.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,r.reviewDate as reviewDate," +
+                    "select new Map(r.reviewID as reviewID,rr.restaurantName as restaurantName,rr.restaurantID as restaurantID,rr.status as status,rr.average_review as reviewScore,concat(t.townName,',',c.cityName) as localityVerbose,rr.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,r.reviewDate as reviewDate," +
                             "r.latitude as rLatitude,r.longitude as rLongitude,rr.hygiene_review as hygiene_review,rr.friendly_review as friendly_review)" +
                             "from Review r inner join r.restaurantID rr join r.userID ru inner join rr.townID t inner join t.cityID c where ru.userID =:id").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("id", id);
@@ -154,18 +154,19 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Object> findAllRestaurant(int page, String cityName, String townName) {
+    public List<Object> findAllRestaurant(int page, double enlem, double boylam) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore," +
                             "r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.category as category,r.hygiene_review as hygiene_review," +
-                            "r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
-                            " from Restaurant r inner join r.townID t inner join t.cityID c where c.cityName=:cityName and t.townName=:townName").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
-            query.setParameter("cityName", cityName);
-            query.setParameter("townName", townName);
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address, r.category as category,r.hygiene_review as hygiene_review, r.friendly_review as friendly_review,r.timings as timings," +
+                            "r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow, sqrt(POW(69.1 * (:enlem - ABS(r.latitude)), 2) + POW(69.1 * (ABS(r.longitude) - :boylam) * COS(latitude / 57.3), 2)) as distance) " +
+                            "from Restaurant as r inner join r.townID t inner join t.cityID c   ORDER BY distance asc ").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+
+            query.setParameter("boylam", String.valueOf(boylam));
+            query.setParameter("enlem", String.valueOf(enlem));
             List restaurantList = query.getResultList();
             transaction.commit();
             session.close();
@@ -179,18 +180,35 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Object> findAllbyCategory(String category, int page) {
+    public List<Object> findAllbyCategory(String category, int page,double enlem, double boylam) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            Query query = session.createQuery(
-                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
-                            " from Restaurant r inner join r.townID t inner join t.cityID c where r.category like concat('%',:category,'%')").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
-            query.setParameter("category", category);
-            List<Object> restaurantList = query.getResultList();
-            transaction.commit();
-            return restaurantList;
+            if(boylam!=0&&enlem!=0){
+                Query query = session.createQuery(
+                        "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
+                                "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow," +
+                                "sqrt(POW(69.1 * (:enlem - ABS(r.latitude)), 2) + POW(69.1 * (ABS(r.longitude) - :boylam) * COS(:enlem / 57.3), 2)) as distance)" +
+                                " from Restaurant r inner join r.townID t inner join t.cityID c " +
+                                "where r.category like concat('%',:category,'%') ORDER BY distance asc").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+                query.setParameter("category", category);
+                query.setParameter("boylam", String.valueOf(boylam));
+                query.setParameter("enlem", String.valueOf(enlem));
+                List restaurantList = query.getResultList();
+                transaction.commit();
+                session.close();
+                return restaurantList;
+            }else {
+                Query query = session.createQuery(
+                        "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
+                                "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
+                                " from Restaurant r inner join r.townID t inner join t.cityID c where r.category like concat('%',:category,'%')").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+                query.setParameter("category", category);
+                List<Object> restaurantList = query.getResultList();
+                transaction.commit();
+                session.close();
+                return restaurantList;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -240,7 +258,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.cuisines as cuisines,r.address as address,r.phone_number as phone_number," +
-                            "concat(t.townName,',',c.cityName) as localityVerbose,r.review_count as review_count,r.average_review as reviewScore,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review) from Restaurant r inner join r.townID t inner join t.cityID c where r.restaurantID = :id ");
+                            "concat(t.townName,',',c.cityName) as localityVerbose,r.review_count as review_count,r.status as status,r.average_review as reviewScore,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review) from Restaurant r inner join r.townID t inner join t.cityID c where r.restaurantID = :id ");
             query.setParameter("id", id);
             Object restaurant = query.uniqueResult();
             transaction.commit();
@@ -313,9 +331,14 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
 //        Review flag  = new Review();
+        Query query = sessionFactory.getCurrentSession().createQuery("select r.reviewID from Review as r " +
+                "where r.restaurant.restaurantID=:resID and r.user.userID=:userID");
+        query.setParameter("resID", review.getRestaurant().getRestaurantID());
+        query.setParameter("userID", review.getUser().getUserID());
+
         review.setUser(review.getUser());
         review.setRestaurant(review.getRestaurant());
-        review.setReviewID(review.getReviewID());
+        review.setReviewID(Long.parseLong(query.getSingleResult().toString()));
         review.setQuestion1(review.getQuestion1());
         review.setQuestion2(review.getQuestion2());
         review.setQuestion3(review.getQuestion3());
@@ -343,8 +366,6 @@ public class RestaurantDaoImp implements RestaurantDao {
             }
         } else {
             try {
-
-                System.out.println("ELSEYE GİRDİ");
                 friendlyAverage = Math.round((review.getQuestion2() * q2CategoryCoef + review.getQuestion6() * q6CategoryCoef + review.getQuestion4() * q4CategoryCoef +
                         review.getQuestion5() * q5CategoryCoef + review.getQuestion8() * q8CategoryCoef) * 10) / 10.0;
                 hygieneAverage = Math.round((review.getQuestion1() * q1CategoryCoef + review.getQuestion3() * q3CategoryCoef + review.getQuestion7() * q7CategoryCoef +
@@ -401,8 +422,8 @@ public class RestaurantDaoImp implements RestaurantDao {
     public List<Object> findAllRestaurantAdmin(int page) {
         try {
             Query query = sessionFactory.getCurrentSession().createQuery("select new Map(u.recordID as recordID,u.userID as userID,u.restaurantName as restaurantName,u.address as address," +
-                    "t.townName as town,c.cityName as city,t.townID as townID,c.cityID as cityID, u.phone_number as phone_number, u.timings as timings, u.category as category, u.cuisines as cuisines,u.sticker as sticker, u.latitude as latitude,u.longitude as longitude," +
-                    "u.restaurantImageUrl as restaurantImageUrl) from UserRecords u inner join u.townID t inner join t.cityID c").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+                    "t.townName as town,c.cityName as city,t.townID as townID,c.cityID as cityID, u.phone_number as phone_number,u.status as status, u.timings as timings, u.category as category, u.cuisines as cuisines,u.sticker as sticker, u.latitude as latitude,u.longitude as longitude," +
+                    "u.restaurantImageUrl as restaurantImageUrl, u.restaurantImageBlob as restaurantImageBlob) from UserRecords u inner join u.townID t inner join t.cityID c").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             List<Object> restaurantList = query.getResultList();
             return restaurantList;
         } catch (Exception e) {
@@ -412,11 +433,17 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public void saveRecord(Restaurant restaurant) {
+    public void saveRecord(Restaurant restaurant, long resID, long userID) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
             Restaurant record = new Restaurant();
+            UserPlaces userPlaces = new UserPlaces();
+            userPlaces.setRestaurant(restaurant);
+            AppUser appUser = new AppUser();
+            appUser.setUserID(userID);
+            userPlaces.setUser(appUser);
+            sessionFactory.getCurrentSession().save(userPlaces);
             record.setRestaurantID(restaurant.getRestaurantID());
             record.setRestaurantName(restaurant.getRestaurantName());
             record.setAddress(restaurant.getAddress());
@@ -429,14 +456,18 @@ public class RestaurantDaoImp implements RestaurantDao {
             record.setCuisines(restaurant.getCuisines());
             record.setLatitude(restaurant.getLatitude());
             record.setLongitude(restaurant.getLongitude());
-            record.setRestaurantImageBlob(restaurant.getRestaurantImageBlob());
+            record.setStatus(restaurant.getStatus());
+            if (restaurant.getRestaurantImageBlob() != null)
+                record.setRestaurantImageBlob(restaurant.getRestaurantImageBlob());
+            else if (restaurant.getRestaurantImageUrl() != null)
+                record.setRestaurantImageUrl(restaurant.getRestaurantImageUrl());
             session.save(record);
             session.getTransaction().commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-
         }
     }
+
 
     @Override
     public ArrayList<Object> fastPoint(long ResID, double point) {
@@ -500,7 +531,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl, r.restaurantImageBlob as restaurantImageBlob, concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) " +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.hygiene_review as hygiene_review, r.address as address, r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) " +
                             "from Restaurant r inner join r.townID t inner join t.cityID c where lower(r.restaurantName) like lower(concat('%',:restName,'%')) " +
                             "and t.townName= :townName and c.cityName=:cityName").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
             query.setParameter("restName", name);
@@ -689,7 +720,10 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createSQLQuery(
-                "select a.restaurantName,a.latitude, a.longitude,  SQRT(POWER((TO_NUMBER(REPLACE(a.latitude, '.',','))-:enlem),2) + POWER((TO_NUMBER(REPLACE(a.longitude, '.',','))-:boylam),2)) as hipo from Restaurant a ORDER BY hipo asc");
+                "select a.restaurantName,a.latitude, a.longitude, " +
+                        "SQRT(POW(69.1 * (:enlem - ABS(a.latitude)), 2) + " +
+                        "POW(69.1 * (ABS(a.longitude) - :boylam) * COS(latitude / 57.3), 2)) " +
+                        "AS distance from Restaurant as a HAVING distance < 25  ORDER BY distance asc");
         query.setParameter("enlem", enlem);
         query.setParameter("boylam", boylam);
         return query.getResultList();
@@ -704,7 +738,7 @@ public class RestaurantDaoImp implements RestaurantDao {
             query = session.createQuery(
                     "select new Map(rr.restaurantID as restaurantID, avg(r.question6) as score,rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl, rr.restaurantImageBlob as restaurantImageBlob," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
+                            "rr.CleaningArrow as CleaningArrow,rr.status as status, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
                             "from Review r inner join r.restaurant rr inner join rr.cityID c inner join rr.townID t GROUP BY rr.restaurantID,c.cityName,t.townName,rr.restaurantName,rr.cuisines,rr.restaurantImageUrl,rr.average_review,rr.friendly_review," +
                             "rr.hygiene_review,rr.timings,rr.category,rr.latitude,rr.longitude,rr.CleaningArrow,rr.HygieneArrow order by score desc ").setMaxResults(20);
             query.getResultList();
@@ -712,21 +746,21 @@ public class RestaurantDaoImp implements RestaurantDao {
             query = session.createQuery(
                     "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl, rr.restaurantImageBlob as restaurantImageBlob," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
+                            "rr.CleaningArrow as CleaningArrow, rr.status as status, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
                             "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.average_review >= 4.5").setMaxResults(20);
             query.getResultList();
         } else if (filter.getReviewPopularity() != 0) {
             query = session.createQuery(
                     "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl, rr.restaurantImageBlob as restaurantImageBlob," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
+                            "rr.CleaningArrow as CleaningArrow, rr.status as status, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose)" +
                             "from Restaurant rr inner join rr.cityID c inner join rr.townID t order by rr.review_count desc").setMaxResults(20);
             query.getResultList();
         } else if (filter.getFilters() != null) {
             query = session.createQuery(
                     "select new Map(rr.restaurantID as restaurantID, rr.restaurantName as restaurantName , rr.cuisines as cuisines,rr.restaurantImageUrl as rImageUrl, rr.restaurantImageBlob as restaurantImageBlob," +
                             "rr.average_review as reviewScore,rr.friendly_review as friendly_review,rr.hygiene_review as hygiene_review,rr.timings as timings,rr.category as category, rr.latitude as rLatitude, rr.longitude as rLongitude," +
-                            "rr.CleaningArrow as CleaningArrow, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose, rr.review_count as review_count)" +
+                            "rr.CleaningArrow as CleaningArrow, rr.status as status, rr.HygieneArrow as HygieneArrow,concat(t.townName,',',c.cityName) as localityVerbose, rr.review_count as review_count)" +
                             "from Restaurant rr inner join rr.cityID c inner join rr.townID t where rr.category IN :category and rr.average_review >=:score and c.cityName=:currentCityName " +
                             "order by case when :sort=0 then rr.average_review else 0 end asc, " +
                             "case when :sort=1 then rr.review_count else 0 end desc," +
@@ -772,7 +806,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose, " +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
+                            "r.latitude as rLatitude,r.status as status,r.longitude as rLongitude,r.address as address, r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
 
             List restaurantList = query.getResultList();
@@ -815,6 +849,72 @@ public class RestaurantDaoImp implements RestaurantDao {
         else
             return false;
 
+    }
+
+    @Override
+    public List<Long> getUserSummary(long userID) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        List<Long> summary = new ArrayList<>();
+        Query queryReview = sessionFactory
+                .getCurrentSession()
+                .createQuery("select count(reviewID) from Review where user.userID=:userID");
+        queryReview.setParameter("userID", userID);
+        Query queryRecord = sessionFactory
+                .getCurrentSession()
+                .createQuery("select count(placeID) from UserPlaces where user.userID=:userID");
+        queryRecord.setParameter("userID", userID);
+
+        Query queryFavorite = sessionFactory
+                .getCurrentSession()
+                .createQuery("select count(favoriteID) from FavoritePlace where user.userID=:userID");
+        queryFavorite.setParameter("userID", userID);
+        summary.add((Long) queryReview.getSingleResult());
+        summary.add((Long) queryRecord.getSingleResult());
+        summary.add((Long) queryFavorite.getSingleResult());
+        session.close();
+        return summary;
+    }
+
+    @Override
+    public Boolean deleteLog(DeletePlaceLog deletePlaceLog) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        try {
+            DeletePlaceLog log= new DeletePlaceLog();
+            log.setPlaceName(deletePlaceLog.getPlaceName());
+            log.setPlaceAddress(deletePlaceLog.getPlaceAddress());
+            log.setCategory(deletePlaceLog.getCategory());
+            session.save(log);
+            session.getTransaction().commit();
+            session.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public List<Object> sharePlace(long resID) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Query query = session.createQuery(
+                    "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,concat(t.townName,',',c.cityName) as localityVerbose, " +
+                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address, r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
+                            " from Restaurant r inner join r.townID t inner join t.cityID c where r.restaurantID=:resID");
+
+            query.setParameter("resID",resID);
+            List restaurantList = query.getResultList();
+            transaction.commit();
+            session.close();
+            return restaurantList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            session.close();
+            return null;
+
+        }
     }
 
     @Override
@@ -879,7 +979,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         upRestaurant.setAverage_review(Math.round(queryAvg * 10) / 10.0);
         upRestaurant.setReview_count(review_count);
 
-
+        session.save(upRestaurant);
         transaction.commit();
         session.close();
 
@@ -992,15 +1092,15 @@ public class RestaurantDaoImp implements RestaurantDao {
     public List<Object> getTopRated(int page, String type) {
         Query query;
         if (type.equals("toprated")) {
-            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
+            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.status as status,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
                     "concat(t.townName,',',c.cityName) as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) from Restaurant r inner join r.townID t inner join t.cityID c order by  average_review desc")
                     .setMaxResults(10);
         } else if (type.equals("hygiene")) {
-            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
+            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.status as status,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
                     "concat(t.townName,',',c.cityName) as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) from Restaurant r inner join r.townID t inner join t.cityID c order by  hygiene_review desc")
                     .setMaxResults(10);
         } else {
-            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
+            query = sessionFactory.getCurrentSession().createQuery("select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.status as status,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob," +
                     "concat(t.townName,',',c.cityName) as localityVerbose,r.latitude as rLatitude,r.longitude as rLongitude,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow) from Restaurant r inner join r.townID t inner join t.cityID c order by  friendly_review desc")
                     .setMaxResults(10);
         }

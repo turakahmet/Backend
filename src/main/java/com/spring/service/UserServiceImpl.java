@@ -1,10 +1,7 @@
 package com.spring.service;
 
 import com.spring.dao.UserDAO;
-import com.spring.model.AdminTK;
-import com.spring.model.AppUser;
-import com.spring.model.CustomUser;
-import com.spring.model.Review;
+import com.spring.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +33,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser insertUser(AppUser user) {
-        return userDao.insertUser(user);
+    public void insertUser(AppUser user) {
+        userDao.insertUser(user);
     }
 
     @Override
@@ -76,10 +73,6 @@ public class UserServiceImpl implements UserService {
         return userDao.checkUserCode(email,code);
     }
 
-    @Override
-    public AppUser updateUserStatus(String email) {
-        return  userDao.updateUserStatus(email);
-    }
 
     @Override
     public Boolean isUserActive(String email) {
@@ -106,40 +99,104 @@ public class UserServiceImpl implements UserService {
         return userDao.getReview(email);
     }
 
-    @Override
-    public String changeusername(AppUser user) {
-        return userDao.changeusername(user);
-    }
-
-    @Override
-    public Long getreviewcount(String email,String password) {
-        return userDao.getreviewcount(email,password);
-    }
-
-    @Override
-    public String changepassword(String email,String password,String newpw) {
-        return userDao.changpassword(email,password,newpw);
-    }
 
     @Override
     public List<Object> getcategoryinfo(String email) {
         return userDao.getcategoryinfo(email);
     }
 
-    @Override
-    public Boolean insertpwcode(String email,String code) {
-      return   userDao.insertpwcode(email,code);
-    }
+
 
     @Override
     public List<Object> getcategorizedreviews(String email, String category) {
       return  userDao.getcategorizedreviews(email,category);
     }
 
+
+
     @Override
-    public Boolean setpassword(String email, String newpw, String token) {
-        return userDao.setpassword(email,newpw,token);
+    public Boolean changeUserImage(long userID, byte[] profileImage, byte[] coverImage) {
+        return userDao.changeUserImage(userID,profileImage,coverImage);
+    }
+
+    @Override
+    public byte[] getProfileImage(long userID) {
+        return userDao.getProfileImage(userID);
+    }
+
+    @Override
+    public byte[] getCoverImage(long userID) {
+        return userDao.getCoverImage(userID);
+    }
+
+    @Override
+    public ArrayList<Restaurant> getUserPoints(long userID, int page) {
+        return userDao.getUserPoints(userID,page);
+    }
+
+    @Override
+    public ArrayList<Restaurant> getUserPlace(long userID, int page) {
+        return userDao.getUserPlace(userID,page);
+    }
+
+    @Override
+    public ArrayList<Restaurant> getUserFavorite(long userID, int page) {
+        return userDao.getUserFavorite(userID,page);
+    }
+
+    @Override
+    public Boolean setFavoriteRes(FavoritePlace favoriteRes) {
+        return userDao.setFavoriteRes(favoriteRes);
+    }
+
+    @Override
+    public Boolean removeFavorite(FavoritePlace favoritePlace) {
+        return userDao.removeFavorite(favoritePlace);
+    }
+
+    @Override
+    public ArrayList<Restaurant> getUserSubCategory(long userID, int category, int page) {
+        return userDao.getUserSubCategory(userID,category,page);
+    }
+
+    @Override
+    public Boolean changeUserName(String email, String name) {
+        return userDao.changeUserName(email,name);
+    }
+
+    @Override
+    public Boolean changePassword(String email, String password, String newPassword) {
+        return userDao.changePassword(email,password,newPassword);
+    }
+
+    @Override
+    public Boolean supportMessage(String email, String body) {
+        return userDao.supportMessage(email,body);
+    }
+
+    @Override
+    public Boolean resetPassword(String email) {
+        return userDao.resetPassword(email);
     }
 
 
+    @Override
+    public Boolean newPassword(String email, String newPassword) {
+        return userDao.newPassword(email,newPassword);
+    }
+
+    @Override
+    public Boolean deleteMyPlace(long resID, long userID) {
+        return userDao.deleteMyPlace(resID,userID);
+    }
+
+    @Override
+    public Boolean invalidPlace(long resID, long userID ,String timingValue) {
+        return userDao.invalidPlace(resID,userID,timingValue);
+    }
+
+    @Override
+    public List<Object> getTopUserList() {
+        return userDao.getTopUserList();
+    }
 }

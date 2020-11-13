@@ -12,6 +12,7 @@ public class CustomUser {
     private String userToken;
     private String userEmail;
     private byte[] profilImageID;
-
+    private byte[] coverImage;
+    private String userImageUrl;
 
 }
