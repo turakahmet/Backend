@@ -199,4 +199,9 @@ public class UserServiceImpl implements UserService {
     public List<Object> getTopUserList() {
         return userDao.getTopUserList();
     }
+
+    @Override
+    public List<Object> getUserDetail(long userID) {
+        return userDao.getUserDetail(userID);
+    }
 }

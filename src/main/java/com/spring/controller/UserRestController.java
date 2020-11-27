@@ -500,4 +500,12 @@ public class UserRestController {
         }
     }
 
+    @RequestMapping(value = "/getUserDetail", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getUserDetail(@RequestParam("userID") long userID) {
+        try {
+            return new ResponseEntity<List<Object>>(userService.getUserDetail(userID), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 }

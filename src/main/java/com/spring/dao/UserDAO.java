@@ -57,4 +57,6 @@ public interface UserDAO {
     Boolean invalidPlace(long resID, long userID, String timingValue);
 
     List<Object> getTopUserList();
+
+    List<Object> getUserDetail(long userID);
 }

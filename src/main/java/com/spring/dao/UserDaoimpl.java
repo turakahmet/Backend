@@ -847,6 +847,24 @@ public class UserDaoimpl implements UserDAO {
             return null;
         }
     }
+
+    @Override
+    public List<Object> getUserDetail(long userID) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query query = session.createQuery("select new Map(r.user.userID as userID," +
+                    "r.user.userName as userName, r.user.userImageUrl as userImageUrl, r.user.profilImageID as profilImageID, r.user.coverImage as coverImage," +
+                    "count(r.user.userID) as x) from Review r where r.user.userID=:userID " +
+                    "GROUP BY r.user.userID  ORDER BY x desc").setMaxResults(20);
+            query.setParameter("userID", userID);
+            query.getResultList();
+            List getTopUserList = query.getResultList();
+            session.close();
+            return getTopUserList;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
 
 
