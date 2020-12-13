@@ -204,4 +204,16 @@ public class UserServiceImpl implements UserService {
     public List<Object> getUserDetail(long userID) {
         return userDao.getUserDetail(userID);
     }
+
+    @Override
+    public List<Object> getUserReviewDetail(long userID,int page) {
+        return userDao.getUserReviewDetail(userID, page);
+    }
+
+    @Override
+    public List<Object> getUserAchievement(long userID) {
+        return userDao.getUserAchievement(userID);
+    }
+
+
 }

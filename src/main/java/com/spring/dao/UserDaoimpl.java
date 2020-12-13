@@ -35,6 +35,9 @@ public class UserDaoimpl implements UserDAO {
     public void insertUser(AppUser user) {
         try {
             sessionFactory.getCurrentSession().save(user);
+            Achievements achievement=new Achievements();
+            achievement.setUser(user);
+            sessionFactory.getCurrentSession().save(achievement);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -831,7 +834,7 @@ public class UserDaoimpl implements UserDAO {
 
         }
     }
-
+//where r.reviewDate >= current_date - 7
     @Override
     public List<Object> getTopUserList() {
         Session session = sessionFactory.openSession();
@@ -841,6 +844,7 @@ public class UserDaoimpl implements UserDAO {
                     "count(r.user.userID) as x) from Review r " +
                     "GROUP BY r.user.userID  ORDER BY x desc").setMaxResults(20);
             List getTopUserList = query.getResultList();
+            //burası setle a9 için
             session.close();
             return getTopUserList;
         } catch (Exception e) {
@@ -865,6 +869,56 @@ public class UserDaoimpl implements UserDAO {
             return null;
         }
     }
+
+    @Override
+    public List<Object> getUserReviewDetail(long userID,int page) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query query = session.createQuery("select new Map(rr.restaurantName as restaurantName, rr.address as address, " +
+                    "rr.timings as timings, rr.category as category, rr.cuisines as cuisines,r.average as average,r.reviewDate as reviewDate ) " +
+                    "from Review r inner join Restaurant rr on r.restaurant.restaurantID=rr.restaurantID  " +
+                    "where r.user.userID=:userID " +
+                    " ORDER BY r.reviewID desc").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+            query.setParameter("userID", userID);
+            query.getResultList();
+            List getTopUserList = query.getResultList();
+            session.close();
+            return getTopUserList;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object> getUserAchievement(long userID) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query query = session.createQuery("select new Map( " +
+                    "a.a1 as a1," +
+                    "a.a2 as a2," +
+                    "a.a3 as a3," +
+                    "a.a4 as a4," +
+                    "a.a5 as a5," +
+                    "a.a6 as a6," +
+                    "a.a7 as a7," +
+                    "a.a8 as a8," +
+                    "a.a9 as a9," +
+                    "a.a10 as a10," +
+                    "a.a11 as a11," +
+                    "a.a12 as a12," +
+                    "a.a13 as a13 )" +
+                    "from Achievements a where a.user.userID=:userID");
+            query.setParameter("userID", userID);
+            query.getResultList();
+            List getTopUserList = query.getResultList();
+            session.close();
+            return getTopUserList;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }
 
 

@@ -119,7 +119,7 @@ public class UserRestController {
                     if (userService.isUserActive(email)) {
                         return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.OK);
                     } else {
-                        userService.sendmail(email);
+//                        userService.sendmail(email);
                         return new ResponseEntity<CustomUser>(userService.findUserByEmail(email), HttpStatus.NOT_MODIFIED);
                     }
 
@@ -508,4 +508,24 @@ public class UserRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+
+    @RequestMapping(value = "/getUserReviewDetail", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getUserReviewDetail(@RequestParam("userID") long userID,@RequestParam("page") int page) {
+        try {
+            return new ResponseEntity<>(userService.getUserReviewDetail(userID,page), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @RequestMapping(value = "/getUserAchievement", method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getUserAchievement(@RequestParam("userID") long userID) {
+        try {
+            return new ResponseEntity<>(userService.getUserAchievement(userID), HttpStatus.OK); //
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+
 }

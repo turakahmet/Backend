@@ -578,4 +578,13 @@ public class RestaurantRestController {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
+    @RequestMapping(value = "/setUserAchievement", method = RequestMethod.GET)
+    public ResponseEntity<Void> setUserAchievement(@RequestParam("userID") long userID) {
+        try {
+            restaurantService.setUserAchievement(userID);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
 }

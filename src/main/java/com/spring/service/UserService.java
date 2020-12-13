@@ -53,4 +53,10 @@ public interface UserService {
     List<Object> getTopUserList();
 
     List<Object> getUserDetail(long userID);
+
+    List<Object> getUserReviewDetail(long userID, int page);
+
+    List<Object> getUserAchievement(long userID);
+
+
 }

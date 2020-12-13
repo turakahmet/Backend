@@ -100,5 +100,7 @@ public interface RestaurantService {
     Boolean deleteLog(DeletePlaceLog deletePlaceLog);
 
     List<Object> sharePlace(long resID);
+
+    void setUserAchievement(long userID);
 }
 

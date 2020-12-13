@@ -103,4 +103,6 @@ public interface RestaurantDao {
     Boolean deleteLog(DeletePlaceLog deletePlaceLog);
 
     List<Object> sharePlace(long resID);
+
+    void setUserAchievement(long userID);
 }

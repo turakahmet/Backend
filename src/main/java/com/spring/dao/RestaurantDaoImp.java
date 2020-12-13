@@ -96,8 +96,9 @@ public class RestaurantDaoImp implements RestaurantDao {
         try {
             Query query = session.createQuery(
                     "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose," +
-                            "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category,r.restaurantImageBlob as restaurantImageBlob)" +
-                            " from Restaurant r inner join r.townID t inner join t.cityID c where c.cityName =:city and r.category=:category").setFirstResult(pageSize * (page - 1)).setMaxResults(pageSize);
+                            "r.latitude as rLatitude,r.longitude as rLongitude, r.address as address, r.timings as timings, " +
+                            "r.status as status,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.category as category,r.restaurantImageBlob as restaurantImageBlob)" +
+                            " from Restaurant r inner join r.townID t inner join t.cityID c where c.cityName =:city and r.category=:category").setFirstResult(40 * (page - 1)).setMaxResults(40);
             query.setParameter("city", city);
             query.setParameter("category", category);
             List restaurantList = query.list();
@@ -180,11 +181,11 @@ public class RestaurantDaoImp implements RestaurantDao {
     }
 
     @Override
-    public List<Object> findAllbyCategory(String category, int page,double enlem, double boylam) {
+    public List<Object> findAllbyCategory(String category, int page, double enlem, double boylam) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try {
-            if(boylam!=0&&enlem!=0){
+            if (boylam != 0 && enlem != 0) {
                 Query query = session.createQuery(
                         "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
                                 "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow," +
@@ -198,7 +199,7 @@ public class RestaurantDaoImp implements RestaurantDao {
                 transaction.commit();
                 session.close();
                 return restaurantList;
-            }else {
+            } else {
                 Query query = session.createQuery(
                         "select new Map(r.restaurantID as restaurantID,r.restaurantName as restaurantName,r.average_review as reviewScore,r.cuisines as cuisines,r.restaurantImageUrl as rImageUrl,r.restaurantImageBlob as restaurantImageBlob,concat(t.townName,',',c.cityName) as localityVerbose, " +
                                 "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address,r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
@@ -881,7 +882,7 @@ public class RestaurantDaoImp implements RestaurantDao {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
-            DeletePlaceLog log= new DeletePlaceLog();
+            DeletePlaceLog log = new DeletePlaceLog();
             log.setPlaceName(deletePlaceLog.getPlaceName());
             log.setPlaceAddress(deletePlaceLog.getPlaceAddress());
             log.setCategory(deletePlaceLog.getCategory());
@@ -904,7 +905,7 @@ public class RestaurantDaoImp implements RestaurantDao {
                             "r.latitude as rLatitude,r.longitude as rLongitude,r.status as status,r.address as address, r.category as category,r.hygiene_review as hygiene_review,r.friendly_review as friendly_review,r.timings as timings,r.CleaningArrow as CleaningArrow, r.HygieneArrow as HygieneArrow)" +
                             " from Restaurant r inner join r.townID t inner join t.cityID c where r.restaurantID=:resID");
 
-            query.setParameter("resID",resID);
+            query.setParameter("resID", resID);
             List restaurantList = query.getResultList();
             transaction.commit();
             session.close();
@@ -1033,6 +1034,7 @@ public class RestaurantDaoImp implements RestaurantDao {
 
         if (review.getQuestion2() == 0) {
             try {
+
                 friendlyAverage = Math.round((review.getQuestion4() * 0.4 + review.getQuestion6() * 0.6) * 10) / 10.0;
                 hygieneAverage = Math.round((review.getQuestion1() * 0.6 + review.getQuestion7() * 0.4) * 10) / 10.0;
                 average = Math.round((review.getQuestion1() * fQ1Coef + review.getQuestion7() * fQ2Coef + review.getQuestion4() * fQ3Coef + review.getQuestion6() * fQ4Coef) * 10) / 10.0;
@@ -1124,6 +1126,134 @@ public class RestaurantDaoImp implements RestaurantDao {
 //    }
 
 
+    @Override
+    public void setUserAchievement(long userID) {
+        Session session = sessionFactory.openSession();
+        Query a1 = session.createSQLQuery("select a1 from Achievements WHERE userID = :userID ");
+        a1.setParameter("userID", userID);
+        if (a1.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r inner join Restaurant rr on " +
+                    "r.restaurant.restaurantID=rr.restaurantID where r.user.userID=:userID and rr.category in ('Kafe','Türk Mutfağı','Tatlı','Dünya Mutfağı','Bar & Pub')");
+            search.setParameter("userID", userID);
+            if (search.list().size() > 5) {
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a1=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a2 = session.createSQLQuery("select a2 from Achievements WHERE userID = :userID ");
+        a2.setParameter("userID", userID);
+        if (a2.uniqueResult().toString().equals("0")) {
+            Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a2=1 WHERE a.user.userID = :userID ");
+            update.setParameter("userID", userID);
+            update.executeUpdate();
+        }
+        Query a3 = session.createSQLQuery("select a3 from Achievements WHERE userID = :userID ");
+        a3.setParameter("userID", userID);
+        if (a3.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r WHERE r.user.userID = :userID ");
+            search.setParameter("userID", userID);
+            if (search.list().size() > 10){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a3=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a4 = session.createSQLQuery("select a4 from Achievements WHERE userID = :userID ");
+        a4.setParameter("userID", userID);
+        if (a4.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r WHERE r.user.userID = :userID and r.question2>0.5 ");
+            search.setParameter("userID", userID);
+            if (search.list().size() > 10){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a4=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        //qr kodu kendi içinde setle
+        Query a6 = session.createSQLQuery("select a6 from Achievements WHERE userID = :userID ");
+        a6.setParameter("userID", userID);
+        if (a6.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r inner join Restaurant rr on " +
+                    "r.restaurant.restaurantID=rr.restaurantID where r.user.userID=:userID and rr.category = 'Otel'");
+            search.setParameter("userID", userID);
+            if (search.list().size() >= 1){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a6=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a7 = session.createSQLQuery("select a7 from Achievements WHERE userID = :userID ");
+        a7.setParameter("userID", userID);
+        if (a7.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r inner join FavoritePlace rr on " +
+                    "r.user.userID=rr.user.userID where r.user.userID=:userID");
+            search.setParameter("userID", userID);
+            if (search.list().size() > 5){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a7=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a8 = session.createSQLQuery("select a8 from Achievements WHERE userID = :userID ");
+        a8.setParameter("userID", userID);
+        if (a8.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r inner join UserPlaces rr on " +
+                    "r.user.userID=rr.user.userID where r.user.userID=:userID");
+            search.setParameter("userID", userID);
+            if (search.list().size() >=1){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a8=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        //haftanın gözdesini kendi içinde setle
+        Query a10 = session.createSQLQuery("select a10 from Achievements WHERE userID = :userID ");
+        a10.setParameter("userID", userID);
+        if (a10.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r WHERE r.user.userID = :userID and r.question1=5");
+            search.setParameter("userID", userID);
+            if (search.list().size() >=5){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a10=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a11 = session.createSQLQuery("select a11 from Achievements WHERE userID = :userID ");
+        a11.setParameter("userID", userID);
+        if (a11.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r WHERE r.user.userID = :userID and r.question6=5");
+            search.setParameter("userID", userID);
+            if (search.list().size() >=1){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a11=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a12 = session.createSQLQuery("select a12 from Achievements WHERE userID = :userID ");
+        a12.setParameter("userID", userID);
+        if (a12.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r inner join Restaurant rr on " +
+                    "r.restaurant.restaurantID=rr.restaurantID where r.user.userID=:userID and rr.category in ('AVM','Sinema Salonu','Eğlence Merkezi','Spor Salonu')");
+            search.setParameter("userID", userID);
+            if (search.list().size() >=1){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a11=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+        Query a13 = session.createSQLQuery("select a13 from Achievements WHERE userID = :userID ");
+        a13.setParameter("userID", userID);
+        if (a13.uniqueResult().toString().equals("0")) {
+            Query search = sessionFactory.getCurrentSession().createQuery("SELECT r.reviewID FROM Review r where r.user.userID=:userID ");
+            search.setParameter("userID", userID);
+            if (search.list().size() >=100){
+                Query update = sessionFactory.getCurrentSession().createQuery("update  Achievements a set a.a13=1 WHERE a.user.userID = :userID ");
+                update.setParameter("userID", userID);
+                update.executeUpdate();
+            }
+        }
+    }
 }
 
 

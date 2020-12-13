@@ -258,4 +258,9 @@ public class RestaurantServiceImp implements RestaurantService {
     public List<Object> sharePlace(long resID) {
         return restaurantDao.sharePlace(resID);
     }
+
+    @Override
+    public void setUserAchievement(long userID) {
+        restaurantDao.setUserAchievement(userID);
+    }
 }

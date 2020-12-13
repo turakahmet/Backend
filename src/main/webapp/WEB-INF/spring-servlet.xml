@@ -29,7 +29,7 @@
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://yuznumaram2.cqhtfv7kyvag.eu-central-1.rds.amazonaws.com:3306/yuznumaram"/>
         <property name="username" value="turak"/>
-        <property name="password" value="12345678"/>
+        <property name="password" value="salzburg93"/>
     </bean>
     <mvc:annotation-driven>
         <mvc:message-converters register-defaults="false">
